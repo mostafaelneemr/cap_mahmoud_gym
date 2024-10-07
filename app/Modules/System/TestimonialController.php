@@ -49,7 +49,7 @@ class TestimonialController extends SystemController
 
     public function update(Request $request, $id)
     {
-        $update = $this->testimonialService->update($request, $id);
+        $update = $this->testimonialService->update($id, $request);
         if ($update) {
             flash_msg('success',__( 'Data Updated successfully' ));
             return $this->success( __( 'Data Updated successfully' ),

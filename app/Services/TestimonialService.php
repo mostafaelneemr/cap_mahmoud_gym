@@ -46,7 +46,6 @@ class TestimonialService extends BaseService
             'action' => '',
         ]);
 
-        // $this->breadcrumb('');
         $this->filterIgnoreColumns(['action']);
         $this->addButton('system.testimonial.create','Add Testimonial');
         return $this->retunData;
@@ -138,31 +137,38 @@ class TestimonialService extends BaseService
     public function update($id,$request)
     {
         try {
-            DB::beginTransaction();
-            $old_image = $request->old_image;
+//            dd($id);
 
-            if($request->file('image')) {
-                @unlink($old_image);
-                $image = $request->file('image');
-                $name_gen = hexdec(uniqid()). '.' .$image->getClientOriginalExtension();
-                Image::make($image)->save('upload/home/'.$name_gen);
-                $filePath = 'upload/home/'.$name_gen;
-                $this->testimonialRepository->update($id,['image' => $filePath]);
+            DB::beginTransaction();
+            $testimonial = $this->testimonialRepository->find($id);
+
+            if (!$testimonial) {
+                throw new \Exception("No testimonial found for ID: " . $id);
             }
 
-            $data = [
-                'title_ar' => $request['input']['lang'][2]['title'] ?? '',
-                'title_en' => $request['input']['lang'][1]['title'] ?? '',
-                'name_ar' => $request['input']['lang'][2]['name'] ?? '',
-                'name_en' => $request['input']['lang'][1]['name'] ?? '',
-                'text_ar' => $request['input']['lang'][2]['text'] ?? '',
-                'text_en' => $request['input']['lang'][1]['text'] ?? '',
-                'status' => $request['input']['status'],
-            ];
+            if ($request->file('image')) {
+                if (file_exists($testimonial->image)) {
+                    @unlink($testimonial->image);
+                }
+                $image = $request->file('image');
+                $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+                Image::make($image)->save('upload/home/' . $name_gen);
+                $filePath = 'upload/home/' . $name_gen;
+                $testimonial->image = $filePath;
+            }
 
-            $update = $this->testimonialRepository->update($id,$data);
+            $testimonial->title_ar = $request['input']['lang'][2]['title'] ?? '';
+            $testimonial->title_en = $request['input']['lang'][1]['title'] ?? '';
+            $testimonial->name_ar = $request['input']['lang'][2]['name'] ?? '';
+            $testimonial->name_en = $request['input']['lang'][1]['name'] ?? '';
+            $testimonial->text_ar = $request['input']['lang'][2]['text'] ?? '';
+            $testimonial->text_en = $request['input']['lang'][1]['text'] ?? '';
+            $testimonial->status = $request['input']['status'];
+            $testimonial->rating = $request['input']['rating'];
+
+            $testimonial->save();
             DB::commit();
-            return $update;
+            return $testimonial;
         } catch (\Exception $e) {
             DB::rollback();
             errorLog($e->getMessage());
