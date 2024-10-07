@@ -10,7 +10,7 @@
                         <h2>About Us</h2>
                         <div class="breadcrumb-controls">
                             <a href="{{route('home')}}"><i class="fa fa-home"></i> Home</a>
-                            <span>About Us</span>
+                            <span>Contact</span>
                         </div>
                     </div>
                 </div>
