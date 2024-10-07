@@ -415,7 +415,7 @@
                     <div class="choose-item">
                         <img src="{{$item->image}}" alt="">
                         <h5>{{$item->title_en}}</h5>
-                        <p>{{$item->tex_en}} </p>
+                        <p>{{$item->text_en}} </p>
                     </div>
                 </div>
                 @endforeach()
