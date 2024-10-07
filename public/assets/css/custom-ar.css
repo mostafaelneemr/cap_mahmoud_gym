@@ -1,0 +1,25 @@
+.symbol-group .translate-middle {
+    transform: translate(50%, -150%) !important;
+}
+
+ .parent{
+     position: relative;
+ }
+.filter-btn-div{
+    position: absolute;
+    z-index: 9;
+    left: -10px;
+ }
+.filter-btn{
+    border-radius: 50%;
+    width: max-content;
+    padding: 6px 11px !important;
+}
+th{
+    white-space: nowrap;
+}
+.collapsing {
+    height: 0;
+    overflow: hidden;
+    transition: 5ms ease;
+}

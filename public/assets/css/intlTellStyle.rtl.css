@@ -1,0 +1,62 @@
+.telephone_country .iti {
+    display: block;
+}
+
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .card.card-custom > .card-header .card-title,
+    .card.card-custom > .card-header .card-title .card-label {
+        font-size: 1rem;
+    }
+}
+
+
+.telephone_country .iti--separate-dial-code .iti__selected-flag {
+    background-color: transparent;
+}
+
+
+.telephone_country .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
+    background-color: transparent;
+}
+
+
+.telephone_country input[type=tel] {
+    padding-right: 6px;
+    padding-left: 80px !important;
+    margin-left: 0;
+    text-align: left;
+}
+
+
+.telephone_country .iti--separate-dial-code .iti__selected-flag {
+    background-color: transparent;
+}
+
+
+.telephone_country .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
+    background-color: transparent;
+}
+
+.telephone_country .iti__flag-container {
+    direction: ltr;
+}
+
+.telephone_country .iti__country-list {
+    position: relative;
+}
+
+.wizard-icon-font:before {
+    font-weight: bold;
+}
+

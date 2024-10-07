@@ -1,0 +1,1 @@
+{!! link_to($route, $title = $label, $attributes , null, false) !!}
