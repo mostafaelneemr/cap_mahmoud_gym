@@ -88,16 +88,16 @@
                         <div class="form-group">
                             <div class="text-center">
                                 <img src="{{asset($item->image)}}"
-                                class="rounded-circle  h-25 w-25" alt="image slider">
+                                class="rounded-circle h-25 w-25" alt="image slider">
                             </div>
                         </div>
                     @endisset
 
 
-                    <div class="row gx-10 ">
+                    <div class="row gx-10 mt-5">
                         <div class="col-lg-6">
                             <div>
-                                {{ label( __('Image')) }}
+                                {{ label( __('Image'), isset($item->id) ? '' : 'required') }}
                                 <div class="mb-5">
                                     {!! Form::file('image', ['id' => 'file']) !!}
                                     <div class="invalid-feedback" id="input[image]-form-error"></div>
@@ -107,13 +107,13 @@
                         </div>
 
 
-                        <div class="col-lg-6 ">
+                        <div class="col-lg-6">
                             {{ label(__('Status')) }}
                             <!--begin::Input group-->
                             <div class="mb-5">
-                                {!! Form::select('input[status]',default_status(false,true),isset($item->status) ? $item->status:old('input[status]'),
-                                    ['class'=>'form-select form-select-solid ','id'=>'input[status]',' data-placeholder'=>__('Select an Status')]) !!}
-                                <div class="invalid-feedback" id="input[status]-form-error"></div>
+                                {!! Form::select('status',[''=>'']+default_status(false,true),isset($item->status) ? $item->status:old('input[status]'),
+                                    ['class'=>'form-select form-select-solid ','id'=>'status',' data-placeholder'=>__('Select an Status')]) !!}
+                                <div class="invalid-feedback" id="status-form-error"></div>
                             </div>
 
                             <!--end::Input group-->

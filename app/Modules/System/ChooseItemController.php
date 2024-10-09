@@ -2,6 +2,7 @@
 
 namespace App\Modules\System;
 
+use App\Http\Requests\ItemFormRequest;
 use App\Services\ChooseItemService;
 use App\Services\SliderService;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class ChooseItemController extends SystemController
     }
 
 
-    public function store(Request $request)
+    public function store(ItemFormRequest $request)
     {
         $store = $this->itemService->store($request);
         if ($store) {
@@ -45,7 +46,7 @@ class ChooseItemController extends SystemController
 
     public function edit($id)
     {
-        return $this->view('slider.create', $this->itemService->edit($id));
+        return $this->view('choose_item.create', $this->itemService->edit($id));
     }
 
     public function update(Request $request, $id)

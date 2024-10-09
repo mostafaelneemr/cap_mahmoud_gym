@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb-text">
-                        <h2>About Us</h2>
+                        <h2>Contact</h2>
                         <div class="breadcrumb-controls">
                             <a href="{{route('home')}}"><i class="fa fa-home"></i> Home</a>
                             <span>Contact</span>

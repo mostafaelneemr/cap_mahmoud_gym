@@ -53,8 +53,7 @@
                                                     'class' => 'form-control form-control-solid',
                                                 ]
                                             ) }}
-                                            <div class="invalid-feedback"
-                                                 id="input[lang][{{$language['id']}}][title]-form-error"></div>
+                                            <div class="invalid-feedback" id="input[lang][{{$language['id']}}][title]-form-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -74,23 +73,23 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
-                                        {{ label( __('Text Button')) }}
-                                        <div class="mb-5">
-                                            {{ Form::input(
-                                                'text',
-                                                'input[lang]['.$language['id'].'][button]',
-                                                isset($slider) ? $slider->{$language['id'] == 2 ? 'button_ar' : 'button_en'} : '',
-                                                [
-                                                    'id' => 'input[lang]['.$language['id'].'][button]',
-                                                    'class' => 'form-control form-control-solid',
-                                                ]
-                                            ) }}
-                                            <div class="invalid-feedback"
-                                                id="input[lang][{{$language['id']}}][button]-form-error">
-                                            </div>
-                                        </div>
-                                    </div>
+{{--                                    <div class="col-lg-6">--}}
+{{--                                        {{ label( __('Text Button')) }}--}}
+{{--                                        <div class="mb-5">--}}
+{{--                                            {{ Form::input(--}}
+{{--                                                'text',--}}
+{{--                                                'input[lang]['.$language['id'].'][button]',--}}
+{{--                                                isset($slider) ? $slider->{$language['id'] == 2 ? 'button_ar' : 'button_en'} : '',--}}
+{{--                                                [--}}
+{{--                                                    'id' => 'input[lang]['.$language['id'].'][button]',--}}
+{{--                                                    'class' => 'form-control form-control-solid',--}}
+{{--                                                ]--}}
+{{--                                            ) }}--}}
+{{--                                            <div class="invalid-feedback"--}}
+{{--                                                id="input[lang][{{$language['id']}}][button]-form-error">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
                                 </div>
 
 
@@ -118,10 +117,10 @@
 
                         <div class="col-lg-6">
                             <div>
-                                {{ label( __('Image')) }}
+                                {{ label( __('Image'),isset($slider->id) ? '': 'required') }}
                                 <div class="mb-5">
                                     {!! Form::file('image', ['id' => 'file']) !!}
-                                    <div class="invalid-feedback" id="input[image]-form-error"></div>
+                                    <div class="invalid-feedback" id="image-form-error"></div>
                                 </div>
                             </div>
                             <span>{{__('Image dimensions :')}} 1920 × 950</span>
@@ -129,12 +128,12 @@
 
 
                         <div class="col-lg-6 ">
-                            {{ label(__('Status')) }}
+                            {{ label(__('Status'),'required') }}
                             <!--begin::Input group-->
                             <div class="mb-5">
-                                {!! Form::select('input[status]',default_status(false,true),isset($slider->status) ? $slider->status:old('input[status]'),
-                                    ['class'=>'form-select form-select-solid ','id'=>'input[status]',' data-placeholder'=>__('Select an Status')]) !!}
-                                <div class="invalid-feedback" id="input[status]-form-error"></div>
+                                {!! Form::select('status',[''=>'']+default_status(false,true),isset($slider->status) ? $slider->status:old('input[status]'),
+                                    ['class'=>'form-select form-select-solid ','id'=>'status',' data-placeholder'=>__('Select an Status')]) !!}
+                                <div class="invalid-feedback" id="status-form-error"></div>
                             </div>
 
                             <!--end::Input group-->

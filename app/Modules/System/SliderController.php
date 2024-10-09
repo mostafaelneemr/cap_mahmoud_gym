@@ -2,6 +2,7 @@
 
 namespace App\Modules\System;
 
+use App\Http\Requests\SliderFormRequest;
 use App\Services\SliderService;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class SliderController extends SystemController
     }
 
 
-    public function store(Request $request)
+    public function store(SliderFormRequest $request)
     {
         $user = $this->sliderService->store($request);
         if ($user) {
@@ -47,7 +48,7 @@ class SliderController extends SystemController
         return $this->view('slider.create', $this->sliderService->edit($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(SliderFormRequest $request, $id)
     {
         $update = $this->sliderService->update($id, $request);
         if ($update) {

@@ -110,7 +110,7 @@ class SliderService extends BaseService
                 'button_ar' => $request['input']['lang'][2]['button'] ?? '',
                 'button_en' => $request['input']['lang'][1]['button'] ?? '',
                 'type' => SliderTypeEnum::Home,
-                'status' => $request['input']['status'],
+                'status' => $request['status'],
                 'image' => $save_image,
             ];
 
@@ -165,7 +165,7 @@ class SliderService extends BaseService
             $slider->sub_title_en = $request['input']['lang'][1]['sub_title'] ?? '';
             $slider->button_ar = $request['input']['lang'][2]['button'] ?? '';
             $slider->button_en = $request['input']['lang'][1]['button'] ?? '';
-            $slider->status = $request['input']['status'];
+            $slider->status = $request['status'];
 
             $slider->save();
 

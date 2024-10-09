@@ -30,7 +30,7 @@ class LanguageService extends BaseService
         ]);
 
         $this->jsColumns([
-            'id' => 'language.language_id',
+            'id' => 'language.id',
             'name' => 'language.name',
             'code' => 'language.code',
             'image' => 'language.image',
@@ -52,7 +52,7 @@ class LanguageService extends BaseService
         $eloquentData = $this->language_repository->getDataTableQuery();
 
         return Datatables::eloquent($eloquentData)
-            ->addColumn('id', '{{$language_id}}')
+            ->addColumn('id', '{{$id}}')
             ->addColumn('name', function ($data) {
                 return $data->name;
             })
@@ -60,10 +60,11 @@ class LanguageService extends BaseService
                 return $data->code;
             })
             ->addColumn('image', function ($data) {
-                if ($data->image) {
-                    return datatableImageFullPath($data->image);
-                }
-                return '--';
+                return $data->image;
+//                if ($data->image) {
+//                    return datatableImageFullPath($data->image);
+//                }
+//                return '--';
             })
 
             ->addColumn('status', function ($data) {
@@ -74,13 +75,13 @@ class LanguageService extends BaseService
             })
             ->editColumn('action', function ($data) {
                 if (userCan('system.language.edit')) {
-                    $this->actionButtons(datatable_menu_edit(route('system.language.edit', $data->language_id), 'system.language.edit'));
+                    $this->actionButtons(datatable_menu_edit(route('system.language.edit', $data->id), 'system.language.edit'));
                 }
-                return $this->actionButtonsRender($this->language_repository->modelPath(), $data->language_id);
+                return $this->actionButtonsRender($this->language_repository->modelPath(), $data->id);
             })
             ->escapeColumns([])
             ->setRowId(function ($data) {
-                return 'tr_' . $data->language_id;
+                return 'tr_' . $data->id;
             })
             ->make(true);
     }
@@ -156,6 +157,6 @@ class LanguageService extends BaseService
     }
     public function languageArray()
     {
-        return array_column($this->language_repository->get()->toArray(), 'name', 'language_id');
+        return array_column($this->language_repository->get()->toArray(), 'name', 'id');
     }
 }
