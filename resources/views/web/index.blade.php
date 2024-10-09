@@ -7,6 +7,7 @@
     <meta name="keywords" content="Activitar, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="{{ asset('assets/web/img/icons/logo.ico') }}" />
     <title>
         @yield('title')
     </title>

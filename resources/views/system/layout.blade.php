@@ -19,7 +19,7 @@
 
 
     <base href="{{asset('')}}">
-    <link rel="shortcut icon" href="assets/media/favicon.ico"/>
+    <link rel="shortcut icon" href="assets/web/img/icons/logo.ico"/>
     <!--begin::Vendor Stylesheets(used for this page only)-->
     <link href="assets/plugins/custom/datatables/datatables.bundle{{direction()}}.css" rel="stylesheet"
           type="text/css"/>
@@ -83,7 +83,7 @@
 
     <script src="assets/js/magnificant_popup.js?v=1.0"></script>
     <script src="assets/js/custom.js?v={{time()}}"></script>
-    <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
+{{--    <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>--}}
 
     @php
         $auth = \Illuminate\Support\Facades\Auth::user();

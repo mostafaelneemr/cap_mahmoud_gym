@@ -16,7 +16,7 @@
     <link href="assets/plugins/global/plugins.bundle{{ direction() }}.css?v=1.0" rel="stylesheet" type="text/css" />
     <link href="assets/css/style.bundle{{ direction() }}.css?v=1.1" rel="stylesheet" type="text/css" />
     <!--end::Global Theme Styles-->
-    <link rel="shortcut icon" href="{{ asset('/logo/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/web/img/icons/logo.ico') }}" />
     <script type="application/javascript">
         var $global_lang ='{{lang()}}';
     </script>

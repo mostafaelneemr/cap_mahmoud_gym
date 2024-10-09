@@ -142,30 +142,36 @@ class SliderService extends BaseService
     {
         try {
             DB::beginTransaction();
-            $old_image = $request->old_image;
+            $slider = $this->sliderRepository->find($id);
 
-            if($request->file('image')) {
-                @unlink($old_image);
-                $image = $request->file('image');
-                $name_gen = hexdec(uniqid()). '.' .$image->getClientOriginalExtension();
-                Image::make($image)->save('upload/home/'.$name_gen);
-                $filePath = 'upload/home/'.$name_gen;
-                $this->sliderRepository->update($id,['image' => $filePath]);
+            if (!$slider) {
+                throw new \Exception("No testimonial found for ID: " . $id);
             }
 
-            $data = [
-                'title_ar' => $request['input']['lang'][2]['title'] ?? '',
-                'title_en' => $request['input']['lang'][1]['title'] ?? '',
-                'sub_title_ar' => $request['input']['lang'][2]['sub_title'] ?? '',
-                'sub_title_en' => $request['input']['lang'][1]['sub_title'] ?? '',
-                'button_ar' => $request['input']['lang'][2]['button'] ?? '',
-                'button_en' => $request['input']['lang'][1]['button'] ?? '',
-                'status' => $request['input']['status'],
-            ];
+            if ($request->file('image')) {
+                if (file_exists($slider->image)) {
+                    @unlink($slider->image);
+                }
+                $image = $request->file('image');
+                $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+                Image::make($image)->save('upload/home/' . $name_gen);
+                $filePath = 'upload/home/' . $name_gen;
+                $slider->image = $filePath;
+            }
 
-            $update = $this->sliderRepository->update($id,$data);
+            $slider->title_ar = $request['input']['lang'][2]['title'] ?? '';
+            $slider->title_en = $request['input']['lang'][1]['title'] ?? '';
+            $slider->sub_title_ar = $request['input']['lang'][2]['sub_title'] ?? '';
+            $slider->sub_title_en = $request['input']['lang'][1]['sub_title'] ?? '';
+            $slider->button_ar = $request['input']['lang'][2]['button'] ?? '';
+            $slider->button_en = $request['input']['lang'][1]['button'] ?? '';
+            $slider->status = $request['input']['status'];
+
+            $slider->save();
+
+//            $update = $this->sliderRepository->update($id,$data);
             DB::commit();
-            return $update;
+            return $slider;
         } catch (\Exception $e) {
             DB::rollback();
             errorLog($e->getMessage());
