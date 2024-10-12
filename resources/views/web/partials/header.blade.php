@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="logo">
         <a href="{{route('home')}}">
-            <img src="{{asset('assets/web/img/logo.png')}}" alt="">
+            <img src="{{ setting('logo')->value ?? '' }}" alt="">
         </a>
     </div>
 {{--    <div class="top-social">--}}

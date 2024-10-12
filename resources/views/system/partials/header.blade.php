@@ -19,7 +19,7 @@
 {{--                <img alt="Logo" src="assets/media/logos/demo39-dark.svg" class="h-25px theme-dark-show" />--}}
 {{--            </a>--}}
             <a href="{{route('system.dashboard')}}" class="brand-logo">
-                <img alt="Logo" src="logo/logo-default-inverse.png" style="width:160px;"/>
+                <img alt="Logo" src="{{ setting('logo')->value ?? '' }}" style="width:160px;"/>
             </a>
             <!--end::Logo-->
         </div>

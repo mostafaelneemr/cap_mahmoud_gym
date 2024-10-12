@@ -3,7 +3,7 @@
         <div class="col-lg-8">
             <div class="footer-logo-item">
                 <div class="f-logo">
-                    <a href="#"><img src="{{asset('assets/web/img/logo.png')}}" alt=""></a>
+                    <a href="{{route('home')}}"><img src="{{ setting('logo')->value ?? '' }}" alt=""></a>
                 </div>
                 <p>Despite growth of the Internet over the past seven years, the use of toll-free phone numbers
                     in television advertising continues.</p>
