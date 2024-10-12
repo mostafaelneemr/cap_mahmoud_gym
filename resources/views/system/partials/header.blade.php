@@ -1,7 +1,7 @@
 <!--begin::Header-->
 <div id="kt_app_header" class="app-header d-flex flex-column flex-stack">
     <!--begin::Header main-->
-    <div class="d-flex flex-stack flex-grow-1" style="padding: 10px 0;  @if(env('APP_ENV') == 'local') background-color: #facea8; @elseif(env('APP_ENV') == 'test') background-color: #ffc7005c; @endif " >
+    <div class="d-flex flex-stack flex-grow-1" style="padding: 10px 0;  @if(env('APP_ENV') == 'local') background-color: #f7b733; @elseif(env('APP_ENV') == 'test') background-color: #ffc7005c; @endif " >
         <div class="app-header-logo d-flex align-items-center ps-lg-12" id="kt_app_header_logo">
             <!--begin::Sidebar toggle-->
             <div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-sm btn-icon bg-body btn-color-gray-500 btn-active-color-primary w-30px h-30px ms-n2 me-4 d-none d-lg-flex" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">

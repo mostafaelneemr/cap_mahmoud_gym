@@ -30,6 +30,7 @@
 <!-- Header End -->
 
 @yield('content')
+@include('web.book-now')
 
 <!-- Footer Section Begin -->
 <footer class="footer-section">

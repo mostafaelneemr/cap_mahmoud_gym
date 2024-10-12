@@ -35,7 +35,8 @@
     $menu['Home'] = [
         'permission' => ['system.slider.index','system.slider.create','system.slider.edit',
                         'system.choose-item.index','system.choose-item.create','system.choose-item.edit',
-                        'system.testimonial.index','system.testimonial.create','system.testimonial.edit'],
+                        'system.testimonial.index','system.testimonial.create','system.testimonial.edit',
+                        'system.blog.index','system.blog.create','system.blog.edit'],
         'icon' => '<i class="fa fa-cog"></i>',
         'text' => __('Home'),
         'sub' => [
@@ -57,6 +58,12 @@
                 'permission' => ['system.testimonial.index','system.testimonial.create','system.testimonial.edit'],
                 'url' => route('system.testimonial.index'),
                 'text' => __('Testimonials'),
+                'icon' => ' <i class="fa fa-solid fa-magnifying-glass"></i>',
+            ],
+            [
+                'permission' => ['system.blog.index','system.blog.create','system.blog.edit'],
+                'url' => route('system.blog.index'),
+                'text' => __('Blogs'),
                 'icon' => ' <i class="fa fa-solid fa-magnifying-glass"></i>',
             ],
         ],

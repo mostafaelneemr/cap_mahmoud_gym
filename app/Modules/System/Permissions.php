@@ -3,6 +3,26 @@
 return [
 
     [
+        'group_title' => __('Users'),
+        'name' => __('Users'),
+        'permissions' => [
+            'view-all-user' => ['system.user.index','system.user.show', 'system.get-user-activity-log'],
+            'create-user' => ['system.user.create', 'system.user.store'],
+            'update-user' => ['system.user.edit', 'system.user.update']
+        ]
+    ],
+
+
+    [
+        'name' => __('Permission Group'),
+        'permissions' => [
+            'view-all-permission-groups' => ['system.permission-group.index'],
+            'create-permission-group' => ['system.permission-group.create', 'system.permission-group.store'],
+            'update-permission-group' => ['system.permission-group.edit', 'system.permission-group.update']
+        ]
+    ],
+
+    [
         'group_title' => __('Home'),
         'name' => __('Slider'),
         'permissions' => [
@@ -31,22 +51,11 @@ return [
     ],
 
     [
-        'group_title' => __('Users'),
-        'name' => __('Users'),
+        'name' => __('Blogs'),
         'permissions' => [
-            'view-all-user' => ['system.user.index','system.user.show', 'system.get-user-activity-log'],
-            'create-user' => ['system.user.create', 'system.user.store'],
-            'update-user' => ['system.user.edit', 'system.user.update']
-        ]
-    ],
-
-
-    [
-        'name' => __('Permission Group'),
-        'permissions' => [
-            'view-all-permission-groups' => ['system.permission-group.index'],
-            'create-permission-group' => ['system.permission-group.create', 'system.permission-group.store'],
-            'update-permission-group' => ['system.permission-group.edit', 'system.permission-group.update']
+            'view-all-blogs' => ['system.blog.index'],
+            'create-blogs' => ['system.blog.create', 'system.blog.store'],
+            'update-blogs' => ['system.blog.edit', 'system.blog.update']
         ]
     ],
 

@@ -40,10 +40,9 @@ Route::resource('/language', 'LanguageController', ['as' => 'system']);
 Route::resource('/slider', 'SliderController', ['as' => 'system']); //
 Route::resource('/choose-item', 'ChooseItemController', ['as' => 'system']); //
 Route::resource('/testimonial', 'TestimonialController', ['as' => 'system']); //
+Route::resource('/blog', 'BlogController', ['as' => 'system']); //
 
-Route::controller(SettingController::class)->prefix('setting')->group(function () {
-    Route::get('/', 'index')->name('system.setting.index');
-    Route::patch('/update', 'update')->name('system.setting.update');
-});
+Route::get('/setting', 'SettingController@index')->name('system.setting.index'); //
+Route::patch('/setting', 'SettingController@update')->name('system.setting.update'); //
 
 
