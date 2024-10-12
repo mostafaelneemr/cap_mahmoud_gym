@@ -35,7 +35,7 @@
 
                         @foreach($settingGroups as $key => $value)
                             <li class="nav-item">
-                                <a class="nav-link @if($key == 0) active @endif" data-toggle="tab"
+                                <a class="nav-link @if($key == 0) active @endif" data-bs-toggle="tab"
                                    href="#kt_tab_pane_1_{{$key}}_tab_content" role="tab">
                                     {{ str_replace('_', ' ', $value->group_name) }}
                                 </a>
@@ -50,7 +50,7 @@
                     <div class="tab-content mt-5" id="myTabContent">
                         @foreach($settingGroups as $key => $value)
                             <div class="tab-pane fade @if($key == 0) active show @endif"
-                                 id="kt_tab_pane_1_{{ $key }}_tab_content" role="tabpanel">
+                                 id="kt_tab_pane_1_{{$key}}_tab_content" role="tabpanel">
                                 @foreach($setting[$key] as $sKey => $sValue)
                                     @if($sValue->input_type == 'text')
                                         <div class="form-group row">
@@ -79,6 +79,11 @@
                                             <div @if($sValue->value) class="col-7" @else class="col-9" @endif>
                                                 {!! Form::file($sValue->name, ['class' => 'form-control']) !!}
                                             </div>
+                                            @if($sValue->name == 'logo')
+                                                <span class="text-center">{{__('Image dimensions :')}} 218 × 28</span>
+                                            @elseif($sValue->name == 'testimonial_image')
+                                                <span class="text-center">{{__('Image dimensions :')}} 1920 × 500</span>
+                                            @endif
                                             @if($sValue->value)
                                                 <div class="col-2">
                                                     <a target="_blank" href="{{ asset($sValue->value) }}">{{ __('View') }}</a>

@@ -23,8 +23,8 @@ class SettingService extends BaseService
         $settingGroups = $this->settingRepository->getDataTableQuery();
 
         $setting = [];
-        foreach ($settingGroups as $key => $value) {
-            $setting[$value->group_name] = $this->settingRepository->getSetting($value);
+        foreach ($settingGroups as $value) {
+            $setting[] = $this->settingRepository->getSetting($value);
         }
 
         $this->otherData([
@@ -40,16 +40,17 @@ class SettingService extends BaseService
         DB::beginTransaction();
         try {
 
-        $data = $request->all();
+            $data = $request->all();
 
-        $settingTable = Setting::get(['name','input_type']);
-        foreach ($settingTable as $key => $value){
+            $settingTable = Setting::get(['name', 'input_type']);
 
-            switch ($value->input_type){
-                case 'image':
-                    $validator = \Validator::make($request->all(), [
-                        $value->name => 'nullable|image',
-                    ]);
+            foreach ($settingTable as $key => $value) {
+
+                switch ($value->input_type) {
+                    case 'image':
+                        $validator = \Validator::make($request->all(), [
+                            $value->name => 'nullable|image',
+                        ]);
 //                    if (!$validator->fails() && $request->file($value->name)) {
 //                        $path = $request->file($value->name)->store(setting('system_path').'/setting/'.date('Y/m/d'),'first_public');
 //                        if($path){
@@ -58,50 +59,52 @@ class SettingService extends BaseService
 //                    }
 //                    break;
 
-                    if (!$validator->fails() && $request->file($value->name)) {
-                        // $path = $request->file($value->name)->store(setting('system_path').'/setting/'.date('Y/m/d'),'first_public');
+                        if (!$validator->fails() && $request->file($value->name)) {
+                            // $path = $request->file($value->name)->store(setting('system_path').'/setting/'.date('Y/m/d'),'first_public');
 
-                        if($request->file('site_logo')){
-                            $path = $request->file('site_logo');
-                            $name_gen = hexdec(uniqid()) . '.' . $path->getClientOriginalExtension();
-                            Image::make($path)->resize(230, 70)->save('upload/setting/' . $name_gen);
-                            $save_url = 'upload/setting/' . $name_gen;
-                            if($path){ Setting::where(['name'=>$value->name])->where('is_visible','yes')->update(['value'=>$save_url]); }
-                        }elseif($request->file('testimonial_image')) {
-                            $path = $request->file('testimonial_image');
-                            $name_gen = hexdec(uniqid()) . '.' . $path->getClientOriginalExtension();
-                            Image::make($path)->save('upload/setting/' . $name_gen);
-                            $save_url = 'upload/setting/' . $name_gen;
-                            if ($path) {
-                                Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => $save_url]);
+                            if ($request->file('site_logo')) {
+                                $path = $request->file('site_logo');
+                                $name_gen = hexdec(uniqid()) . '.' . $path->getClientOriginalExtension();
+                                Image::make($path)->resize(230, 70)->save('upload/setting/' . $name_gen);
+                                $save_url = 'upload/setting/' . $name_gen;
+                                if ($path) {
+                                    Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => $save_url]);
+                                }
+                            } elseif ($request->file('testimonial_image')) {
+                                $path = $request->file('testimonial_image');
+                                $name_gen = hexdec(uniqid()) . '.' . $path->getClientOriginalExtension();
+                                Image::make($path)->save('upload/setting/' . $name_gen);
+                                $save_url = 'upload/setting/' . $name_gen;
+                                if ($path) {
+                                    Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => $save_url]);
+                                }
+                            } elseif ($request->file('logo')) {
+                                $path = $request->file('logo');
+                                $name_gen = hexdec(uniqid()) . '.' . $path->getClientOriginalExtension();
+                                Image::make($path)->save('upload/setting/' . $name_gen);
+                                $save_url = 'upload/setting/' . $name_gen;
+                                if ($path) {
+                                    Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => $save_url]);
+                                }
                             }
                         }
-                    }
-                    break;
+                        break;
 
-
-
-
-
-
-
-
-
-
-                default:
-                    if(isset($data[$value->name])){
-                        $valueToUpdate = $data[$value->name];
-                        if(is_array($valueToUpdate)){
-                            $valueToUpdate = @serialize($valueToUpdate);
+                    default:
+                        if (isset($data[$value->name])) {
+                            $valueToUpdate = $data[$value->name];
+                            if (is_array($valueToUpdate)) {
+                                $valueToUpdate = @serialize($valueToUpdate);
+                            }
+                            Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => $valueToUpdate]);
+                        } else {
+                            Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => '']);
                         }
-                        Setting::where(['name'=>$value->name])->where('is_visible','yes')->update(['value'=>$valueToUpdate]);
-                    }else{
-                        Setting::where(['name'=>$value->name])->where('is_visible','yes')->update(['value'=>'']);
-                    }
-                    break;
+                        break;
+                }
+
             }
 
-        }
             DB::commit();
             return true;
         }catch (\Exception $e) {

@@ -11,12 +11,11 @@ class SettingRepository extends BaseRepository
 
     public function getDataTableQuery()
     {
-        return $this->modeler::select('group_name')
-        ->orderBy('sort','ASC')
-        ->groupBy('group_name')
-        ->where('is_visible','yes')
-        ->where('group_name','!=','staff_app')
-        ->get();
+        return  $this->modeler::select('group_name')
+            ->groupBy('group_name')
+            ->where('is_visible','yes')
+            ->where('group_name','!=','staff_app')
+            ->get();
     }
 
     public function getSetting($value)
