@@ -41,6 +41,8 @@
 <!-- Js Plugins -->
 
 @include('web.partials.script')
+<script src="assets/js/custom.js?v={{time()}}"></script>
+
 </body>
 
 </html>

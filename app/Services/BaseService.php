@@ -2,12 +2,9 @@
 
 namespace App\Services;
 
-// import the Intervention Image Manager Class
 
 use App\Imports\DataImport;
-use App\Repositories\AmazonS3Image\AmazonS3ImageRepository;
 use App\Repositories\ActivityLog\ActivityLogRepository;
-use Intervention\Image\ImageManager;
 
 
 use Illuminate\Support\Facades\Storage;

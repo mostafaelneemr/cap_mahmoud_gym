@@ -97,5 +97,12 @@ return [
         ]
     ],
 
+    [
+        'name' => __('Message'),
+        'permissions' => [
+            'view-messages' => ['system.message.index'],
+       ]
+    ],
+
 
 ];

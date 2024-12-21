@@ -60,11 +60,19 @@
                 'text' => __('Testimonials'),
                 'icon' => ' <i class="fa fa-solid fa-magnifying-glass"></i>',
             ],
+
             [
                 'permission' => ['system.blog.index','system.blog.create','system.blog.edit'],
                 'url' => route('system.blog.index'),
                 'text' => __('Blogs'),
                 'icon' => ' <i class="fa fa-solid fa-magnifying-glass"></i>',
+            ],
+
+            [
+                'permission'=> ['system.message.index'],
+                'url'=> route('system.message.index'),
+                'icon'=>'<i class="fa fa-user-tie"></i>',
+                'text'=> __('Message'),
             ],
         ],
     ];

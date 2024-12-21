@@ -15,7 +15,7 @@ class BlogService extends BaseService
 {
     protected $blogRepository,$languageRepository;
 
-    public function __construct(BlogRepository $blogRepository,LanguageRepository $languageRepository)
+    public function __construct(BlogRepository $blogRepository, LanguageRepository $languageRepository)
     {
         parent::__construct();
         $this->blogRepository = $blogRepository;

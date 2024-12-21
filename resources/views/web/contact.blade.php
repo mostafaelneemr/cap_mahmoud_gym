@@ -25,8 +25,12 @@
                     <div class="contact-info">
                         <h4>Information</h4>
                         <ul>
-                            <li><i class="fa fa-phone"></i><a style="color: #afb4bf;" href="https://wa.me/{{setting('mobile')->value ?? ''}}">{{setting('mobile')->value ?? ''}}</a></li>
-                            <li><i class="fa fa-envelope"></i><a style="color: #afb4bf;" href="mailto:{{setting('email')->value ?? ''}}">{{ setting('email')->value ?? ''}}</a></li>
+                            <li><i class="fa fa-phone"></i>
+                                <a style="color: #afb4bf;" href="https://wa.me/{{setting('mobile')->value ?? ''}}">{{setting('mobile')->value ?? ''}}</a>
+                            </li>
+                            <li><i class="fa fa-envelope"></i>
+                                <a style="color: #afb4bf;" href="mailto:{{setting('email')->value ?? ''}}">{{ setting('email')->value ?? ''}}</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="contact-address">
@@ -39,16 +43,21 @@
                 <div class="col-lg-8 offset-lg-1">
                     <div class="contact-form">
                         <h4>Get in touch</h4>
-                        <form action="#">
+                        <div id="form-alert-message"></div>
+                        <form name="contact-form" action="{{route('sendmail')}}" method="POST">
+                            @csrf
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <input type="text" placeholder="Name" disabled>
+                                    <input type="text" name="name" placeholder="Name" required>
                                 </div>
                                 <div class="col-lg-6">
-                                    <input type="text" placeholder="Email" disabled>
+                                    <input type="email" name="email" placeholder="Email" required>
                                 </div>
                                 <div class="col-lg-12">
-                                    <textarea placeholder="Message" disabled></textarea>
+                                    <input type="tel" name="telephone" placeholder="Telephone" required>
+                                </div>
+                                <div class="col-lg-12">
+                                    <textarea placeholder="Message" name="message" required></textarea>
                                     <button type="submit" class="c-btn">Send Message</button>
                                 </div>
                             </div>
