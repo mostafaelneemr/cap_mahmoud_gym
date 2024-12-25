@@ -30,7 +30,7 @@
 
         @if(lang() == 'ar')
 
-  /*.iti--allow-dropdown .iti__flag-container, .iti--separate-dial-code .iti__flag-container {*/
+   /*.iti--allow-dropdown .iti__flag-container, .iti--separate-dial-code .iti__flag-container {*/
         /*          left: 30px !important;*/
         /*      }*/
 
@@ -39,6 +39,7 @@
             padding-left: 80px !important;
             margin-left: 0;
         }
+
         .iti--separate-dial-code .iti__selected-flag {
             background-color: transparent;
         }
@@ -68,15 +69,14 @@
 @endsection
 @section('content')
 
-
     {!! Form::open(['id'=>'main-form','onsubmit' =>  isset($result) ? 'FormSubmit("'.route('system.user.update',$result->id).'");return false;':'FormSubmit("'.route('system.user.store') .'");return false;','method' => isset($result) ?  'PATCH' : 'POST']) !!}
     <div id="form-alert-message"></div>
     <!--begin::Row-->
     <div class="row gx-10 ">
         <!--begin::Col-->
         <div class="col-lg-6">
-        {{ label( __('Email'),'required') }}
-        <!--begin::Input group-->
+            {{ label( __('Email'),'required') }}
+            <!--begin::Input group-->
             <div class="mb-5">
                 {!! Form::email('email',isset($result->id) ? $result->email:old('email'),['class'=>'form-control form-control-solid']) !!}
                 <div class="invalid-feedback" id="email-form-error"></div>
@@ -88,8 +88,8 @@
 
         <!--begin::Col-->
         <div class="col-lg-6 ">
-        {{ label(__('Name'),'required') }}
-        <!--begin::Input group-->
+            {{ label(__('Name'),'required') }}
+            <!--begin::Input group-->
             <div class="mb-5">
                 {!! Form::text('name',isset($result->id) ? $result->name:old('name'),['class'=>'form-control form-control-solid']) !!}
                 <div class="invalid-feedback" id="name-form-error"></div>
@@ -99,8 +99,8 @@
         </div>
         <!--begin::Col-->
         <div class="col-lg-6 ">
-        {{ label(__('Password'),isset($result) ? '':'required') }}
-        <!--begin::Input group-->
+            {{ label(__('Password'),isset($result) ? '':'required') }}
+            <!--begin::Input group-->
             <div class="mb-5">
                 {!! Form::password('password', ['class' => 'form-control form-control-solid','id'=>'password']) !!}
                 <div class="invalid-feedback" id="password-form-error"></div>
@@ -111,8 +111,8 @@
         <!--end::Col-->
         <!--begin::Col-->
         <div class="col-lg-6">
-        {{ label( __('Confirm Password'),isset($result) ? '':'required') }}
-        <!--begin::Input group-->
+            {{ label( __('Confirm Password'),isset($result) ? '':'required') }}
+            <!--begin::Input group-->
             <div class="mb-5">
                 {!! Form::password('password_confirmation', ['class' => 'form-control form-control-solid','id'=>'password_confirmation']) !!}
                 <div class="invalid-feedback" id="password_confirmation-form-error"></div>
@@ -133,8 +133,8 @@
         <!--begin::Col-->
         <!--begin::Col-->
         <div class="col-lg-6">
-        {{ label( __('Permission Group'),'required') }}
-        <!--begin::Input group-->
+            {{ label( __('Permission Group'),'required') }}
+            <!--begin::Input group-->
             <div class="mb-5">
                 {!! Form::select('permission_group_id',[__('Select Permission Group')]+$PermissionGroup,isset($result->id) ? $result->permission_group_id:old('user_group_id'),['class'=>'form-select  form-select-solid','id'=>'user_group_id',' data-placeholder'=>__('Select an option')]) !!}
                 <div class="invalid-feedback" id="permission_group_id-form-error"></div>
@@ -173,11 +173,8 @@
     <button type="submit" class="btn btn-primary submit">
         <span class="indicator-label">{{ isset($result->id)? __('Update') :  __('Create')}}</span>
         <span class="indicator-progress">{{__('Please wait')}}...
-						<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
     </button>
-
-
-
 
     {!! Form::close() !!}
 
@@ -187,8 +184,7 @@
     <script type="text/javascript">
         function check_telephone() {
             var phone = $("#telephone").val();
-            var country_codes = ['973', '965', '968', '966', '971'];
-            console.log(country_codes)
+            var country_codes = ['973', '965', '968', '966', '971', '+20'];
             console.log(phone.substring(0, 3))
 
             if (phone != '') {
@@ -210,7 +206,7 @@
         }
 
         $("#telephone").intlTelInput({
-            onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om'],
+            onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om', 'eg'],
             initialCountry: '{{$code}}',
             separateDialCode: true,
             formatOnDisplay: false,
@@ -219,7 +215,6 @@
         $("#telephone").on("countrychange", function () {
 
             var country_code = $("#telephone").intlTelInput("getSelectedCountryData").dialCode;
-            console.log(country_code)
             $("input[name='telephone_code']").val(country_code);
         });
 
