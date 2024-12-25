@@ -54,7 +54,7 @@ class AuthSessionService extends BaseService
         return Datatables::eloquent($query)
             ->addColumn('id', '{{$id}}')
             ->addColumn('user_id', function ($data) {
-                return datatable_links('system.user.show', route('system.user.show', $data->user_id), $data->user->name);
+                return datatable_links('system.user.show', route('system.user.show', $data->user_id), $data->user?->name);
             })
             ->addColumn('ip', '{{$ip}}')
             ->addColumn('created_at', function ($data) {
@@ -87,9 +87,7 @@ class AuthSessionService extends BaseService
      */
     public function findById($id)
     {
-
         $result =  $this->auth_session_repository->find($id);
-
 
         $agent = new Agent();
         $agent->setUserAgent($result->user_agent);
@@ -98,8 +96,6 @@ class AuthSessionService extends BaseService
         $location = @json_decode(file_get_contents('http://ip-api.com/json/'.$result->ip));
         if($location->status!='fail')
             $result->location = $location;
-
-
 
 
         $htmlData  = view( 'system.auth-session.show', compact('result'))->render();

@@ -594,3 +594,15 @@ function rate_values()
 {
     return [1 => __('1'), 2 => __('2'), 3 => __('3'), 4 => __('4'), 5 => __('5')];
 }
+
+function event_enum($key = null, $withLang = false)
+{
+    if ($withLang) {
+        return EventEnum::values_lang();
+    }
+    if (!empty($key))
+        return EventEnum::values()[$key];
+
+    return EventEnum::values();
+}
+

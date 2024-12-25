@@ -9,7 +9,6 @@
     $menu['Users'] = [
         'permission' => ['system.user.index','system.user.show','system.user.create','system.user.edit',
             'system.permission-group.index','system.permission-group.edit','system.permission-group.create',
-            'system.departments.index','system.departments.edit','system.departments.create',
         ],
         'icon' => '<i class="fa fa-users"></i>',
         'text' => __('Users'),
@@ -21,9 +20,7 @@
                 'icon' => '<i class="fa fa-eye"></i>',
             ],
             [
-                'permission' => ['system.permission-group.index','system.permission-group.edit',
-                                    'system.permission-group.create',
-                ],
+                'permission' => ['system.permission-group.index','system.permission-group.edit','system.permission-group.create',],
                 'url' => route('system.permission-group.index'),
                 'text' => __('Permission Group'),
                 'icon' => '<i class="fa fa-lock"></i>',
@@ -36,7 +33,7 @@
         'permission' => ['system.slider.index','system.slider.create','system.slider.edit',
                         'system.choose-item.index','system.choose-item.create','system.choose-item.edit',
                         'system.testimonial.index','system.testimonial.create','system.testimonial.edit',
-                        'system.blog.index','system.blog.create','system.blog.edit'],
+                        'system.message.index'],
         'icon' => '<i class="fa-solid fa-house"></i>',
         'text' => __('Home'),
         'sub' => [
