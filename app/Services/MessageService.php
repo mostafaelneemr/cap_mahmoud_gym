@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Enums\ReadMessageEnum;
 use App\Repositories\Message\MessageRepository;
 use Illuminate\Support\Facades\DB;
 use Datatables;
@@ -50,6 +51,10 @@ class MessageService extends BaseService
             ->addColumn('name', '{{$name}}')
             ->addColumn('email', '{{$email}}')
             ->addColumn('message', '{{$message}}')
+            ->addColumn('is_read', function($data) {
+                $this->actionButtons(datatable_read_button_message('system.read.message','system.read.message','',ReadMessageEnum::yes->value,$data->id));
+                return $this->actionButtonsRender();
+            })
             ->escapeColumns([])
             ->make(true);
     }

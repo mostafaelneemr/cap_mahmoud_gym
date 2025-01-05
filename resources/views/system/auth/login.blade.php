@@ -5,7 +5,7 @@
 <!--begin::Head-->
 <head><base href="../../../">
     <meta charset="utf-8" />
-    <title>Metronic | Login Page 3</title>
+    <title>Mahmoud Shaltout | Login</title>
     <meta name="description" content="Login page example" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
@@ -44,8 +44,8 @@
                 <!--end: Aside header-->
                 <!--begin: Aside content-->
                 <div class="flex-column-fluid d-flex flex-column justify-content-center">
-                    <h3 class="font-size-h1 mb-5 text-white">Welcome to Metronic!</h3>
-                    <p class="font-weight-lighter text-white opacity-80">The ultimate Bootstrap, Angular 8, React &amp; VueJS admin theme framework for next generation web apps.</p>
+                    <h3 class="font-size-h1 mb-5 text-white">Welcome to Dashboard!</h3>
+                    <p class="font-weight-lighter text-white opacity-80">"Mahmoud Shaltout extends his warmest regards and welcomes you with great honor."</p>
                 </div>
                 <!--end: Aside content-->
 

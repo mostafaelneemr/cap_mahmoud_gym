@@ -42,6 +42,7 @@ Route::resource('/choose-item', 'ChooseItemController', ['as' => 'system']); //
 Route::resource('/testimonial', 'TestimonialController', ['as' => 'system']); //
 Route::resource('/blog', 'BlogController', ['as' => 'system']); //
 Route::resource('/message', 'MessageController', ['as' => 'system']); //
+Route::post('/message/{id}', 'MessageController@readMessage')->name('system.message.read'); //
 
 Route::get('/setting', 'SettingController@index')->name('system.setting.index'); //
 Route::patch('/setting', 'SettingController@update')->name('system.setting.update'); //

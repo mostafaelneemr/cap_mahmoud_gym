@@ -606,3 +606,9 @@ function event_enum($key = null, $withLang = false)
     return EventEnum::values();
 }
 
+function datatable_read_button_message($link, $route, $icon = 'fa-check', $status = 'approve', $rowId = null)
+{
+    $btnClass = $icon == 'fa-check' ? 'btn-success' : 'btn-danger';
+//    if (userCan($route))
+        return view('system.partials.buttons.datatable_read_button_message', compact('link', 'route', 'icon', 'status', 'rowId', 'btnClass'));
+}

@@ -25,4 +25,9 @@ class MessageController extends SystemController
         return $this->view('message.index', $this->messageService->loadViewData());
     }
 
+    public function readMessage(Request $request)
+    {
+        
+    }
+
 }

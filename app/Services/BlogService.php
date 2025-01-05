@@ -31,17 +31,15 @@ class BlogService extends BaseService
             __('title'),
             __('name'),
             __('status'),
-            __('User'),
             __('Action'),
         ]);
 
         $this->jsColumns([
-            'id' => 'blog.id',
-            'thumb' => 'blog.thumb',
-            'title' => 'blog.title',
-            'name' => 'blog.name',
-            'status' => 'blog.status',
-            'author_id' => 'blog.author_id',
+            'id' => 'post.id',
+            'thumb' => 'post.thumb',
+            'title' => 'post.title',
+            'name' => 'post.name',
+            'status' => 'post.status',
             'action' => '',
         ]);
 
@@ -70,9 +68,9 @@ class BlogService extends BaseService
 
     public function create(): array
     {
-        $this->pageTitle('Create Testimonial');
+        $this->pageTitle('Create Blog');
         $this->breadcrumb('Home');
-        $this->breadcrumb('Testimonials', 'system.testimonial.index');
+        $this->breadcrumb('Blogs', 'system.blog.index');
         $this->otherData([
             'languages' => $this->languageRepository->getWhere(['status' => StatusEnum::Enable->value]),
         ]);
@@ -114,11 +112,11 @@ class BlogService extends BaseService
 
     public function edit($id): array
     {
-        $this->pageTitle('Update Testimonial');
-        $this->breadcrumb('Testimonials', 'system.testimonial.index');
+        $this->pageTitle('Update Blog');
+        $this->breadcrumb('Blogs', 'system.blog.index');
 
         $this->otherData([
-                'testimonial' => $this->blogRepository->find($id),
+                'result' => $this->blogRepository->find($id),
                 'languages' => $this->languageRepository->getWhere(['status' => StatusEnum::Enable->value])
             ]);
         return $this->retunData;
@@ -127,7 +125,6 @@ class BlogService extends BaseService
     public function update($id,$request)
     {
         try {
-//            dd($id);
 
             DB::beginTransaction();
             $testimonial = $this->blogRepository->find($id);

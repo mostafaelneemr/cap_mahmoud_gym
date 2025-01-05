@@ -153,8 +153,8 @@ class UserService extends BaseService
         $this->breadcrumb('User', 'system.user.index');
         $this->otherData([
             'PermissionGroup' => (new PermissionGroupService($this->permission_group_repository))->permissionArray(),
-            'telephone_code' => '966',
-            'code' => 'sa'
+            'telephone_code' => '+20',
+            'code' => 'eg'
         ]);
         return $this->retunData;
     }
@@ -171,7 +171,7 @@ class UserService extends BaseService
         $this->otherData([
             'PermissionGroup' => (new PermissionGroupService($this->permission_group_repository))->permissionArray(),
             'telephone' => strlen($user->mobile) < 12 ? $user->mobile : substr($user->mobile, 3),
-            'telephone_code' => strlen($user->mobile) < 12 ? '966' : substr($user->mobile, 0, 3),
+            'telephone_code' => strlen($user->mobile) < 12 ? '+20' : substr($user->mobile, 0, 3),
             'code' => $this->getCode($user->mobile)
 
         ]);

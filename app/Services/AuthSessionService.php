@@ -50,7 +50,6 @@ class AuthSessionService extends BaseService
     {
         $query = $this->auth_session_repository->getDataTableQuery($user_id);
 
-
         return Datatables::eloquent($query)
             ->addColumn('id', '{{$id}}')
             ->addColumn('user_id', function ($data) {

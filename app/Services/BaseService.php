@@ -349,8 +349,11 @@ abstract class BaseService extends Service
             case "974":
                 return "qa";
                 break;
+            case "+20":
+                return "eg";
+                break;
             default:
-                return "sa";
+                return "eg";
         }
     }
 

@@ -2,12 +2,13 @@
 
 namespace App\Repositories\Blog;
 
-use App\Models\Blog;
+
+use App\Models\Post;
 use App\Repositories\BaseRepository;
 
 class BlogRepository extends BaseRepository
 {
-    protected $modeler = Blog::class;
+    protected $modeler = Post::class;
 
     public function getDataTableQuery()
     {
