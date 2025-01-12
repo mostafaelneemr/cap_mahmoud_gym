@@ -1,5 +1,9 @@
 @extends('web.index')
 
+@section('header')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+@endsection
+
 @section('content')
 
     <section class="breadcrumb-section set-bg spad" data-setbg="{{asset('assets/web/img/about-bread.jpg')}}">
@@ -44,6 +48,11 @@
                     <div class="contact-form">
                         <h4>Get in touch</h4>
                         <div id="form-alert-message"></div>
+                        @if(session()->has('notify'))
+                            <div class="alert alert-{{ session('notify')['type'] }}" >
+                                {{ session('notify')['message'] }}
+                            </div>
+                        @endif
                         <form name="contact-form" action="{{route('sendmail')}}" method="POST">
                             @csrf
                             <div class="row">
@@ -68,4 +77,41 @@
         </div>
     </section>
 
+@endsection
+
+@section('footer')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+    </script>
+
+    <script>
+        @if(session()->has('notify'))
+        let type = "{{ session('notify')['type'] }}";
+        let message = "{{ session('notify')['message'] }}";
+
+        if (type === 'success') {
+            toastr.success(message);
+        } else if (type === 'error') {
+            toastr.error(message);
+        }
+        @endif
+    </script>
 @endsection

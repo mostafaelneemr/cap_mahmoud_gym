@@ -93,7 +93,7 @@ class TestimonialService extends BaseService
     {
         try {
             DB::beginTransaction();
-
+            $save_image = null;
             if ($request->has('image')) {
                 $image = $request->file('image');
                 $name_gen = hexdec(uniqid()). '.' .$image->getClientOriginalExtension();

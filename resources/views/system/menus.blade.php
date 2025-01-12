@@ -40,7 +40,7 @@
             [
                 'permission' => ['system.slider.index','system.slider.create','system.slider.edit'],
                 'url' => route('system.slider.index'),
-                'text' => __('Slider'),
+                'text' => __('Sliders'),
                 'icon' => ' <i class="fa-solid fa-sliders"></i>',
             ],
 
@@ -62,7 +62,7 @@
                 'permission'=> ['system.message.index'],
                 'url'=> route('system.message.index'),
                 'icon'=>'<i class="fa-solid fa-envelope"></i>',
-                'text'=> __('Message'),
+                'text'=> __('Messages'),
             ],
         ],
     ];

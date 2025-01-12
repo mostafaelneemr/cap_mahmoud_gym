@@ -135,8 +135,9 @@ function FormSubmit($url, $form_id = 'main-form', $success = null, $error = null
 
                 }
                 if ($response.data && Object.size($response.data)) {
-
+                    console.log($response);
                     if ($response.data.url) {
+                        console.log($response.data)
                         window.location = $response.data.url;
                     }
 
@@ -151,12 +152,6 @@ function FormSubmit($url, $form_id = 'main-form', $success = null, $error = null
                         notify($response.message, 'success');
                         $('#'+$form_id)[0].reset();
                     }
-                    if ($response.data.send_message) {
-                        remove_loading($form_id)
-                        hideModal();
-                        notify($response.message, 'success');
-                        $('#'+$form_id)[0].reset();
-                    }
                     if ($response.data.error) {
                         remove_loading($form_id)
                         $(datatableID).DataTable().ajax.reload();
@@ -164,10 +159,7 @@ function FormSubmit($url, $form_id = 'main-form', $success = null, $error = null
                         notify($response.message, 'error');
                         $('#'+$form_id)[0].reset();
                     }
-                    if($response.data.shipping_label_link){
-                        window.open($response.data.shipping_label_link, '_blank');
-                        window.location = $response.data.reditect_url;
-                    }
+
                     if($response.data.redirect_url){
                         window.location = $response.data.redirect_url;
                         notify($response.message, 'success');

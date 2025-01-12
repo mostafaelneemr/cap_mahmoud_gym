@@ -25,9 +25,15 @@ class MessageController extends SystemController
         return $this->view('message.index', $this->messageService->loadViewData());
     }
 
-    public function readMessage(Request $request)
+    public function updateStatus(Request $request)
     {
-        
+        $read = $this->messageService->updateStatus($request);
+        if ($read) {
+            flash_msg('success',__( 'Data Updated successfully' ));
+            return $this->success( __( 'Data Updated successfully' ),
+                [  'url' => route( 'system.message.index' )]);
+        }
+        return $this->fail(__( 'Sorry, we could not Update the data' ) );
     }
 
 }

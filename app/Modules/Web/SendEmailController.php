@@ -32,11 +32,11 @@ class SendEmailController extends SystemController
     {
         $store = $this->messageService->store($request);
         if ($store) {
-            flash_msg('success',__('Data Added successfully'));
-            return $this->success( __( 'Data added successfully' ),
-                [ 'url' => route( 'contact' )] );
+            notify('success', 'Your message has been sent successfully!');
+            return redirect()->back();
         } else {
-            return $this->fail(__( 'Sorry, we could not add the data' ) );
+            notify('error', 'An error occurred while sending your message.');
+            return redirect()->back();
         }
     }
 

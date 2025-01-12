@@ -8,8 +8,7 @@
     <title>{{(isset($pageTitle))?$pageTitle:__(ucfirst(request()->route()->getActionMethod()))}} </title>
 
     <meta name="description" content="">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="ajax-post" content="{{route('system.misc.ajax')}}">
@@ -213,8 +212,11 @@
     <div
         class="alert alert-dismissible bg-light-primary border-3 border-primary d-flex flex-column flex-sm-row p-5 mb-10">
         <!--begin::Icon-->
-        <i class="ki-duotone ki-shield-tick fs-2hx text-success me-4"><span class="path1"></span><span
-                class="path2"></span><span class="path3"></span></i>
+        <i class="ki-duotone ki-shield-tick fs-2hx text-success me-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
         <!--end::Icon-->
         <!--begin::Wrapper-->
         <div class="d-flex flex-column pe-0 pe-sm-10">
@@ -314,7 +316,7 @@
            disableDragAndDrop: true,
            lang: lang, // default: 'en-US'
            height: 300,
-           toolbar: [
+               toolbar: [
                ['style', ['style']],
                ['font', ['bold', 'underline', 'clear']],
                ['color', ['color']],

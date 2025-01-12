@@ -101,6 +101,7 @@ return [
         'name' => __('Message'),
         'permissions' => [
             'view-messages' => ['system.message.index'],
+            'read-messages' => ['system.message.update-status'],
        ]
     ],
 

@@ -1,9 +1,7 @@
 <?php
 
 use App\Models\Setting;
-use App\Enums\{DefaultStatus,
-    EventEnum,
-    SliderTypeEnum};
+use App\Enums\{DefaultStatus, EventEnum, ReadMessageEnum, SliderTypeEnum};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
@@ -276,7 +274,7 @@ function datatable_menu_edit($link, $route)
         return view('system.partials.links.datatable_menu_edit', compact('link','route'));
 }
 
-function datatable_menu_button($link, $route, $icon = 'fa-check', $status = 'approve', $rowId = null)
+function datatable_menu_button($link, $route, $icon = 'fa-check', $status = 'approve', $rowId = null )
 {
     $btnClass = $icon == 'fa-check' ? 'btn-success' : 'btn-danger';
     if (userCan($route))
@@ -611,4 +609,25 @@ function datatable_read_button_message($link, $route, $icon = 'fa-check', $statu
     $btnClass = $icon == 'fa-check' ? 'btn-success' : 'btn-danger';
 //    if (userCan($route))
         return view('system.partials.buttons.datatable_read_button_message', compact('link', 'route', 'icon', 'status', 'rowId', 'btnClass'));
+}
+
+function message_read($key = null, $withLang = false, $replacePendingValue = false)
+{
+    if ($withLang) {
+        return ReadMessageEnum::values_lang($replacePendingValue);
+    }
+    if (!empty($key))
+        return ReadMessageEnum::values()[$key];
+
+    return ReadMessageEnum::values();
+}
+
+if (!function_exists('notify')) {
+    function notify($type, $message)
+    {
+        session()->flash('notify', [
+            'type' => $type,
+            'message' => $message,
+        ]);
+    }
 }
