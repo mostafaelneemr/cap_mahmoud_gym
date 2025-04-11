@@ -41,5 +41,23 @@ Route::post('/message/update-status', 'MessageController@updateStatus')->name('s
 Route::controller('SettingController')->group(function () {
     Route::get('/setting', 'index')->name('system.setting.index'); //
     Route::patch('/setting', 'update')->name('system.setting.update'); //
+    Route::get('/activate-sections', 'getActivateSection')->name('system.activate.index'); //
+    Route::post('/activate-sections/{id}', 'updateActivateSection')->name('system.activate.update'); //
 });
+
+Route::resource('/trainee', 'TraineeController', ['as' => 'system']); //
+
+
+
+
+Route::get('/trainer', 'Dashboard@trainerDashboard')->name('system.dashboard.trainer');
+
+
+
+
+
+
+
+
+
 

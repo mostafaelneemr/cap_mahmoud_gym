@@ -1,9 +1,8 @@
 <?php
 
-use App\Models\Setting;
-use App\Enums\{DefaultStatus, EventEnum, ReadMessageEnum, SliderTypeEnum};
+use App\Models\{Active_section,Setting};
+use App\Enums\{DefaultStatus, EventEnum, ReadMessageEnum, SliderTypeEnum, StatusEnum, TrainingLevelEnum};
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
@@ -445,12 +444,6 @@ function changeDateFormat($date)
     return $date->format('Y-m-d H:i');
 }
 
-function folderName($name,$id){
-    return view('system.partials.links.folder_name', compact('name', 'id'));
-}
-
-
-
 function imageIconLink($path)
 {
     return view('system.partials.links.image_icon_link', compact('path'));
@@ -498,10 +491,6 @@ function break_word($text)
 {
     return view('system.partials.spans.break_word' , compact('text'));
 }
-
-
-
-
 
 function get_types_trans($text)
 {
@@ -631,3 +620,39 @@ if (!function_exists('notify')) {
         ]);
     }
 }
+
+function active_section($name)
+{
+    return Active_section::where('name',$name)->first()->value == DefaultStatus::Active->value;
+}
+
+function training_level($key = null, $withLang = false, $replacePendingValue = false)
+{
+    if ($withLang) {
+        return TrainingLevelEnum::values_lang($replacePendingValue);
+    }
+    if (!empty($key))
+        return TrainingLevelEnum::values()[$key];
+
+    return TrainingLevelEnum::values();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

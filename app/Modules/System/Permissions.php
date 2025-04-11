@@ -60,6 +60,15 @@ return [
     ],
 
     [
+        'name' => __('Trainee'),
+        'permissions' => [
+            'view-all-trainees' => ['system.trainee.index'],
+            'create-trainee' => ['system.trainee.create', 'system.trainee.store'],
+            'show-trainee-dashboard' => ['system.dashboard.trainer'],
+        ]
+    ],
+
+    [
         'group_title' => __('Setting'),
         'name' => __('Activity Log'),
         'permissions' => [
@@ -85,6 +94,13 @@ return [
         'name' => __('Setting'),
         'permissions' => [
             'view-setting'=>['system.setting.index','system.setting.update'],
+        ]
+    ],
+
+    [
+        'name' => __('Activate Sections'),
+        'permissions' => [
+            'view-activate-sections'=>['system.activate.index','system.activate.update'],
         ]
     ],
 

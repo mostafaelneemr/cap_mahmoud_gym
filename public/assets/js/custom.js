@@ -35,7 +35,6 @@ function pageAlert($selector, $type, $title, $message) {
 
         $($selector).html().show();
 
-
     }
 }
 
@@ -960,9 +959,6 @@ function editModal($button_id, $routName, $mainModalId, $recordId, $prev_status,
                 if ($response.data) {
                     if ($response.data.station) {
                         modalId = editStation($response.data.station, $updateUrl,$mainModalId);
-                    }
-                    if ($response.data.operator_assignment) {
-                        modalId = editOperatorAssignment($response.data.operator_assignment, $updateUrl,$mainModalId);
                     }
                 }
                 $(`#${modalId}`).modal("show");

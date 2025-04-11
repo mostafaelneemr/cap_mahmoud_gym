@@ -81,10 +81,25 @@
         ],
     ];
 
+    $menu['Trainee'] = [
+        'permission' => ['system.trainee.index'],
+        'icon' => '<i class="fa-brands fa-blogger-b"></i>',
+        'text' => __('Trainee'),
+        'sub' => [
+            [
+                'permission' => ['system.trainee.index'],
+                'url' => route('system.trainee.index'),
+                'text' => __('Traine'),
+                'icon' => '<i class="fa-brands fa-blogger-b"></i>',
+            ],
+        ],
+    ];
+
+
     $menu['Setting'] = [
 
         'permission' => ['system.activity-log.index','system.activity-log.show','system.auth-sessions.index',
-                        'system.language.index'],
+                        'system.language.index','system.activate.index'],
         'icon' => '<i class="fa fa-cog"></i>',
         'text' => __('Setting'),
         'sub' => [
@@ -94,6 +109,13 @@
                 'url'=> route('system.setting.index'),
                 'icon'=>'<i class="fa-solid fa-screwdriver-wrench"></i>',
                 'text'=> __('setting'),
+            ],
+
+            [
+                'permission'=> ['system.activate.index'],
+                'url'=> route('system.activate.index'),
+                'icon'=>'<i class="fa-solid fa-screwdriver-wrench"></i>',
+                'text'=> __('activate sections'),
             ],
 
             [

@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -30,6 +29,7 @@ class User extends Authenticatable
         'two_fa_secret',
         'department_id',
         'force_reset_password',
+        'user_type' // 1 mean user moderator / 2 mean trainer without permission
     ];
 
     //Log Activity

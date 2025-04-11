@@ -9,9 +9,6 @@ class ChooseItem extends GlobalModel
     public $timestamps = false;
     public $primaryKey = 'id';
 
-    public $fillable = [
-        'id','image','title_en','title_ar',
-        'text_en','text_ar','status'
-    ];
+    public $fillable = ['id','image','title_en','title_ar', 'text_en','text_ar','status'];
 
 }

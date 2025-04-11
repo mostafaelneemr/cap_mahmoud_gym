@@ -35,4 +35,14 @@ class SettingController extends SystemController
 
     }
 
+    public function getActivateSection()
+    {
+        return $this->view('activate-section.index');
+    }
+
+    public function updateActivateSection($id, Request $request)
+    {
+        dd($id,$request);
+    }
+
 }

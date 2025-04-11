@@ -12,14 +12,7 @@ class PermissionGroup extends GlobalModel
      protected $table = 'permission_groups';
      public $timestamps = true;
     protected $dates = ['deleted_at'];
-    protected $fillable = [
-        'name',
-        'is_supervisor',
-        'whitelist_ip',
-        'default_route',
-        'new_admin_default_route',
-        'system'
-    ];
+    protected $fillable = ['name', 'is_supervisor', 'whitelist_ip', 'default_route', 'new_admin_default_route', 'system'];
 
 
     public function permission()
