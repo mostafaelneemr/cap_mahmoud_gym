@@ -37,6 +37,11 @@ class WebController extends Controller{
         return $this->view('home', $this->viewData);
     }
 
+    public function home()
+    {
+        return view('web.home1');
+    }
+
     public function contact()
     {
         return $this->view('contact');

@@ -16,9 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::controller(WebController::class)->group(function () {
-    Route::get('/','index')->name('home');
+//    Route::get('/','index')->name('home');
+    Route::get('/','home')->name('home');
     Route::get('/contact', 'contact')->name('contact');
 });
 
 Route::post('send-email', [SendEmailController::class, 'store'])->name('sendmail');
+
 
