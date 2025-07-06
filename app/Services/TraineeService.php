@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\Trainee\TraineeRepository;
 use App\Repositories\User\UserRepository;
-use App\Filters\{CreatedAtFrom,CreatedAtTo,Email,Id,Name,PermissionGroupId};
 use Datatables;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
