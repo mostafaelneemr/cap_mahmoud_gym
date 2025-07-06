@@ -29,57 +29,57 @@
         ],
     ];
 
-    $menu['Home'] = [
-        'permission' => ['system.slider.index','system.slider.create','system.slider.edit',
-                        'system.choose-item.index','system.choose-item.create','system.choose-item.edit',
-                        'system.testimonial.index','system.testimonial.create','system.testimonial.edit',
-                        'system.message.index'],
-        'icon' => '<i class="fa-solid fa-house"></i>',
-        'text' => __('Home'),
-        'sub' => [
-            [
-                'permission' => ['system.slider.index','system.slider.create','system.slider.edit'],
-                'url' => route('system.slider.index'),
-                'text' => __('Sliders'),
-                'icon' => ' <i class="fa-solid fa-sliders"></i>',
-            ],
+//    $menu['Home'] = [
+//        'permission' => ['system.slider.index','system.slider.create','system.slider.edit',
+//                        'system.choose-item.index','system.choose-item.create','system.choose-item.edit',
+//                        'system.testimonial.index','system.testimonial.create','system.testimonial.edit',
+//                        'system.message.index'],
+//        'icon' => '<i class="fa-solid fa-house"></i>',
+//        'text' => __('Home'),
+//        'sub' => [
+//            [
+//                'permission' => ['system.slider.index','system.slider.create','system.slider.edit'],
+//                'url' => route('system.slider.index'),
+//                'text' => __('Sliders'),
+//                'icon' => ' <i class="fa-solid fa-sliders"></i>',
+//            ],
 
-            [
-                'permission' => ['system.choose-item.index','system.choose-item.create','system.choose-item.edit'],
-                'url' => route('system.choose-item.index'),
-                'text' => __('Items'),
-                'icon' => '<i class="fa-solid fa-sitemap"></i>',
-            ],
+//            [
+//                'permission' => ['system.choose-item.index','system.choose-item.create','system.choose-item.edit'],
+//                'url' => route('system.choose-item.index'),
+//                'text' => __('Items'),
+//                'icon' => '<i class="fa-solid fa-sitemap"></i>',
+//            ],
 
-            [
-                'permission' => ['system.testimonial.index','system.testimonial.create','system.testimonial.edit'],
-                'url' => route('system.testimonial.index'),
-                'text' => __('Testimonials'),
-                'icon' => '<i class="fa-solid fa-comment"></i>',
-            ],
+//            [
+//                'permission' => ['system.testimonial.index','system.testimonial.create','system.testimonial.edit'],
+//                'url' => route('system.testimonial.index'),
+//                'text' => __('Testimonials'),
+//                'icon' => '<i class="fa-solid fa-comment"></i>',
+//            ],
 
-            [
-                'permission'=> ['system.message.index'],
-                'url'=> route('system.message.index'),
-                'icon'=>'<i class="fa-solid fa-envelope"></i>',
-                'text'=> __('Messages'),
-            ],
-        ],
-    ];
+//            [
+//                'permission'=> ['system.message.index'],
+//                'url'=> route('system.message.index'),
+//                'icon'=>'<i class="fa-solid fa-envelope"></i>',
+//                'text'=> __('Messages'),
+//            ],
+//        ],
+//    ];
 
-    $menu['Blog'] = [
-        'permission' => ['system.blog.index','system.blog.create','system.blog.edit'],
-        'icon' => '<i class="fa-brands fa-blogger-b"></i>',
-        'text' => __('Blogs'),
-        'sub' => [
-            [
-                'permission' => ['system.blog.index','system.blog.create','system.blog.edit'],
-                'url' => route('system.blog.index'),
-                'text' => __('Blogs'),
-                'icon' => '<i class="fa-brands fa-blogger-b"></i>',
-            ],
-        ],
-    ];
+//    $menu['Blog'] = [
+//        'permission' => ['system.blog.index','system.blog.create','system.blog.edit'],
+//        'icon' => '<i class="fa-brands fa-blogger-b"></i>',
+//        'text' => __('Blogs'),
+//        'sub' => [
+//            [
+//                'permission' => ['system.blog.index','system.blog.create','system.blog.edit'],
+//                'url' => route('system.blog.index'),
+//                'text' => __('Blogs'),
+//                'icon' => '<i class="fa-brands fa-blogger-b"></i>',
+//            ],
+//        ],
+//    ];
 
     $menu['Trainee'] = [
         'permission' => ['system.trainee.index'],
@@ -111,19 +111,19 @@
                 'text'=> __('setting'),
             ],
 
-            [
-                'permission'=> ['system.activate.index'],
-                'url'=> route('system.activate.index'),
-                'icon'=>'<i class="fa-solid fa-screwdriver-wrench"></i>',
-                'text'=> __('activate sections'),
-            ],
+//            [
+//                'permission'=> ['system.activate.index'],
+//                'url'=> route('system.activate.index'),
+//                'icon'=>'<i class="fa-solid fa-screwdriver-wrench"></i>',
+//                'text'=> __('activate sections'),
+//            ],
 
-            [
-                'permission'=> ['system.language.index'],
-                'url'=> route('system.language.index'),
-                'icon'=>'<i class="fa-solid fa-language"></i>',
-                'text'=> __('Languages'),
-            ],
+//            [
+//                'permission'=> ['system.language.index'],
+//                'url'=> route('system.language.index'),
+//                'icon'=>'<i class="fa-solid fa-language"></i>',
+//                'text'=> __('Languages'),
+//            ],
 
             [
                 'permission' => ['system.activity-log.index', 'system.activity-log.show'],

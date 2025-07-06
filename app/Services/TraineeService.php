@@ -107,25 +107,25 @@ class TraineeService extends BaseService
         return $this->retunData;
     }
 
-    public function edit($id): array
-    {
-        $user = $this->user_repository->find($id);
-
-        $this->pageTitle('Update User');
-        $this->breadcrumb('User', 'system.user.index');
-
-        $this->otherData(['result' => $user]);
-
-        $this->otherData([
-            'PermissionGroup' => (new PermissionGroupService($this->permission_group_repository))->permissionArray(),
-            'telephone' => strlen($user->mobile) < 12 ? $user->mobile : substr($user->mobile, 3),
-            'telephone_code' => strlen($user->mobile) < 12 ? '+20' : substr($user->mobile, 0, 3),
-            'code' => $this->getCode($user->mobile)
-
-        ]);
-
-        return $this->retunData;
-    }
+//    public function edit($id): array
+//    {
+//        $user = $this->user_repository->find($id);
+//
+//        $this->pageTitle('Update User');
+//        $this->breadcrumb('User', 'system.user.index');
+//
+//        $this->otherData(['result' => $user]);
+//
+//        $this->otherData([
+//            'PermissionGroup' => (new PermissionGroupService($this->permission_group_repository))->permissionArray(),
+//            'telephone' => strlen($user->mobile) < 12 ? $user->mobile : substr($user->mobile, 3),
+//            'telephone_code' => strlen($user->mobile) < 12 ? '+20' : substr($user->mobile, 0, 3),
+//            'code' => $this->getCode($user->mobile)
+//
+//        ]);
+//
+//        return $this->retunData;
+//    }
 
     public function store($request)
     {
@@ -167,35 +167,35 @@ class TraineeService extends BaseService
     }
 
 
-    public function update($request, $id)
-    {
-        DB::beginTransaction();
-
-        try {
-            $theRequest = $request->all();
-            if ($request->file('image')) {
-                $theRequest['image'] = $this->uploadFileS3($request->image, 'image/user');
-            } else {
-                unset($theRequest['image']);
-            }
-
-            if ($request->password) {
-                $theRequest['password'] = $this->userPassword($theRequest['password']);
-            } else {
-                unset($theRequest['password']);
-            }
-            if ($request->telephone)
-                $theRequest['mobile'] = fixMobileNumber($request->telephone);
-            $update = $this->user_repository->update($theRequest, $id);
-            DB::commit();
-            return $update;
-        } catch (\Exception $e) {
-            DB::rollback();
-            errorLog($e->getMessage());
-            return false;
-        }
-
-    }
+//    public function update($request, $id)
+//    {
+//        DB::beginTransaction();
+//
+//        try {
+//            $theRequest = $request->all();
+//            if ($request->file('image')) {
+//                $theRequest['image'] = $this->uploadFileS3($request->image, 'image/user');
+//            } else {
+//                unset($theRequest['image']);
+//            }
+//
+//            if ($request->password) {
+//                $theRequest['password'] = $this->userPassword($theRequest['password']);
+//            } else {
+//                unset($theRequest['password']);
+//            }
+//            if ($request->telephone)
+//                $theRequest['mobile'] = fixMobileNumber($request->telephone);
+//            $update = $this->user_repository->update($theRequest, $id);
+//            DB::commit();
+//            return $update;
+//        } catch (\Exception $e) {
+//            DB::rollback();
+//            errorLog($e->getMessage());
+//            return false;
+//        }
+//
+//    }
 
 
     public function userPassword($password): string
@@ -203,15 +203,15 @@ class TraineeService extends BaseService
         return Hash::make($password);
     }
 
-    public function loadActivityLogDetails($id)
-    {
-        return $this->activity_log_service->loadDataTableData($id);
-
-    }
-
-    public function loadAuthSessionDetails($id)
-    {
-        return $this->auth_session_service->loadDataTableData($id);
-
-    }
+//    public function loadActivityLogDetails($id)
+//    {
+//        return $this->activity_log_service->loadDataTableData($id);
+//
+//    }
+//
+//    public function loadAuthSessionDetails($id)
+//    {
+//        return $this->auth_session_service->loadDataTableData($id);
+//
+//    }
 }
