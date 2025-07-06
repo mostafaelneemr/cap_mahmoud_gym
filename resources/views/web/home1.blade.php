@@ -96,6 +96,13 @@
 <div class="links">
     <!-- WhatsApp -->
     <div class="link-item">
+        <img src="https://cdn-icons-png.flaticon.com/512/60/60510.png" class="link-icon" alt="Online Training">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOOC_07Y6hEsPjDdxoFFuFJKSvtdqv_nLcoQyog9irVIimsQ/viewform?usp=header" class="link-title" target="_blank">Online Training</a>
+        <button class="share-button" onclick="shareLink('https://docs.google.com/forms/d/e/1FAIpQLSdOOC_07Y6hEsPjDdxoFFuFJKSvtdqv_nLcoQyog9irVIimsQ/viewform?usp=header')">🔗</button>
+    </div>
+
+    
+    <div class="link-item">
         <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" class="link-icon" alt="WhatsApp">
         <a href="https://wa.me/+201144470845" class="link-title" target="_blank">WhatsApp</a>
         <button class="share-button" onclick="shareLink('https://wa.me/966XXXXXXXXX')">🔗</button>
