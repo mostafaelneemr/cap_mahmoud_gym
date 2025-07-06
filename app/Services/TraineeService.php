@@ -60,17 +60,17 @@ class TraineeService extends BaseService
     {
         $query = $this->traineeRepository->getDataTableQuery();
 
-        $eloquentData = app(Pipeline::class)
-            ->send($query)
-            ->through([
+//        $eloquentData = app(Pipeline::class)
+//            ->send($query)
+//            ->through([
 //                Id::class,
 //                PermissionGroupId::class,
 //                Name::class,
 //                Email::class,
 //                CreatedAtFrom::class,
 //                CreatedAtTo::class
-            ])->thenReturn();
-        return Datatables::eloquent($eloquentData)
+//            ])->thenReturn();
+        return Datatables::eloquent($query)
             ->addColumn('id', '{{$id}}')
             ->addColumn('user_id', function ($data) {
                 if ($data->user_id)
