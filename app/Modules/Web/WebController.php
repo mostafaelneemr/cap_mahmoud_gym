@@ -6,6 +6,7 @@ use App\Enums\DefaultStatus;
 use App\Enums\SliderTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\ChooseItem;
+use App\Models\Site;
 use App\Models\Slider;
 use App\Models\Testimonial;
 
@@ -39,7 +40,8 @@ class WebController extends Controller{
 
     public function home()
     {
-        return view('web.home1');
+        $this->viewData['links'] = Site::where('status',DefaultStatus::Active->value)->get();
+        return view('web.home1',$this->viewData);
     }
 
     public function contact()

@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::controller(WebController::class)->group(function () {
-//    Route::get('/','index')->name('home');
     Route::get('/','home')->name('home');
     Route::get('/contact', 'contact')->name('contact');
 });

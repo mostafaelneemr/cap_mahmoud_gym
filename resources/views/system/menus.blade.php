@@ -103,6 +103,13 @@
         'icon' => '<i class="fa fa-cog"></i>',
         'text' => __('Setting'),
         'sub' => [
+            [
+                'permission'=> ['system.site.index'],
+                'url'=> route('system.site.index'),
+                'icon'=>'<i class="fa-solid fa-screwdriver-wrench"></i>',
+                'text'=> __('Links'),
+            ],
+
 
             [
                 'permission'=> ['system.setting.index'],

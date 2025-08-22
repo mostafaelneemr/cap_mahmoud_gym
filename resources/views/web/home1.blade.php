@@ -95,38 +95,42 @@
 
 <div class="links">
     <!-- WhatsApp -->
-    <div class="link-item">
-        <img src="https://cdn-icons-png.flaticon.com/512/60/60510.png" class="link-icon" alt="Online Training">
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOOC_07Y6hEsPjDdxoFFuFJKSvtdqv_nLcoQyog9irVIimsQ/viewform?usp=header" class="link-title" target="_blank">Online Training</a>
-        <button class="share-button" onclick="shareLink('https://docs.google.com/forms/d/e/1FAIpQLSdOOC_07Y6hEsPjDdxoFFuFJKSvtdqv_nLcoQyog9irVIimsQ/viewform?usp=header')">🔗</button>
-    </div>
+    @forelse($links as $link)
+        <div class="link-item">
+            <img src="{!!  $link->icon !!}" class="link-icon" alt="Online Training">
+            <a href="{!! $link->link_url !!}" class="link-title" target="_blank">{!! $link->title !!}</a>
+            <button class="share-button" onclick="shareLink('{!!  $link->link_url !!}')">🔗</button>
+        </div>
+    @empty
 
-    
-    <div class="link-item">
-        <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" class="link-icon" alt="WhatsApp">
-        <a href="https://wa.me/+201144470845" class="link-title" target="_blank">WhatsApp</a>
-        <button class="share-button" onclick="shareLink('https://wa.me/966XXXXXXXXX')">🔗</button>
-    </div>
+        ok
+    @endforelse
 
-    <!-- Instagram -->
-    <div class="link-item">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="link-icon" alt="Instagram">
-        <a href="https://www.instagram.com/mahmouedmohamed785?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="link-title" target="_blank">Instagram</a>
-        <button class="share-button" onclick="shareLink('https://instagram.com/your_username')">🔗</button>
-    </div>
+{{--    <div class="link-item">--}}
+{{--        <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" class="link-icon" alt="WhatsApp">--}}
+{{--        <a href="https://wa.me/+201144470845" class="link-title" target="_blank">WhatsApp</a>--}}
+{{--        <button class="share-button" onclick="shareLink('https://wa.me/966XXXXXXXXX')">🔗</button>--}}
+{{--    </div>--}}
 
-    <!-- Facebook -->
-    <div class="link-item">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="link-icon" alt="Facebook">
-        <a href="https://www.facebook.com/mahmoud.shaltout.590671" class="link-title" target="_blank">Facebook</a>
-        <button class="share-button" onclick="shareLink('https://facebook.com/your_username')">🔗</button>
-    </div>
+{{--    <!-- Instagram -->--}}
+{{--    <div class="link-item">--}}
+{{--        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="link-icon" alt="Instagram">--}}
+{{--        <a href="https://www.instagram.com/mahmouedmohamed785?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="link-title" target="_blank">Instagram</a>--}}
+{{--        <button class="share-button" onclick="shareLink('https://instagram.com/your_username')">🔗</button>--}}
+{{--    </div>--}}
 
-    <div class="link-item">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733590.png" class="link-icon" alt="Tiktok">
-        <a href="https://www.tiktok.com/@mahmoud.mohamed303?is_from_webapp=1&sender_device=pc" class="link-title" target="_blank">TikTok</a>
-        <button class="share-button" onclick="shareLink('https://facebook.com/your_username')">🔗</button>
-    </div>
+{{--    <!-- Facebook -->--}}
+{{--    <div class="link-item">--}}
+{{--        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="link-icon" alt="Facebook">--}}
+{{--        <a href="https://www.facebook.com/mahmoud.shaltout.590671" class="link-title" target="_blank">Facebook</a>--}}
+{{--        <button class="share-button" onclick="shareLink('https://facebook.com/your_username')">🔗</button>--}}
+{{--    </div>--}}
+
+{{--    <div class="link-item">--}}
+{{--        <img src="https://cdn-icons-png.flaticon.com/512/733/733590.png" class="link-icon" alt="Tiktok">--}}
+{{--        <a href="https://www.tiktok.com/@mahmoud.mohamed303?is_from_webapp=1&sender_device=pc" class="link-title" target="_blank">TikTok</a>--}}
+{{--        <button class="share-button" onclick="shareLink('https://facebook.com/your_username')">🔗</button>--}}
+{{--    </div>--}}
 </div>
 
 <footer>

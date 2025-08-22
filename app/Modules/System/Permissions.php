@@ -32,32 +32,32 @@ return [
         ]
     ],
 
-    [
-        'name' => __('Choose Item'),
-        'permissions' => [
-            'view-all-items' => ['system.choose-item.index'],
-            'create-item' => ['system.choose-item.create', 'system.choose-item.store'],
-            'update-item' => ['system.choose-item.edit', 'system.choose-item.update']
-        ]
-    ],
+//    [
+//        'name' => __('Choose Item'),
+//        'permissions' => [
+//            'view-all-items' => ['system.choose-item.index'],
+//            'create-item' => ['system.choose-item.create', 'system.choose-item.store'],
+//            'update-item' => ['system.choose-item.edit', 'system.choose-item.update']
+//        ]
+//    ],
 
-    [
-        'name' => __('Testimonials'),
-        'permissions' => [
-            'view-all-testimonials' => ['system.testimonial.index'],
-            'create-testimonial' => ['system.testimonial.create', 'system.testimonial.store'],
-            'update-testimonial' => ['system.testimonial.edit', 'system.testimonial.update']
-        ]
-    ],
+//    [
+//        'name' => __('Testimonials'),
+//        'permissions' => [
+//            'view-all-testimonials' => ['system.testimonial.index'],
+//            'create-testimonial' => ['system.testimonial.create', 'system.testimonial.store'],
+//            'update-testimonial' => ['system.testimonial.edit', 'system.testimonial.update']
+//        ]
+//    ],
 
-    [
-        'name' => __('Blogs'),
-        'permissions' => [
-            'view-all-blogs' => ['system.blog.index'],
-            'create-blogs' => ['system.blog.create', 'system.blog.store'],
-            'update-blogs' => ['system.blog.edit', 'system.blog.update']
-        ]
-    ],
+//    [
+//        'name' => __('Blogs'),
+//        'permissions' => [
+//            'view-all-blogs' => ['system.blog.index'],
+//            'create-blogs' => ['system.blog.create', 'system.blog.store'],
+//            'update-blogs' => ['system.blog.edit', 'system.blog.update']
+//        ]
+//    ],
 
     [
         'name' => __('Trainee'),
@@ -74,21 +74,30 @@ return [
         'permissions' => [
             'view-activity-log'=>['system.activity-log.index','system.activity-log.show'],
             'view-log-viewer'=>[ 'log-viewer.index'],
-            'git-version-control'=>[ 'system.git-version-control'],
-            'view-shipping-log'=>['system.shipping-log.index','system.shipping-log.show'],
 
         ]
     ],
+
+//    [
+//        'name' => __('Language'),
+//        'permissions' => [
+//            'view-language' => ['system.language.index'],
+//            'create-language' => ['system.language.create','system.language.store'],
+//            'update-language' => ['system.language.edit','system.language.update'],
+//
+//        ]
+//    ],
+
 
     [
-        'name' => __('Language'),
+        'name' => __('Links'),
         'permissions' => [
-            'view-language' => ['system.language.index'],
-            'create-language' => ['system.language.create','system.language.store'],
-            'update-language' => ['system.language.edit','system.language.update'],
-
+            'view-links'=>['system.site.index'],
+            'add-links'=>['system.site.create','system.site.store'],
+            'update-links'=>['system.site.edit','system.site.update'],
         ]
     ],
+
 
     [
         'name' => __('Setting'),
@@ -109,17 +118,16 @@ return [
         'permissions' => [
             'view-auth-session' => ['system.auth-sessions.index', 'system.get-auth-session', 'system.auth-sessions.show'],
             'delete-auth-session' => ['system.auth-sessions.destroy'],
-            'view-log-viewer'=>[ 'log-viewer.index'],
         ]
     ],
 
-    [
-        'name' => __('Message'),
-        'permissions' => [
-            'view-messages' => ['system.message.index'],
-            'read-messages' => ['system.message.update-status'],
-       ]
-    ],
+//    [
+//        'name' => __('Message'),
+//        'permissions' => [
+//            'view-messages' => ['system.message.index'],
+//            'read-messages' => ['system.message.update-status'],
+//       ]
+//    ],
 
 
 ];
