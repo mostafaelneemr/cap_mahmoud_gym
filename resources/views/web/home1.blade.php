@@ -106,31 +106,7 @@
         ok
     @endforelse
 
-{{--    <div class="link-item">--}}
-{{--        <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" class="link-icon" alt="WhatsApp">--}}
-{{--        <a href="https://wa.me/+201144470845" class="link-title" target="_blank">WhatsApp</a>--}}
-{{--        <button class="share-button" onclick="shareLink('https://wa.me/966XXXXXXXXX')">🔗</button>--}}
-{{--    </div>--}}
 
-{{--    <!-- Instagram -->--}}
-{{--    <div class="link-item">--}}
-{{--        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="link-icon" alt="Instagram">--}}
-{{--        <a href="https://www.instagram.com/mahmouedmohamed785?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="link-title" target="_blank">Instagram</a>--}}
-{{--        <button class="share-button" onclick="shareLink('https://instagram.com/your_username')">🔗</button>--}}
-{{--    </div>--}}
-
-{{--    <!-- Facebook -->--}}
-{{--    <div class="link-item">--}}
-{{--        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="link-icon" alt="Facebook">--}}
-{{--        <a href="https://www.facebook.com/mahmoud.shaltout.590671" class="link-title" target="_blank">Facebook</a>--}}
-{{--        <button class="share-button" onclick="shareLink('https://facebook.com/your_username')">🔗</button>--}}
-{{--    </div>--}}
-
-{{--    <div class="link-item">--}}
-{{--        <img src="https://cdn-icons-png.flaticon.com/512/733/733590.png" class="link-icon" alt="Tiktok">--}}
-{{--        <a href="https://www.tiktok.com/@mahmoud.mohamed303?is_from_webapp=1&sender_device=pc" class="link-title" target="_blank">TikTok</a>--}}
-{{--        <button class="share-button" onclick="shareLink('https://facebook.com/your_username')">🔗</button>--}}
-{{--    </div>--}}
 </div>
 
 <footer>

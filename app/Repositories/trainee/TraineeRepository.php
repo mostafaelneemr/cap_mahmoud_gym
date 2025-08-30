@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\trainee;
+namespace App\Repositories\Trainee;
 
 use App\Models\Trainee;
 use App\Repositories\BaseRepository;

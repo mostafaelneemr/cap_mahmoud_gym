@@ -81,7 +81,7 @@ class Dashboard extends SystemController{
 
     public function trainerDashboard(Request $request)
     {
-        $user = auth()->user();
-        dd($user);
+        $user = auth()->user()->name;
+        echo "hello " . $user;
     }
 }
