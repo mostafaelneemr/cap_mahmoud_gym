@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Coach Mahmoud Shaltout</title>
+    <title>{{setting('profile_title') ?? 'Coach Mahmoud Shaltout'}}</title>
     <style>
         body {
             margin: 0;
@@ -90,8 +90,8 @@
 </head>
 <body>
 
-<img src="{{asset('Capture.PNG')}}" alt="Profile Picture" class="profile-img" />
-<h1>Coach Mahmoud Shaltout</h1>
+<img src="{{asset(setting('profile_image')) ?? asset('upload/blank.png')}}" alt="Profile Picture" class="profile-img"/>
+<h1>{{setting('profile_title') ?? 'Coach Mahmoud Shaltout'}}</h1>
 
 <div class="links">
     <!-- WhatsApp -->

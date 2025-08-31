@@ -55,8 +55,7 @@ class LoginController extends SystemController
             if ($user->user_type == 1 || $user->user_type == null) {
                 $route = auth('user')->user()->permission_group->new_admin_default_route ? route(auth('user')->user()->permission_group->new_admin_default_route) : route('system.dashboard');
             }elseif ($user->user_type == 2) {
-                echo  "hello " . $user->name;
-//                $route = route('system.dashboard.trainer');
+                $route = route('system.dashboard.trainer');
             }
              return $this->success(__('Logged In successfully'), ['url' => $route]);
          } else {

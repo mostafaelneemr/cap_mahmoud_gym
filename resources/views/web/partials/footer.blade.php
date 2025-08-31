@@ -3,17 +3,17 @@
         <div class="col-lg-8">
             <div class="footer-logo-item">
                 <div class="f-logo">
-                    <a href="{{route('home')}}"><img src="{{ setting('logo')->value ?? '' }}" alt=""></a>
+                    <a href="{{route('home')}}"><img src="{{ setting('logo') ?? '' }}" alt=""></a>
                 </div>
                 <p>Despite growth of the Internet over the past seven years, the use of toll-free phone numbers
                     in television advertising continues.</p>
                 <div class="social-links">
                     <h6>Follow us</h6>
-                    <a href="{{ setting('facebook')->value ?? '' }} " target="_blank"><i class="fa fa-facebook"></i></a>
-                    <a href="{{ setting('tiktok')->value ?? '' }} " target="_blank" class="font-weight-bold"><i class="fa-brands fa-tiktok"></i>T</a>
-                    <a href="{{ setting('google')->value ?? '' }} " target="_blank"><i class="fa fa-google"></i></a>
-                    <a href="{{ setting('linkedin')->value ?? '' }} " target="_blank"><i class="fa fa-linkedin"></i></a>
-                    <a href="{{ setting('instagram')->value ?? '' }} " target="_blank"><i class="fa fa-instagram"></i></a>
+                    <a href="{{ setting('facebook') ?? '' }} " target="_blank"><i class="fa fa-facebook"></i></a>
+                    <a href="{{ setting('tiktok') ?? '' }} " target="_blank" class="font-weight-bold"><i class="fa-brands fa-tiktok"></i>T</a>
+                    <a href="{{ setting('google') ?? '' }} " target="_blank"><i class="fa fa-google"></i></a>
+                    <a href="{{ setting('linkedin') ?? '' }} " target="_blank"><i class="fa fa-linkedin"></i></a>
+                    <a href="{{ setting('instagram') ?? '' }} " target="_blank"><i class="fa fa-instagram"></i></a>
                 </div>
             </div>
         </div>
@@ -54,14 +54,14 @@
                 <ul class="footer-info">
                     <li>
                         <i class="fa fa-phone"></i> <span>Phone:</span>
-                        <a style="color: #afb4bf;" href="https://wa.me/{{ setting('mobile')->value ?? '' }}">{{ setting('mobile')->value ?? '' }}</a>
+                        <a style="color: #afb4bf;" href="https://wa.me/{{ setting('mobile') ?? '' }}">{{ setting('mobile') ?? '' }}</a>
                     </li>
                     <li>
                         <i class="fa fa-envelope-o"></i> <span>Email:</span>
-                        <a style="color: #afb4bf;" href="mailto:{{setting('email')->value ?? ''}}">{{ setting('email')->value ?? ''}}</a>
+                        <a style="color: #afb4bf;" href="mailto:{{setting('email') ?? ''}}">{{ setting('email') ?? ''}}</a>
                     </li>
                     <li>
-                        <i class="fa fa-map-marker"></i> <span>Address</span> {{ setting('address')->value ?? '' }}
+                        <i class="fa fa-map-marker"></i> <span>Address</span> {{ setting('address') ?? '' }}
                     </li>
                 </ul>
             </div>

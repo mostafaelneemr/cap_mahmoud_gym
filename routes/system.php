@@ -51,7 +51,7 @@ Route::resource('/trainee', 'TraineeController', ['as' => 'system']); //
 Route::resource('/site', 'SiteController', ['as' => 'system']); //
 
 
-//Route::get('/trainer', 'Dashboard@trainerDashboard')->name('system.dashboard.trainer');
+Route::get('/trainer', 'Dashboard@trainerDashboard')->name('system.dashboard.trainer');
 
 
 

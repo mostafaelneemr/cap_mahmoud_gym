@@ -426,7 +426,7 @@
 
 {{--    @dd(setting('testimonial_image'))--}}
     <!-- Testimonial Section End -->
-    <section class="testimonial-section set-bg spad" data-setbg="{{ setting('testimonial_image')->value }}">
+    <section class="testimonial-section set-bg spad" data-setbg="{{ setting('testimonial_image') }}">
         <div class="container">
             <div class="row">
                 @foreach($testimonials as $testimonial)

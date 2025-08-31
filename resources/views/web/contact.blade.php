@@ -30,17 +30,17 @@
                         <h4>Information</h4>
                         <ul>
                             <li><i class="fa fa-phone"></i>
-                                <a style="color: #afb4bf;" href="https://wa.me/{{setting('mobile')->value ?? ''}}">{{setting('mobile')->value ?? ''}}</a>
+                                <a style="color: #afb4bf;" href="https://wa.me/{{setting('mobile') ?? ''}}">{{setting('mobile') ?? ''}}</a>
                             </li>
                             <li><i class="fa fa-envelope"></i>
-                                <a style="color: #afb4bf;" href="mailto:{{setting('email')->value ?? ''}}">{{ setting('email')->value ?? ''}}</a>
+                                <a style="color: #afb4bf;" href="mailto:{{setting('email') ?? ''}}">{{ setting('email') ?? ''}}</a>
                             </li>
                         </ul>
                     </div>
                     <div class="contact-address">
                         <h4>Address</h4>
                         <ul>
-                            <li><i class="fa fa-map-marker"></i>{{setting('address')->value ?? ''}}</li>
+                            <li><i class="fa fa-map-marker"></i>{{setting('address') ?? ''}}</li>
                         </ul>
                     </div>
                 </div>
