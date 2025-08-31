@@ -106,7 +106,7 @@ class SettingService extends BaseService
             }
 
             DB::commit();
-            return true;
+            return ['status' => true];
         }catch (\Exception $e) {
             DB::rollback();
             errorLog($e->getMessage());

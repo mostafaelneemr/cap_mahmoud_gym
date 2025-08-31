@@ -25,10 +25,9 @@ class SettingController extends SystemController
     public function update(Request $request)
     {
         $update = $this->settingService->update($request);
-        if ($update) {
+        if ($update['status']) {
             flash_msg('success',__( 'Data Updated successfully' ));
-            return $this->success( __( 'Data Updated successfully' ),
-                ['url'=>route('system.setting.index')]);
+            return redirect(route('system.setting.index'));
         } else {
             return $this->fail(__( 'Sorry, we could not Update the data' ) );
         }
