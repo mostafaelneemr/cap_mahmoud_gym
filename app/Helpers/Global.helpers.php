@@ -574,7 +574,9 @@ function slider_type_enum($key = null, $withLang = false)
 
 function Setting($name)
 {
-     return Setting::where('name',$name)->first()->value;
+    $setting = Setting::where('name',$name)->first();
+    return $setting ? $setting->value : null;
+
 }
 
 function rate_values()
