@@ -147,7 +147,7 @@ class PermissionGroupService extends BaseService
             $coll = new Collection();
 
             $requestData = $request->all();
-            $requestData['system'] = 'niceone_admin';
+            $requestData['system'] = 'gym';
             if ($row = $this->permission_group_repository->store($requestData)) {
                 array_map(function ($oneperm) use ($permissions, $row, &$coll) {
                     foreach ($permissions[$oneperm] as $oneroute) {

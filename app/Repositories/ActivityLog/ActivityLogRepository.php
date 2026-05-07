@@ -26,7 +26,7 @@ class ActivityLogRepository extends BaseRepository
                 'causer_id',
                 'causer_type',
                 'created_at'
-            ])->where('log_name','niceone_admin');
+            ]);
         if ($id){
             $data = $data->where('causer_id',$id);
         }

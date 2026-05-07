@@ -17,7 +17,7 @@ return [
      * If no log name is passed to the activity() helper
      * we use this default log name.
      */
-    'default_log_name' => 'niceone_admin',
+    'default_log_name' => 'gym',
 
     /*
      * You can specify an auth driver here that gets user models.

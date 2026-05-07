@@ -198,7 +198,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         // System Providers
         App\Providers\HelperServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
@@ -251,7 +250,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Carbon' => Carbon\Carbon::class,
         'Datatables' => \Yajra\DataTables\Facades\DataTables::class,
-        'Image' => Intervention\Image\Facades\Image::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ])->toArray(),

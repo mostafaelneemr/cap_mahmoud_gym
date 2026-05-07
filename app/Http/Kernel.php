@@ -7,14 +7,6 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 class Kernel extends HttpKernel
 {
 
-    protected function bootstrappers()
-    {
-        return array_merge(
-            [\Bugsnag\BugsnagLaravel\OomBootstrapper::class],
-            parent::bootstrappers(),
-        );
-    }
-
     /**
      * The application's global HTTP middleware stack.
      *
@@ -89,8 +81,4 @@ class Kernel extends HttpKernel
         'check_password_reset' => \App\Http\Middleware\CheckPasswordReset::class,
     ];
 
-
-    protected $middlewareAliases = [
-        'optimizeImages' => \Spatie\LaravelImageOptimizer\Middlewares\OptimizeImages::class,
-    ];
 }

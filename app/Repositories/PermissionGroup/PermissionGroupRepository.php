@@ -23,10 +23,10 @@ class PermissionGroupRepository extends BaseRepository
              'permission_groups.name',
              "permission_groups.updated_at",
              DB::raw( "(SELECT COUNT(*) FROM `user` WHERE permission_group_id = `permission_groups`.`id`) as `count`" )
-         ])->where('system','niceone_admin');
+         ]);
     }
     public function get(array $columns = [ '*' ])
     {
-        return $this->modeler->where('system','niceone_admin')->get($columns);
+        return $this->modeler->get($columns);
     }
 }

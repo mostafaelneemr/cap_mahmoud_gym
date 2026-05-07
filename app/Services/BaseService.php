@@ -434,44 +434,42 @@ abstract class BaseService extends Service
         return DB::connection('dashboard')->table('NetsuiteStockLogger')->get();
     }
 
-    protected function sendEmailTemplate($to, $subject, $text, $data,$template='mail.plain-text')
-    {
-        $mailUrl = "https://api.niceonesa.com/?route=rest/notifications/email/send";
-        $messageBody = view('system.'.$template, $data)->render();
-        if(empty($messageBody)){
-            $messageBody = $text;
-        }
-
-        $mailParams = array(
-            'to' => $to,
-            'from' => 'Niceone <mailer@niceonesa.com>',
-            'subject' => $subject,
-            'messageBody' => $messageBody,
-            'validate' => false
-        );
-        if(isset($data['order_id'])){
-            $mailParams['orderId'] = $data['order_id'];
-         }
-
-        return $this->curlJsonRequestWithOutResponse($mailUrl, json_encode($mailParams));
-    }
-
-    public function curlJsonRequestWithOutResponse($url, $params)
-    {
-        $curl = curl_init($url);
-        curl_setopt( $curl, CURLOPT_POSTFIELDS, $params);
-        curl_setopt( $curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'platform:curl'));
-        curl_setopt($curl, CURLOPT_USERAGENT, 'curl');
-        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
-
-
-        $result = curl_exec($curl);
-        curl_close($curl);
-
-        return $result;
-    }
+//    protected function sendEmailTemplate($to, $subject, $text, $data,$template='mail.plain-text')
+//    {
+//        $mailUrl = "";
+//        $messageBody = view('system.'.$template, $data)->render();
+//        if(empty($messageBody)){
+//            $messageBody = $text;
+//        }
+//
+//        $mailParams = array(
+//            'to' => $to,
+//            'from' => '',
+//            'subject' => $subject,
+//            'messageBody' => $messageBody,
+//            'validate' => false
+//        );
+//
+//
+//        return $this->curlJsonRequestWithOutResponse($mailUrl, json_encode($mailParams));
+//    }
+//
+//    public function curlJsonRequestWithOutResponse($url, $params)
+//    {
+//        $curl = curl_init($url);
+//        curl_setopt( $curl, CURLOPT_POSTFIELDS, $params);
+//        curl_setopt( $curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'platform:curl'));
+//        curl_setopt($curl, CURLOPT_USERAGENT, 'curl');
+//        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+//        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
+//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
+//
+//
+//        $result = curl_exec($curl);
+//        curl_close($curl);
+//
+//        return $result;
+//    }
 }
 
 

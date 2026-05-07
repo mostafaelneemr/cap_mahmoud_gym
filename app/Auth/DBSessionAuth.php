@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class DBSessionAuth implements Guard{
 
-    private $sessionName = 'wms_session_';
+    private $sessionName = 'gym_session_';
     private $provider;
     private $guardName;
     private $userData;
