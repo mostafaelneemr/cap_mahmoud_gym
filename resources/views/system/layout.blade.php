@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 
-<html @if(lang() == 'ar') lang="ar" direction="rtl" style="direction: rtl;" @else  lang="en" direction="ltr" @endif>
+<html @if(lang()=='ar' ) lang="ar" direction="rtl" style="direction: rtl;" @else lang="en" direction="ltr" @endif>
 
 <!-- begin::Head -->
+
 <head>
     <meta charset="utf-8"/>
     <title>{{(isset($pageTitle))?$pageTitle:__(ucfirst(request()->route()->getActionMethod()))}} </title>
@@ -20,41 +21,49 @@
     <base href="{{asset('')}}">
     <link rel="shortcut icon" href="assets/web/img/icons/logo.ico"/>
     <!--begin::Vendor Stylesheets(used for this page only)-->
-    <link href="assets/plugins/custom/datatables/datatables.bundle{{direction()}}.css" rel="stylesheet"
-          type="text/css"/>
+    <link href="assets/plugins/custom/datatables/datatables.bundle{{direction()}}.css" rel="stylesheet" type="text/css"/>
     <!--end::Vendor Stylesheets-->
     <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
     <link href="assets/plugins/global/plugins.bundle{{direction()}}.css?v=1.0" rel="stylesheet" type="text/css"/>
     <link href="assets/css/style.bundle{{direction()}}.css?v=1.1" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="assets/css/magnificant_popup.css"/>
     <link href="assets/css/custom.css?v={{time()}}" rel="stylesheet"/>
-     @if(lang() =='ar')
+    <link href="assets/css/gym-polish.css?v={{time()}}" rel="stylesheet"/>
+
+    @if(lang() =='ar')
         <link href="assets/css/custom-ar.css?v={{time()}}" rel="stylesheet"/>
-     @endif
-     <link href="assets/plugins/custom/summernote/summernote-lite.min.css" rel="stylesheet">
+    @endif
+    <link href="assets/plugins/custom/summernote/summernote-lite.min.css" rel="stylesheet">
     <!--end::Global Stylesheets Bundle-->
-     @if(lang() == 'ar')
+    @if(lang() == 'ar')
         <style>
             @font-face {
                 font-display: swap;
-                font-family: DINNextLTW23 ;
-                src: url('{{asset('/assets/fonts/DINNextLTW23.ttf')}}');
+                font-family: DINNextLTW23;
+                src: url('{{asset(' /assets/fonts/DINNextLTW23.ttf')}}');
 
             }
-            body{
+
+            body {
                 font-family: 'DINNextLTW23' !important;
             }
-            .select2-results__option.select2-results__option--selected:after{
+
+            .select2-results__option.select2-results__option--selected:after {
                 left: 1.25rem !important;
                 right: unset !important;
             }
-            .select2-container--bootstrap5 .select2-selection__clear{
+
+            .select2-container--bootstrap5 .select2-selection__clear {
                 left: 3rem !important;
                 right: unset !important;
             }
+
             button.select2-selection__choice__remove {
                 left: 5px;
                 right: unset;
+            }
+            .add_telephone{
+                direction: ltr !important;
             }
         </style>
     @endif
@@ -64,13 +73,13 @@
     @if(lang() == 'ar')
         <link rel="stylesheet" href="assets/css/intlTellStyle.rtl.css"/>
     @endif
-<!--begin::Javascript-->
-<script type="application/javascript">
-    var hostUrl = "assets/";
-    var SystemBaseUrl = "{{env('APP_URL')}}/system/";
-    var $global_lang = '{{lang()}}';
-   const globalTranslations = <?php include(resource_path().'/lang/ar.json') ?>;
-</script>
+    <!--begin::Javascript-->
+    <script type="application/javascript">
+        var hostUrl = "assets/";
+        var SystemBaseUrl = "{{env('APP_URL')}}/system/";
+        var $global_lang = '{{lang()}}';
+        const globalTranslations = <?php include(resource_path() . '/lang/ar.json') ?>;
+    </script>
 
     <!--begin::Global Javascript Bundle(mandatory for all pages)-->
     <script src="assets/plugins/global/plugins.bundle.js"></script>
@@ -82,7 +91,7 @@
 
     <script src="assets/js/magnificant_popup.js?v=1.0"></script>
     <script src="assets/js/custom.js?v={{time()}}"></script>
-{{--    <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>--}}
+    {{-- <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>--}}
 
     @php
         $auth = \Illuminate\Support\Facades\Auth::user();
@@ -92,15 +101,19 @@
 
     @if(env('APP_ENV') != 'production')
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9P1L9R01GG"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-9P1L9R01GG"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
 
-        gtag('config', 'G-9P1L9R01GG');
-    </script>
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+
+            gtag('config', 'G-9P1L9R01GG');
+        </script>
     @endif
 </head>
 <!--end::Head-->
@@ -113,14 +126,17 @@
 <!--end::Page loading-->
 
 <!--begin::Body-->
+
 <body id="kt_app_body" data-kt-app-header-fixed="true" data-kt-app-header-fixed-mobile="true"
       data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
       data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true"
-      class="app-default"  @if(lang() == 'ar') lang="ar" direction="rtl" style="direction: rtl;" @else  lang="en" direction="ltr" @endif>
+      class="app-default" @if(lang()=='ar' ) lang="ar" direction="rtl" style="direction: rtl;" @else lang="en"
+      direction="ltr" @endif>
 
 
 <!--begin::Theme mode setup on page load-->
-<script>var defaultThemeMode = "light";
+<script>
+    var defaultThemeMode = "dark";
     var themeMode;
     if (document.documentElement) {
         if (document.documentElement.hasAttribute("data-bs-theme-mode")) {
@@ -136,7 +152,8 @@
             themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
         document.documentElement.setAttribute("data-bs-theme", themeMode);
-    }</script>
+    }
+</script>
 
 <!--end::Theme mode setup on page load-->
 <!--begin::App-->
@@ -154,7 +171,7 @@
             <!--begin::Main-->
             <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
                 <!--begin::Content wrapper-->
-                <div class="d-flex flex-column flex-column-fluid responsive-correction" >
+                <div class="d-flex flex-column flex-column-fluid responsive-correction">
                     @include('system.partials.sub-header')
 
                     <!--begin::Content-->
@@ -185,8 +202,8 @@
     <div
         class="alert alert-dismissible bg-light-danger border border-danger border-3 d-flex flex-column flex-sm-row p-5 mb-10">
         <!--begin::Icon-->
-        <i class="ki-duotone ki-information-3  fs-2hx text-danger me-4 mb-5 mb-sm-0"><span class="path1"></span><span
-                class="path2"></span><span class="path3"></span></i>
+        <i class="ki-duotone ki-information-3  fs-2hx text-danger me-4 mb-5 mb-sm-0"><span
+                class="path1"></span><span class="path2"></span><span class="path3"></span></i>
         <!--end::Icon-->
         <!--begin::Wrapper-->
         <div class="d-flex flex-column pe-0 pe-sm-10">
@@ -202,7 +219,8 @@
         <button type="button"
                 class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto"
                 data-bs-dismiss="alert">
-            <i class="ki-duotone ki-cross fs-1 text-danger"><span class="path1"></span><span class="path2"></span></i>
+            <i class="ki-duotone ki-cross fs-1 text-danger"><span class="path1"></span><span
+                    class="path2"></span></i>
         </button>
         <!--end::Close-->
     </div>
@@ -232,7 +250,8 @@
         <button type="button"
                 class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto"
                 data-bs-dismiss="alert">
-            <i class="ki-duotone ki-cross fs-1 text-success"><span class="path1"></span><span class="path2"></span></i>
+            <i class="ki-duotone ki-cross fs-1 text-success"><span class="path1"></span><span
+                    class="path2"></span></i>
         </button>
         <!--end::Close-->
     </div>
@@ -242,13 +261,16 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="resetPasswordModal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog">
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static"
+     aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="resetPasswordModalLabel"> {{__('Reset Password')}}</h5>
             </div>
-            {!! Form::open(['id'=>'reset-password-form','onsubmit' => 'FormSubmit("'.route('system.reset-password') .'","reset-password-form");return false;','class'=>'form','name'=>'reset-password-form','method' =>  'POST']) !!}
+            {!! Form::open(['id'=>'reset-password-form','onsubmit' => 'FormSubmit("'.route('system.reset-password')
+            .'","reset-password-form");return false;','class'=>'form','name'=>'reset-password-form','method' =>
+            'POST']) !!}
             <div class="modal-body">
                 <div class="error-div">
 
@@ -257,14 +279,17 @@
                     <div class="col-12">
                         {{ label(__('New Password'),'required') }}
                         <div class="mb-5">
-                            {!! Form::password('password',null,['id'=>'password','class'=>'form-control form-control-solid','data-placeholder' => __('New Password')]) !!}
+                            {!! Form::password('password',['id'=>'password','class'=>'form-control
+                            form-control-solid','data-placeholder' => __('New Password')]) !!}
                             <div class="invalid-feedback" id="password-form-error"></div>
                         </div>
                     </div>
                     <div class="col-12">
                         {{ label(__('Confirm New Password'),'required') }}
                         <div class="mb-5">
-                            {!! Form::password('password_confirmation',null,['id'=>'confirm_new_password','class'=>'form-control form-control-solid','data-placeholder' => __('Confirm New Password')]) !!}
+                            {!!
+                            Form::password('password_confirmation',['id'=>'confirm_new_password','class'=>'form-control
+                            form-control-solid','data-placeholder' => __('Confirm New Password')]) !!}
                             <div class="invalid-feedback" id="confirm_new_password-form-error"></div>
                         </div>
                     </div>
@@ -273,14 +298,13 @@
             </div>
             <div class="modal-footer">
                 <!--begin::Button-->
-                <button type="submit" class="btn btn-primary sub-btn" >
-                    <span class="indicator-label">{{  __('Update')}}</span>
+                <button type="submit" class="btn btn-primary sub-btn">
+                    <span class="indicator-label">{{ __('Update')}}</span>
                     <span class="indicator-progress">{{__('Please wait')}}...
-                           <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                 </button>
                 <!--end::Button-->
             </div>
-         </form>
             {!! Form::close() !!}
 
         </div>
@@ -296,38 +320,36 @@
 <script src="{{asset('assets/plugins/custom/summernote/summernote-lite.min.js')}}"></script>
 <script src="{{asset('assets/plugins/custom/summernote/summernote-ar-AR.js')}}"></script>
 <script>
-     function text_editor(className,lang_id=1){
-        var lang =  'en-US';
+    function text_editor(className, lang_id = 1) {
+        var lang = 'en-US';
         @if(languageId() == 2)
-          lang =  'ar-AR';
+            lang = 'ar-AR';
         @endif
         var direction = 'ltr';
-        if(lang_id == 2){
+        if (lang_id == 2) {
             direction = 'rtl';
         }
 
-         $('.'+className).summernote({
-           callbacks: {
-               onInit: function(e) {
-                   $(this).next().find('.note-editing-area').attr('dir', direction);
-               }
+        $('.' + className).summernote({
+            callbacks: {
+                onInit: function (e) {
+                    $(this).next().find('.note-editing-area').attr('dir', direction);
+                }
 
-           },
-           disableDragAndDrop: true,
-           lang: lang, // default: 'en-US'
-           height: 300,
-               toolbar: [
-               ['style', ['style']],
-               ['font', ['bold', 'underline', 'clear']],
-               ['color', ['color']],
-               ['para', ['ul', 'ol', 'paragraph']],
-               ['table', ['table']],
-               ['insert', ['link' /*, 'image', 'video'*/]],
-               ['view', [/*'fullscreen',*/ 'codeview', 'help']]
-           ]
-       });
-
-
+            },
+            disableDragAndDrop: true,
+            lang: lang, // default: 'en-US'
+            height: 300,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link' /*, 'image', 'video'*/]],
+                ['view', [/*'fullscreen',*/ 'codeview', 'help']]
+            ]
+        });
 
 
     }
@@ -344,14 +366,12 @@
 </script>
 
 <script>
-
-
     $('select').not('.not-select').select2({
         "language": {
-            "inputTooShort": function(){
+            "inputTooShort": function () {
                 return __('Please enter 1 or more characters');
             },
-            "noResults": function(){
+            "noResults": function () {
                 return __('No Results Found');
             }
         },
@@ -366,19 +386,19 @@
     $(function () {
 
 
-            var minDate = $('.dp').data('mindate');
-            var minDateValue = null;
-            if(minDate === true){
-                 minDateValue = moment();
-            }
+        var minDate = $('.dp').data('mindate');
+        var minDateValue = null;
+        if (minDate === true) {
+            minDateValue = moment();
+        }
 
-            var maxDate = $('.dp').data('maxdate');
-            var maxDateValue = new Date();
-            if (maxDate == true){
-                maxDateValue = '';
-            }
+        var maxDate = $('.dp').data('maxdate');
+        var maxDateValue = new Date();
+        if (maxDate == true) {
+            maxDateValue = '';
+        }
 
-            var formate_type = $('.dp').data('format');
+        var formate_type = $('.dp').data('format');
         $('.dp').daterangepicker({
             autoUpdateInput: false,
             todayHighlight: true,
@@ -386,39 +406,39 @@
             autoClose: true,
             autoApply: true,
             showDropdowns: true,
-            minDate:minDateValue,
+            minDate: minDateValue,
             minYear: 2017,
-            timePicker:formate_type == 'datetime' ? true : false,
+            timePicker: formate_type == 'datetime' ? true : false,
             maxYear: parseInt(moment().format('YYYY'), 11),
-            maxDate: maxDateValue,
+            maxDate: '',
             locale: {
                 cancelLabel: 'Clear',
-                format:formate_type == 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
+                format: formate_type == 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
             }
         });
         $('.dp').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(formate_type == 'datetime' ?  picker.startDate.format('YYYY-MM-DD HH:mm:ss') : picker.startDate.format('YYYY-MM-DD'));
+            $(this).val(formate_type == 'datetime' ? picker.startDate.format('YYYY-MM-DD HH:mm:ss') : picker.startDate.format('YYYY-MM-DD'));
         });
         $('.dp').on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('');
         });
 
 
-
     });
 
 
-
-    function QuickSearch(){
+    function QuickSearch() {
         var search_id = document.getElementById('quick_search_id').value;
         var search_name = document.getElementById('quick_search_name').value;
 
+        var name_key = 'name';
         switch ($('input[name="quick_search_type"]:checked').val()) {
-            case 'order':
-                var name_key = 'reference_id';
+            case 'user':
+            case 'trainee':
+                name_key = 'name';
                 break;
-
             default:
+                name_key = 'name';
                 break;
         }
 
@@ -435,29 +455,29 @@
                 "#quick_search_name").val();
         }
 
-        window.location.href = SystemBaseUrl  + url
+        window.location.href = SystemBaseUrl + url
 
     }
 
-        var search_id = document.getElementById("quick_search_id");
-        search_id.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                QuickSearch();
-            }
+    var search_id = document.getElementById("quick_search_id");
+    search_id.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            QuickSearch();
+        }
 
-        });
+    });
 
-        var search_name = document.getElementById("quick_search_name");
-        search_name.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                QuickSearch();
-            }
-        });
+    var search_name = document.getElementById("quick_search_name");
+    search_name.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            QuickSearch();
+        }
+    });
 
 
-    function showDetails($route){
+    function showDetails($route) {
         $.ajax({
             url: $route,
             type: "GET",
@@ -475,15 +495,15 @@
 </script>
 
 @if(env('APP_ENV') == 'local')
-<script>
-    $('body').on('xhr.dt', function (e, settings, data, xhr) {
-        if (typeof phpdebugbar != "undefined") {
-            if (xhr.getAllResponseHeaders()) {
-                phpdebugbar.ajaxHandler.handle(xhr);
+    <script>
+        $('body').on('xhr.dt', function (e, settings, data, xhr) {
+            if (typeof phpdebugbar != "undefined") {
+                if (xhr.getAllResponseHeaders()) {
+                    phpdebugbar.ajaxHandler.handle(xhr);
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
 @endif
 
 <script>
@@ -500,41 +520,8 @@
         dir: "rtl"
         @endif
     });
-    const x = $(".add_telephone").intlTelInput({
-        onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om', 'qa'],
-        initialCountry: '{{ $code ?? 'sa' }}',
-        separateDialCode: true,
-        formatOnDisplay: false,
-        autoHideDialCode: false
-    });
-    $(".add_telephone").on("countrychange", function () {
 
-        var country_code = $(".add_telephone").intlTelInput("getSelectedCountryData").dialCode;
-        $("input[name='telephone_code']").val(country_code);
-    });
-
-    function check_telephone() {
-        var phone = $("#telephone").val();
-        var country_codes = ['973', '965', '968', '966', '971'];
-
-        if (phone != '') {
-            phone = phone.replace(/\D/g, '')
-            if (phone.substring(0, 1) == 0) {
-                $("#telephone").val(phone.substring(1));
-                check_telephone()
-                return;
-            }
-            if (country_codes.includes(phone.substring(0, 3))) {
-                $("#telephone").val(phone.substring(3));
-                check_telephone()
-                return;
-            }
-            $("#telephone").val(phone);
-
-        }
-    }
-
-    $(document).ready(function() {
+    $(document).ready(function () {
         @if(session('force_password_reset'))
         $("#resetPasswordModal").modal("show");
         @else
@@ -545,7 +532,7 @@
             let passwordReset = false; // This should be set based on your form logic
 
             if (!passwordReset) {
-                setTimeout(function() {
+                setTimeout(function () {
                     $('#resetPasswordModal').modal('show');
                 }, 10000);
             }
@@ -555,7 +542,45 @@
 
 </script>
 
+<script>
+
+    function check_telephone() {
+        var selector = $("#telephone");
+        var phone = $("#telephone").val();
+        var country_codes = ['973', '965', '968', '966', '971'];
+
+        if (phone != '') {
+            phone = phone.replace(/\D/g, '')
+            if (phone.substring(0, 1) == 0) {
+                selector.val(phone.substring(1));
+                check_telephone()
+                return;
+            }
+            if (country_codes.includes(phone.substring(0, 3))) {
+                selector.val(phone.substring(3));
+                check_telephone()
+                return;
+            }
+            selector.val(phone);
+        }
+    }
+
+    const x = $(".add_telephone").intlTelInput({
+        onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om', 'qa'],
+        initialCountry: '{{ $code ?? 'sa' }}',
+        separateDialCode: true,
+        formatOnDisplay: false,
+        autoHideDialCode: false
+    });
+
+    $(".add_telephone").on("countrychange", function () {
+        var country_code = $(".add_telephone").intlTelInput("getSelectedCountryData").dialCode;
+        $("input[name='telephone_code']").val(country_code);
+    });
+
+</script>
 @yield('footer')
 
 </body>
+
 </html>

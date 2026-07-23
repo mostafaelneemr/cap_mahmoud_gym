@@ -23,3 +23,67 @@ th{
     overflow: hidden;
     transition: 5ms ease;
 }
+
+/* ==========================================================================
+   GYM ADMIN DASHBOARD (SYSTEM MODULE) - RTL SYSTEM-WIDE COLOR & SPACING OVERRIDES
+   ========================================================================== */
+
+/* 1. RTL Table Headers & Cells */
+.table thead th,
+table.dataTable thead th,
+.table.align-middle thead th {
+    text-align: right !important;
+}
+
+.table tbody td,
+table.dataTable tbody td {
+    text-align: right !important;
+}
+
+/* 2. RTL Header & Title Alignment */
+#kt_app_header .page-heading,
+#kt_app_header .breadcrumb,
+.card .card-header .card-title,
+.card .card-header .card-title .card-label {
+    text-align: right !important;
+}
+
+/* 3. RTL Sidebar Borders & Alignment */
+#kt_app_sidebar,
+#kt_app_sidebar_wrapper,
+.app-sidebar {
+    border-right: none !important;
+    border-left: 1px solid var(--gym-sidebar-border) !important;
+}
+
+/* 4. RTL Steppers Alignment */
+.stepper .stepper-wrapper {
+    flex-direction: row !important;
+}
+
+.stepper .stepper-icon {
+    margin-right: 0 !important;
+    margin-left: 1rem !important;
+}
+
+.stepper .stepper-label {
+    text-align: right !important;
+}
+
+/* 5. RTL Form Repeaters & Action Buttons Spacing */
+.form-repeater .repeater-item-container,
+[data-repeater-item] {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+.btn i,
+.badge i {
+    margin-right: 0 !important;
+    margin-left: 0.35rem !important;
+}
+
+.btn i:first-child:last-child {
+    margin-left: 0 !important;
+}
+

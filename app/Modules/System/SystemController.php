@@ -3,11 +3,7 @@
 namespace App\Modules\System;
 
 use App\Http\Controllers\Controller;
-
-use App\Models\Driver;
-use App\Models\Order;
-use Datatables;
-use App\Notifications\General;
+use Illuminate\Http\Request;
 
 class SystemController extends Controller{
 
@@ -44,7 +40,7 @@ class SystemController extends Controller{
     }
 
 
-    public function dashboard(\Illuminate\Http\Request $request){
+    public function dashboard(Request $request){
 
         $this->viewData['breadcrumb'][] = [
             'text'=> __('Dashboard')
@@ -53,7 +49,7 @@ class SystemController extends Controller{
          return $this->view('dashboard',$this->viewData);
     }
 
-    public function ux(\Illuminate\Http\Request $request){
+    public function ux(Request $request){
 
         $this->viewData['breadcrumb'][] = [
             'text'=> __('UX')

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "951ca25a72e17e5feda5476eb785d1ef",
+    "content-hash": "ee83dfb713ef272b24c92d97db851a04",
     "packages": [
         {
             "name": "brick/math",
@@ -2336,6 +2336,82 @@
                 "source": "https://github.com/laravel/ui/tree/v4.6.3"
             },
             "time": "2026-03-17T13:41:52+00:00"
+        },
+        {
+            "name": "laravellux/html",
+            "version": "v7.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LaravelLux/html.git",
+                "reference": "9bc135b358a5765f8ae7e98ca65494c833f6ecc9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LaravelLux/html/zipball/9bc135b358a5765f8ae7e98ca65494c833f6ecc9",
+                "reference": "9bc135b358a5765f8ae7e98ca65494c833f6ecc9",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/routing": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/session": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/view": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "illuminate/database": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "mockery/mockery": "~1.6.2",
+                "phpunit/phpunit": "~8.5|^9.5.10|^10.1|^11.0.1|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Form": "LaravelLux\\Html\\FormFacade",
+                        "Html": "LaravelLux\\Html\\HtmlFacade"
+                    },
+                    "providers": [
+                        "LaravelLux\\Html\\HtmlServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-master": "6.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "LaravelLux\\Html\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adam Mudd",
+                    "email": "admin@adammudd.co.uk"
+                },
+                {
+                    "name": "Adam Engebretson",
+                    "email": "adam@laravelcollective.com"
+                },
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                }
+            ],
+            "description": "HTML and Form Builders for the Laravel Framework",
+            "homepage": "https://website.com.se",
+            "support": {
+                "issues": "https://github.com/laravellux/html/issues",
+                "source": "https://github.com/laravellux/html"
+            },
+            "time": "2026-03-05T12:54:24+00:00"
         },
         {
             "name": "league/commonmark",

@@ -91,7 +91,6 @@ class UserController extends SystemController
         } else {
             return $this->fail(__( 'Sorry, we could not Update the data' ) );
         }
-
     }
 
     public function getUserActivityLog($id)
@@ -104,15 +103,5 @@ class UserController extends SystemController
         return $this->user_service->loadAuthSessionDetails($id);
     }
 
-    public function getUserFile($id)
-    {
-        return $this->user_service->loadUserFileDetails($id);
-    }
-
-    public function getUserSharedFile($id)
-    {
-
-        return $this->user_service->loadUserSharedFile($id);
-    }
 
 }

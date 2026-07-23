@@ -15,11 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+use App\Modules\Web\Controllers\SocialLinkWebController;
+
 Route::controller(WebController::class)->group(function () {
-    Route::get('/','home')->name('home');
+    Route::get('/', 'home')->name('home');
     Route::get('/contact', 'contact')->name('contact');
 });
 
+Route::get('/connect', [SocialLinkWebController::class, 'index'])->name('connect');
+
 Route::post('send-email', [SendEmailController::class, 'store'])->name('sendmail');
-
-

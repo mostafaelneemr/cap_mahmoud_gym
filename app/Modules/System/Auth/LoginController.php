@@ -35,7 +35,7 @@ class LoginController extends SystemController
 
     public function __construct()
     {
-        $this->middleware('guest:user')->except('logout','updatePassword');
+        $this->middleware('guest:user')->except('logout', 'updatePassword');
     }
 
     public function guard()
@@ -45,20 +45,20 @@ class LoginController extends SystemController
 
     public function login(LoginRequest $request)
     {
-         $user_query = User::select(['email','password'])->where('email', $request->email)->first();
+        $user_query = User::select(['email', 'password'])->where('email', $request->email)->first();
 
-        if ($user_query && Hash::check($request->password,$user_query->password)) {
+        if ($user_query && Hash::check($request->password, $user_query->password)) {
             session()->put('user', $user_query);
             $session_user = session()->get('user');
             $user = User::where('email', $session_user->email)->first();
             \Auth::guard('user')->loginUsingId($user->id);
             if ($user->user_type == 1 || $user->user_type == null) {
                 $route = auth('user')->user()->permission_group->new_admin_default_route ? route(auth('user')->user()->permission_group->new_admin_default_route) : route('system.dashboard');
-            }elseif ($user->user_type == 2) {
+            } elseif ($user->user_type == 2) {
                 $route = route('system.dashboard.trainer');
             }
-             return $this->success(__('Logged In successfully'), ['url' => $route]);
-         } else {
+            return $this->success(__('Logged In successfully'), ['url' => $route]);
+        } else {
             return $this->fail(__('Wrong Email or Password'));
         }
     }
@@ -72,9 +72,8 @@ class LoginController extends SystemController
 
     public function updatePassword(ResetPasswordRequest $request)
     {
-        $user =  auth('user')->user() ;
-        $user->update(['force_reset_password' => 0,'password'=>Hash::make($request->password)]);
+        $user =  auth('user')->user();
+        $user->update(['force_reset_password' => 0, 'password' => Hash::make($request->password)]);
         return $this->success(__('Password reset successfully!'), ['url' => route('system.dashboard')]);
     }
-
 }

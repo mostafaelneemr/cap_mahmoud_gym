@@ -237,8 +237,500 @@ th{
     padding: 5px;
     background-color: transparent;
     cursor: default;
+    color: var(--gym-text-muted);
+    transition: color 0.2s ease;
+}
+
+.component_sort:hover {
+    color: var(--gym-primary);
 }
 
 .component_sort:focus {
     outline: none;
 }
+
+/* ==========================================================================
+   GYM ADMIN DASHBOARD (SYSTEM MODULE) - SYSTEM-WIDE COLOR PALETTE & SPACING
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CONFIGURATION & COLOR VARIABLES
+   Modify these root variables to customize Header, Sidebar, and System Colors!
+   -------------------------------------------------------------------------- */
+:root {
+    /* Primary & Brand Accent Colors */
+    --gym-primary: #009ef7;
+    --gym-primary-active: #008be3;
+    --gym-primary-light: rgba(0, 158, 247, 0.12);
+    --gym-secondary: #e4e6ef;
+    --gym-success: #50cd89;
+    --gym-success-light: rgba(80, 205, 137, 0.15);
+    --gym-info: #7239ea;
+    --gym-info-light: rgba(114, 57, 234, 0.15);
+    --gym-warning: #ffc700;
+    --gym-warning-light: rgba(255, 199, 0, 0.15);
+    --gym-danger: #f1416c;
+    --gym-danger-light: rgba(241, 65, 108, 0.15);
+
+    /* Header Colors (Top Navigation Bar - Clean White Theme in Light Mode) */
+    --gym-header-bg: #ffffff;
+    --gym-header-text: #181c32;
+    --gym-header-icon: #5e6278;
+    --gym-header-icon-hover: #009ef7;
+    --gym-header-border: #eff2f5;
+
+    /* Sidebar Colors (Left Menu - Clean White Surface Theme in Light Mode) */
+    --gym-sidebar-bg: #ffffff;
+    --gym-sidebar-text: #5e6278;
+    --gym-sidebar-text-active: #009ef7;
+    --gym-sidebar-border: #eff2f5;
+
+    /* Body & Surface Colors (Light Mode) */
+    --gym-bg-body: #f5f8fa;
+    --gym-bg-surface: #ffffff;
+    --gym-bg-card: #ffffff;
+    --gym-bg-table-header: #f8f9fa;
+    --gym-border-color: #eff2f5;
+    --gym-border-hover: #d8dce6;
+
+    /* Typography Colors */
+    --gym-text-primary: #181c32;
+    --gym-text-secondary: #5e6278;
+    --gym-text-muted: #a1a5b7;
+
+    /* Shadows */
+    --gym-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    --gym-card-shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark Theme System Colors Overrides */
+[data-bs-theme="dark"],
+body.dark-mode,
+.dark-mode {
+    --gym-header-bg: #1e1e2d;
+    --gym-header-text: #ffffff;
+    --gym-header-icon: #a1a5b7;
+    --gym-header-icon-hover: #009ef7;
+    --gym-header-border: rgba(255, 255, 255, 0.08);
+    --gym-sidebar-bg: #1e1e2d;
+    --gym-sidebar-text: #92929f;
+    --gym-sidebar-text-active: #ffffff;
+    --gym-sidebar-border: rgba(255, 255, 255, 0.08);
+    --gym-bg-body: #151521;
+    --gym-bg-surface: #1e1e2d;
+    --gym-bg-card: #1e1e2d;
+    --gym-bg-table-header: #1a1a28;
+    --gym-border-color: rgba(255, 255, 255, 0.08);
+    --gym-border-hover: rgba(255, 255, 255, 0.16);
+    --gym-text-primary: #ffffff;
+    --gym-text-secondary: #92929f;
+    --gym-text-muted: #565674;
+    --gym-card-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+    --gym-card-shadow-hover: 0 12px 35px rgba(0, 0, 0, 0.38);
+}
+
+/* --------------------------------------------------------------------------
+   2. REMOVE / COMPACT SPACING BETWEEN HEADER, MENU, AND CONTENT
+   -------------------------------------------------------------------------- */
+
+/* Compact Toolbar & Sub-header Spacing */
+#kt_app_toolbar,
+.app-toolbar,
+.app-toolbar.pt-6.pb-2 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.25rem !important;
+    margin-bottom: 0 !important;
+}
+
+/* Compact Sidebar Menu Spacing Below Header */
+#kt_app_sidebar_wrapper,
+.app-sidebar-wrapper,
+.app-sidebar-wrapper.my-5.my-lg-2 {
+    margin-top: 0 !important;
+    padding-top: 0.5rem !important;
+}
+
+/* Compact Content Container Top Spacing */
+#kt_app_content,
+.app-content {
+    padding-top: 0.5rem !important;
+}
+
+#kt_app_content_container,
+.app-container {
+    padding-top: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. HEADER & SIDEBAR SYSTEM-WIDE COLOR & TEXT VISIBILITY HANDLING
+   -------------------------------------------------------------------------- */
+
+/* Header Background & Text Overrides */
+#kt_app_header,
+#kt_app_header > div,
+.app-header,
+.app-header > div {
+    background-color: var(--gym-header-bg) !important;
+    border-bottom: 1px solid var(--gym-header-border) !important;
+    color: var(--gym-header-text) !important;
+}
+
+#kt_app_header .page-heading,
+#kt_app_header .text-dark,
+#kt_app_header .text-gray-800,
+#kt_app_header h1,
+#kt_app_header h2,
+#kt_app_header h3,
+#kt_app_header span,
+#kt_app_header .brand-logo {
+    color: var(--gym-header-text) !important;
+}
+
+#kt_app_header .breadcrumb-item,
+#kt_app_header .breadcrumb-item a,
+#kt_app_header .breadcrumb-item.text-muted {
+    color: var(--gym-header-icon) !important;
+}
+
+#kt_app_header .breadcrumb-item a:hover {
+    color: var(--gym-primary) !important;
+}
+
+#kt_app_header .ki-outline,
+#kt_app_header .search-icon,
+#kt_app_header .btn-icon i {
+    color: var(--gym-header-icon) !important;
+    transition: color 0.2s ease !important;
+}
+
+#kt_app_header .btn-icon:hover i,
+#kt_app_header .ki-outline:hover {
+    color: var(--gym-header-icon-hover) !important;
+}
+
+/* Sidebar Background & Text Overrides */
+#kt_app_sidebar,
+#kt_app_sidebar_wrapper,
+.app-sidebar {
+    background-color: var(--gym-sidebar-bg) !important;
+    border-right: 1px solid var(--gym-sidebar-border) !important;
+}
+
+#kt_app_sidebar .menu-link .menu-title,
+#kt_app_sidebar .menu-title,
+#kt_app_sidebar span {
+    color: var(--gym-sidebar-text) !important;
+    transition: color 0.2s ease !important;
+}
+
+#kt_app_sidebar .menu-link:hover .menu-title,
+#kt_app_sidebar .menu-link.active .menu-title,
+#kt_app_sidebar .menu-link:hover span,
+#kt_app_sidebar .menu-link.active span {
+    color: var(--gym-sidebar-text-active) !important;
+}
+
+/* Body & Main Content Container Overrides */
+body,
+#kt_app_body,
+#kt_app_root,
+#kt_app_page,
+#kt_app_wrapper,
+#kt_app_main,
+.app-default {
+    background-color: var(--gym-bg-body) !important;
+    color: var(--gym-text-primary) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. SYSTEM COMPONENTS POLISH (CARDS, TABLES, BUTTONS, BADGES, FORMS)
+   -------------------------------------------------------------------------- */
+
+/* Cards Polish */
+.card {
+    background-color: var(--gym-bg-card) !important;
+    border: 1px solid var(--gym-border-color) !important;
+    border-radius: 14px !important;
+    box-shadow: var(--gym-card-shadow) !important;
+    transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    box-shadow: var(--gym-card-shadow-hover) !important;
+    border-color: var(--gym-border-hover) !important;
+}
+
+.card .card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--gym-border-color) !important;
+    padding: 1.25rem 1.75rem !important;
+    min-height: 60px !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card .card-header .card-title,
+.card .card-header .card-title .card-label,
+.card .card-header h1,
+.card .card-header h2,
+.card .card-header h3 {
+    color: var(--gym-text-primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.15rem !important;
+}
+
+.card .card-body {
+    padding: 1.5rem 1.75rem !important;
+    color: var(--gym-text-secondary);
+}
+
+/* Datatables & Tables Polish */
+.table,
+table.dataTable {
+    color: var(--gym-text-secondary) !important;
+    border-color: var(--gym-border-color) !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.table thead th,
+table.dataTable thead th,
+.table.align-middle thead th,
+.table.gy-4 thead th,
+.table.gs-9 thead th {
+    background-color: var(--gym-bg-table-header) !important;
+    color: var(--gym-text-primary) !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    border-bottom: 2px solid var(--gym-border-color) !important;
+    padding: 0.85rem 1.25rem !important;
+    vertical-align: middle !important;
+}
+
+.table tbody tr,
+table.dataTable tbody tr {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--gym-border-color) !important;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+.table tbody tr:hover,
+table.dataTable tbody tr:hover {
+    background-color: var(--gym-primary-light) !important;
+    color: var(--gym-text-primary) !important;
+}
+
+.table tbody td,
+table.dataTable tbody td,
+.table.gy-4 tbody td,
+.table.gs-9 tbody td {
+    padding: 0.85rem 1.25rem !important;
+    vertical-align: middle !important;
+    font-size: 0.95rem !important;
+    color: var(--gym-text-primary);
+}
+
+/* Action Buttons Polish */
+.btn {
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    padding: 0.65rem 1.25rem;
+}
+
+.btn:hover {
+    transform: translateY(-1.5px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+.btn:active {
+    transform: translateY(0) !important;
+    box-shadow: none !important;
+}
+
+.btn.btn-sm,
+.btn.btn-icon,
+.datatable-menu-delete {
+    border-radius: 6px !important;
+    padding: 0.45rem 0.75rem !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn.btn-icon:hover {
+    background-color: var(--gym-primary-light) !important;
+    color: var(--gym-primary) !important;
+    transform: scale(1.06) !important;
+}
+
+.btn-primary {
+    background-color: var(--gym-primary) !important;
+    border-color: var(--gym-primary) !important;
+    color: #fff !important;
+}
+
+.btn-success {
+    background-color: var(--gym-success) !important;
+    border-color: var(--gym-success) !important;
+    color: #fff !important;
+}
+
+.btn-light-primary {
+    background-color: var(--gym-primary-light) !important;
+    color: var(--gym-primary) !important;
+    border: 1px solid transparent !important;
+}
+
+.btn-light-primary:hover {
+    background-color: var(--gym-primary) !important;
+    color: #fff !important;
+}
+
+/* Badges Polish */
+.badge {
+    border-radius: 6px !important;
+    padding: 0.45rem 0.85rem !important;
+    font-weight: 600 !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.3px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.badge-light-primary {
+    background-color: var(--gym-primary-light) !important;
+    color: var(--gym-primary) !important;
+    border-color: rgba(0, 158, 247, 0.25) !important;
+}
+
+.badge-light-success {
+    background-color: var(--gym-success-light) !important;
+    color: var(--gym-success) !important;
+    border-color: rgba(80, 205, 137, 0.25) !important;
+}
+
+.badge-light-warning {
+    background-color: var(--gym-warning-light) !important;
+    color: #d69e00 !important;
+    border-color: rgba(255, 199, 0, 0.25) !important;
+}
+
+.badge-light-danger {
+    background-color: var(--gym-danger-light) !important;
+    color: var(--gym-danger) !important;
+    border-color: rgba(241, 65, 108, 0.25) !important;
+}
+
+.badge-light-info {
+    background-color: var(--gym-info-light) !important;
+    color: var(--gym-info) !important;
+    border-color: rgba(114, 57, 234, 0.25) !important;
+}
+
+/* Sizing & Spacing: Form Inputs & Selects */
+.form-control,
+.form-select,
+.form-control-solid,
+.form-select-solid,
+.select2-container--bootstrap5 .select2-selection {
+    min-height: 42px !important;
+    padding: 0.6rem 1rem !important;
+    font-size: 0.95rem !important;
+    border-radius: 8px !important;
+    color: var(--gym-text-primary) !important;
+    background-color: var(--gym-bg-surface) !important;
+    border: 1px solid var(--gym-border-color) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-control-solid:focus,
+.form-select-solid:focus,
+.select2-container--bootstrap5 .select2-selection--single:focus,
+.select2-container--bootstrap5.select2-container--focus .select2-selection {
+    border-color: var(--gym-primary) !important;
+    box-shadow: 0 0 0 3px var(--gym-primary-light) !important;
+    background-color: var(--gym-bg-surface) !important;
+}
+
+.form-label,
+label {
+    color: var(--gym-text-primary) !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 0.45rem !important;
+    display: inline-block;
+}
+
+/* Form Repeaters Spacing & Structure */
+[data-repeater-item],
+.form-repeater .repeater-item-container {
+    margin-bottom: 1.25rem !important;
+    padding: 1.25rem 1.5rem !important;
+    background-color: var(--gym-bg-table-header) !important;
+    border: 1px solid var(--gym-border-color) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+[data-repeater-item]:hover,
+.form-repeater .repeater-item-container:hover {
+    border-color: var(--gym-border-hover) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Steppers Polish */
+.stepper .stepper-item {
+    transition: all 0.25s ease !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 10px !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.stepper .stepper-item.current,
+.stepper .stepper-item:hover {
+    background-color: var(--gym-primary-light) !important;
+}
+
+.stepper .stepper-icon {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 10px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--gym-bg-table-header) !important;
+    color: var(--gym-text-secondary) !important;
+    border: 1px solid var(--gym-border-color) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.stepper .stepper-item.current .stepper-icon {
+    background-color: var(--gym-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--gym-primary) !important;
+    box-shadow: 0 4px 15px rgba(0, 158, 247, 0.35) !important;
+    transform: scale(1.05) !important;
+}
+
+.stepper .stepper-label .stepper-title {
+    color: var(--gym-text-primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.05rem !important;
+}
+
+.stepper .stepper-label .stepper-desc {
+    color: var(--gym-text-muted) !important;
+    font-size: 0.85rem !important;
+}
+

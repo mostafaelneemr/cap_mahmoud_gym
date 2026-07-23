@@ -2,27 +2,15 @@
 
 namespace App\Services;
 
-use App\Filters\CreatedAtFrom;
-use App\Filters\CreatedAtTo;
-use App\Filters\CustomerId;
-use App\Filters\Email;
+
 use App\Filters\Id;
 use App\Filters\Name;
-use App\Filters\PermissionGroupId;
-use App\Filters\Status;
-use App\Filters\UserId;
-use App\Filters\Username;
 use App\Models\Permission;
-use App\Models\PermissionGroup;
 use App\Repositories\PermissionGroup\PermissionGroupRepository;
-use App\Repositories\User\UserRepository;
-use Carbon\Carbon;
 use Datatables;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 
 class PermissionGroupService extends BaseService
@@ -60,7 +48,8 @@ class PermissionGroupService extends BaseService
             __('Name'),
             __('Num. User'),
             __('Last Update'),
-            __('Action')]);
+            __('Action')
+        ]);
 
         $this->jsColumns([
             'id' => 'permission_groups.id',
@@ -90,13 +79,13 @@ class PermissionGroupService extends BaseService
             ])->thenReturn();
         return Datatables::eloquent($eloquentData)
             ->addColumn('id', '{{$id}}')
-             ->editColumn('name', function ($data) {
-                  return html_entity_decode($data->name);
-             })
+            ->editColumn('name', function ($data) {
+                return html_entity_decode($data->name);
+            })
             ->addColumn('count', '{{$count}}')
             ->addColumn('updated_at', '{{$updated_at}}')
             ->editColumn('action', function ($data) {
-                $this->actionButtons(datatable_menu_edit(route('system.permission-group.edit', $data->id),'system.permission-group.edit'));
+                $this->actionButtons(datatable_menu_edit(route('system.permission-group.edit', $data->id), 'system.permission-group.edit'));
                 return $this->actionButtonsRender($this->permission_group_repository->modelPath(), $data->id);
             })
             ->escapeColumns([])
@@ -121,7 +110,8 @@ class PermissionGroupService extends BaseService
         $this->pageTitle('Update User Permission');
         $this->breadcrumb('User');
         $this->breadcrumb('Permission Group', 'system.permission-group.index');
-        $this->otherData(['permissions' => $this->permissions(),
+        $this->otherData([
+            'permissions' => $this->permissions(),
             'routes' => $this->getMianRoutes(),
             'currentpermissions' => $permission_group->permission()->get()->pluck('route_name')->toArray(),
             'permission_group' => $permission_group
@@ -163,7 +153,6 @@ class PermissionGroupService extends BaseService
             errorLog($e->getMessage());
             return false;
         }
-
     }
 
     /**
@@ -207,13 +196,15 @@ class PermissionGroupService extends BaseService
                 ->withProperties(['name' => $permission_group->name, 'attributes' => $attributes])
                 ->log('Update');
             DB::commit();
+            \App\Models\User::where('permission_group_id', $permission_group->id)->pluck('id')->each(function ($userId) {
+                \Illuminate\Support\Facades\Cache::forget("user_perms_{$userId}");
+            });
             return true;
         } catch (\Exception $e) {
             DB::rollback();
             errorLog($e->getMessage());
             return false;
         }
-
     }
 
     public function permissions($permission = false)

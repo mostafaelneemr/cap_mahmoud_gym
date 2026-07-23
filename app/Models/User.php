@@ -10,7 +10,7 @@ use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable
 {
-    use SoftDeletes, Notifiable,LogsActivity;
+    use SoftDeletes, Notifiable, LogsActivity;
 
     protected $table = 'user';
     public $timestamps = true;
@@ -44,14 +44,45 @@ class User extends Authenticatable
     protected $hidden = array('password', 'remember_token');
 
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function ($user) {
+            if ($user->isDirty('permission_group_id') || $user->isDirty('status')) {
+                \Illuminate\Support\Facades\Cache::forget("user_perms_{$user->id}");
+            }
+        });
+
+        static::deleting(function ($user) {
+            \Illuminate\Support\Facades\Cache::forget("user_perms_{$user->id}");
+
+            $trainees = Trainee::where('user_id', $user->id)->get();
+            foreach ($trainees as $trainee) {
+                $user->isForceDeleting() ? $trainee->forceDelete() : $trainee->delete();
+            }
+
+            AuthSession::where('user_id', $user->id)->delete();
+        });
+
+        static::restoring(function ($user) {
+            Trainee::onlyTrashed()->where('user_id', $user->id)->get()->each->restore();
+        });
+    }
+
     public static function UserPerms($userID)
     {
-        return User::find($userID)->permissionList->pluck('route_name');
+        return \Illuminate\Support\Facades\Cache::remember("user_perms_{$userID}", 1800, function () use ($userID) {
+            $user = User::select('id', 'permission_group_id')->find($userID);
+            return $user && $user->permission_group_id 
+                ? \App\Models\Permission::where('permission_group_id', $user->permission_group_id)->pluck('route_name')
+                : collect([]);
+        });
     }
 
     public function permission_group()
     {
-        return $this->belongsTo('App\Models\PermissionGroup', 'permission_group_id','id');
+        return $this->belongsTo('App\Models\PermissionGroup', 'permission_group_id', 'id');
     }
 
     public function permissionList()
@@ -59,8 +90,13 @@ class User extends Authenticatable
         return $this->hasManyThrough('App\Models\Permission', 'App\Models\PermissionGroup', 'id', 'permission_group_id', 'permission_group_id');
     }
 
+    public function trainer()
+    {
+        return $this->hasOne(Trainee::class, 'user_id', 'id');
+    }
 
-
-
-
+    public function getTrainerAttribute()
+    {
+        return $this->trainer()->first();
+    }
 }

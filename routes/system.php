@@ -2,7 +2,7 @@
 
 
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout'); //
-Route::post('/reset-password','Auth\LoginController@updatePassword')->name('system.reset-password');
+Route::post('/reset-password', 'Auth\LoginController@updatePassword')->name('system.reset-password');
 
 Auth::routes();
 
@@ -31,12 +31,6 @@ Route::controller('ActivityController')->group(function () {
 });
 
 Route::resource('/language', 'LanguageController', ['as' => 'system']);
-Route::resource('/slider', 'SliderController', ['as' => 'system']); //
-Route::resource('/choose-item', 'ChooseItemController', ['as' => 'system']); //
-Route::resource('/testimonial', 'TestimonialController', ['as' => 'system']); //
-Route::resource('/blog', 'BlogController', ['as' => 'system']); //
-Route::resource('/message', 'MessageController', ['as' => 'system']); //
-Route::post('/message/update-status', 'MessageController@updateStatus')->name('system.message.update-status');
 
 Route::controller('SettingController')->group(function () {
     Route::get('/setting', 'index')->name('system.setting.index'); //
@@ -45,20 +39,17 @@ Route::controller('SettingController')->group(function () {
     Route::post('/activate-sections/{id}', 'updateActivateSection')->name('system.activate.update'); //
 });
 
+Route::controller('TraineeController')->prefix('trainee')->group(function () {
+    Route::get('/get-activity-log/{id}', 'getUserActivityLog')->name('system.trainee.get-activity-log');
+    Route::get('/get-auth-session/{id}', 'getAuthSession')->name('system.trainee.get-auth-session');
+    Route::get('/get-workout/{id}', 'getWorkout')->name('system.trainee.get-workout');
+    Route::post('/{id}/reset-plan', 'resetPlan')->name('system.trainee.reset-plan');
+});
 Route::resource('/trainee', 'TraineeController', ['as' => 'system']); //
+Route::post('/workout/day/{dayId}/update', 'WorkoutController@storeDayExercises')->name('system.workout.updateDay');
+Route::resource('/workout', 'WorkoutController', ['as' => 'system']); //
 
 
-Route::resource('/site', 'SiteController', ['as' => 'system']); //
-
+Route::resource('/social-links', 'SocialLinkController', ['as' => 'system']); //
 
 Route::get('/trainer', 'Dashboard@trainerDashboard')->name('system.dashboard.trainer');
-
-
-
-
-
-
-
-
-
-

@@ -47301,8 +47301,8 @@ body,
 
 @media (min-width: 992px) {
   :root {
-    --bs-app-header-height: 105px;
-    --bs-app-header-height-actual: 105px;
+    --bs-app-header-height: 70px;
+    --bs-app-header-height-actual: 70px;
   }
   [data-kt-app-header-sticky=on] {
     --bs-app-header-height: 70px;

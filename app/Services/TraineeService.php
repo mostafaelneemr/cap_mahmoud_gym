@@ -6,18 +6,63 @@ use App\Repositories\Trainee\TraineeRepository;
 use App\Repositories\User\UserRepository;
 use Datatables;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class TraineeService extends BaseService
 {
-    protected $traineeRepository,$userRepository;
+    protected $traineeRepository, $userRepository, $activity_log_service, $auth_session_service, $workoutService;
 
-    public function __construct(TraineeRepository $traineeRepository, UserRepository $userRepository)
+    public function __construct(
+        TraineeRepository  $traineeRepository,
+        UserRepository     $userRepository,
+        ActivityLogService $activity_log_service,
+        AuthSessionService $auth_session_service,
+        WorkoutService     $workoutService
+    )
     {
         parent::__construct();
         $this->traineeRepository = $traineeRepository;
         $this->userRepository = $userRepository;
+        $this->activity_log_service = $activity_log_service;
+        $this->auth_session_service = $auth_session_service;
+        $this->workoutService = $workoutService;
+    }
+
+    public function findById($id)
+    {
+        $trainee = $this->traineeRepository->find($id);
+        $trainee->load(['activeWorkoutPlans.exercises', 'archivedWorkoutPlans.exercises']);
+        $user_id = $trainee->user_id ?? 0;
+
+        $activityLogData = $this->activity_log_service->loadViewData();
+        $activityLogData['datatableURL'] = route('system.trainee.get-activity-log', $user_id);
+        $activityLogData['datatableID'] = 'activity-log';
+
+        $authSessionData = $this->auth_session_service->loadViewData();
+        $authSessionData['datatableURL'] = route('system.trainee.get-auth-session', $user_id);
+        $authSessionData['datatableID'] = 'auth-session';
+
+        $workoutData = $this->workoutService->loadViewData();
+        $workoutData['datatableURL'] = route('system.trainee.get-workout', $id);
+        $workoutData['datatableID'] = 'workout';
+
+        $datatablesData = [
+            'authSessionData' => $authSessionData,
+            'activityLogData' => $activityLogData,
+            'workoutData' => $workoutData,
+        ];
+
+        $this->clearRetunData();
+
+        $this->pageTitle('View Trainee');
+        $this->breadcrumb('Trainee', 'system.trainee.index');
+
+        $this->otherData($datatablesData);
+        $this->otherData(['result' => $trainee]);
+
+        return $this->retunData;
     }
 
     public function loadViewData(): array
@@ -34,7 +79,6 @@ class TraineeService extends BaseService
             __('Level'),
             __('Status'),
             __('Action')
-
         ]);
 
         $this->jsColumns([
@@ -60,21 +104,21 @@ class TraineeService extends BaseService
     {
         $query = $this->traineeRepository->getDataTableQuery();
 
-//        $eloquentData = app(Pipeline::class)
-//            ->send($query)
-//            ->through([
-//                Id::class,
-//                PermissionGroupId::class,
-//                Name::class,
-//                Email::class,
-//                CreatedAtFrom::class,
-//                CreatedAtTo::class
-//            ])->thenReturn();
+        //        $eloquentData = app(Pipeline::class)
+        //            ->send($query)
+        //            ->through([
+        //                Id::class,
+        //                PermissionGroupId::class,
+        //                Name::class,
+        //                Email::class,
+        //                CreatedAtFrom::class,
+        //                CreatedAtTo::class
+        //            ])->thenReturn();
         return Datatables::eloquent($query)
             ->addColumn('id', '{{$id}}')
             ->addColumn('user_id', function ($data) {
                 if ($data->user_id)
-                    return datatable_links('system.user.show', route('system.user.show', $data->user_id), $data->user->name);
+                    return datatable_links('system.trainee.show', route('system.trainee.show', $data->id), $data->user?->name);
             })
             ->editColumn('weight', '{{$weight}}')
             ->editColumn('height', '{{$height}}')
@@ -88,9 +132,17 @@ class TraineeService extends BaseService
                 return $data->membership_end;
             })
             ->editColumn('action', function ($data) {
-//                 $this->actionButtons(datatable_menu_show(route('system.user.show', $data->id), 'system.user.show'));
-//                $this->actionButtons(datatable_menu_edit(route('system.user.edit', $data->id), 'system.user.edit'));
-                return $this->actionButtonsRender($this->traineeRepository->modelPath(), $data->id);
+                if ($data->activeWorkoutPlans->isEmpty()) {
+                    $this->actionButtons(
+                        datatable_menu_workout(
+                            route('system.workout.create', ['trainee' => Crypt::encrypt($data->id)]),
+                            'system.workout.create'
+                        )
+                    );
+                }
+                $this->actionButtons(datatable_menu_edit(route('system.trainee.edit', $data->user_id), 'system.trainee.edit'));
+                $this->actionButtons(datatable_menu_show(route('system.trainee.show', $data->id), 'system.trainee.show'));
+                return $this->actionButtonsRender($this->traineeRepository->modelPath(), $data->user_id);
             })->escapeColumns([])
             ->make(true);
     }
@@ -100,32 +152,11 @@ class TraineeService extends BaseService
         $this->pageTitle('Create Trainee');
         $this->breadcrumb('Trainee', 'system.trainee.index');
         $this->otherData([
-//            'PermissionGroup' => (new PermissionGroupService($this->permission_group_repository))->permissionArray(),
             'telephone_code' => '+20',
             'code' => 'eg'
         ]);
         return $this->retunData;
     }
-
-//    public function edit($id): array
-//    {
-//        $user = $this->user_repository->find($id);
-//
-//        $this->pageTitle('Update User');
-//        $this->breadcrumb('User', 'system.user.index');
-//
-//        $this->otherData(['result' => $user]);
-//
-//        $this->otherData([
-//            'PermissionGroup' => (new PermissionGroupService($this->permission_group_repository))->permissionArray(),
-//            'telephone' => strlen($user->mobile) < 12 ? $user->mobile : substr($user->mobile, 3),
-//            'telephone_code' => strlen($user->mobile) < 12 ? '+20' : substr($user->mobile, 0, 3),
-//            'code' => $this->getCode($user->mobile)
-//
-//        ]);
-//
-//        return $this->retunData;
-//    }
 
     public function store($request)
     {
@@ -137,6 +168,7 @@ class TraineeService extends BaseService
                 'name' => $request->name,
                 'email' => $request->email,
                 'status' => $request->status,
+                'permission_group_id' => 125,
                 'user_type' => 2,
                 'password' => $this->userPassword($request->password),
                 'mobile' => $mobile ?? '',
@@ -163,55 +195,88 @@ class TraineeService extends BaseService
             errorLog($e->getMessage());
             return false;
         }
-
     }
 
+    public function edit($id): array
+    {
+        $user = $this->userRepository->find($id);
+        $trainee = $this->traineeRepository->getTraineeFirst($user->id);
+        $this->pageTitle('Update Trainee');
+        $this->breadcrumb('Trainee', 'system.trainee.index');
 
-//    public function update($request, $id)
-//    {
-//        DB::beginTransaction();
-//
-//        try {
-//            $theRequest = $request->all();
-//            if ($request->file('image')) {
-//                $theRequest['image'] = $this->uploadFileS3($request->image, 'image/user');
-//            } else {
-//                unset($theRequest['image']);
-//            }
-//
-//            if ($request->password) {
-//                $theRequest['password'] = $this->userPassword($theRequest['password']);
-//            } else {
-//                unset($theRequest['password']);
-//            }
-//            if ($request->telephone)
-//                $theRequest['mobile'] = fixMobileNumber($request->telephone);
-//            $update = $this->user_repository->update($theRequest, $id);
-//            DB::commit();
-//            return $update;
-//        } catch (\Exception $e) {
-//            DB::rollback();
-//            errorLog($e->getMessage());
-//            return false;
-//        }
-//
-//    }
+        $this->otherData([
+            'result' => $user,
+            'trainee' => $trainee,
+            'telephone' => strlen($user->mobile) < 11 ? $user->mobile : substr($user->mobile, 3),
+            'telephone_code' => strlen($user->mobile) < 11 ? '966' : substr($user->mobile, 0, 3),
+            'code' => $this->getCode($user->mobile)
 
+        ]);
+
+        return $this->retunData;
+    }
+
+    public function update($request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $userData = $request->only(['name', 'email']);
+
+            if ($request->password) {
+                $userData['password'] = $this->userPassword($request->password);
+            }
+
+            if ($request->telephone) {
+                $userData['mobile'] = fixMobileNumber($request->telephone);
+            }
+
+            $this->userRepository->update($userData, $id);
+
+            $trainee = $this->traineeRepository->getTraineeFirst($id);
+
+            if ($trainee) {
+                $this->traineeRepository->update([
+                    'training_level' => $request->training_level,
+                    'membership_start' => $request->membership_start,
+                    'membership_end' => $request->membership_end,
+                    'age' => $request->age,
+                    'weight' => $request->weight,
+                    'height' => $request->height,
+                    'status' => $request->status,
+                ], $trainee->id);
+            }
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollback();
+            errorLog($e->getMessage());
+            return false;
+        }
+    }
 
     public function userPassword($password): string
     {
         return Hash::make($password);
     }
 
-//    public function loadActivityLogDetails($id)
-//    {
-//        return $this->activity_log_service->loadDataTableData($id);
-//
-//    }
-//
-//    public function loadAuthSessionDetails($id)
-//    {
-//        return $this->auth_session_service->loadDataTableData($id);
-//
-//    }
+    public function loadActivityLogDetails($id)
+    {
+        return $this->activity_log_service->loadDataTableData($id);
+    }
+
+    public function loadAuthSessionDetails($id)
+    {
+        return $this->auth_session_service->loadDataTableData($id);
+    }
+
+    public function loadWorkoutDetails($id)
+    {
+        return $this->workoutService->loadDataTableDataForTrainee($id);
+    }
+
+    public function getTraineeFirst($userId)
+    {
+        return $this->traineeRepository->getTraineeFirst($userId);
+    }
 }

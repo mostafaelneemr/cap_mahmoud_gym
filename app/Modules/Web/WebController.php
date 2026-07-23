@@ -6,7 +6,7 @@ use App\Enums\DefaultStatus;
 use App\Enums\SliderTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\ChooseItem;
-use App\Models\Site;
+
 use App\Models\Slider;
 use App\Models\Testimonial;
 
@@ -40,7 +40,7 @@ class WebController extends Controller{
 
     public function home()
     {
-        $this->viewData['links'] = Site::where('status',DefaultStatus::Active->value)->get();
+        $this->viewData['links'] = \App\Models\SocialLink::where('is_active', 1)->orderBy('order', 'asc')->get();
         return view('web.home1',$this->viewData);
     }
 

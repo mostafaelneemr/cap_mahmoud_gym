@@ -155,78 +155,6 @@ abstract class BaseService extends Service
             ]);
     }
 
-    public function uploadCatalogS3($file, $folderName, $type = false)
-    {
-
-        set_time_limit(0);
-
-        $directory = 'image/' . $folderName;
-
-        $name_only = time() . "_" . md5(time());
-        $name_only = rand(0, 99999999) . '_' . basename(html_entity_decode(preg_replace("/[^a-z0-9\_\-\.]/i", '', $name_only), ENT_QUOTES, 'UTF-8'));
-
-
-        $extension = $file->getClientOriginalExtension();
-        $mineType = $file->getClientMimeType();
-        $original_name = '';
-
-        if ($type == 'Img360') {
-            $sizes = [['w' => 'original', 'h' => 'original'], ['w' => '100', 'h' => '100'], ['w' => '150', 'h' => '200'], ['w' => '228', 'h' => '228'], ['w' => '1200', 'h' => '1200'], ['w' => '1500', 'h' => '1500']];
-        } else if ($type == 'Catalog') {
-            $sizes = [['w' => 'original', 'h' => 'original'], ['w' => '100', 'h' => '100'], ['w' => '1500', 'h' => '1500']];
-        } else if ($type == 'product') {
-            $sizes = [['w' => 'original', 'h' => 'original'], ['w' => '100', 'h' => '100'], ['w' => '150', 'h' => '200'], ['w' => '228', 'h' => '228'], ['w' => '500', 'h' => '500'], ['w' => '680', 'h' => '680'], ['w' => '1500', 'h' => '1500']];
-        }else if($type == 'before_after'){
-            $sizes = [['w' => '100', 'h' => '100'], ['w' => '150', 'h' => '200'],['w' => '228', 'h' => '228'], ['w' => '500', 'h' => '500'], ['w' => '680', 'h' => '680'], ['w' => '1500', 'h' => '1500'],['w' => '9000', 'h' => '9700']];
-
-        } else if ($type == 'original') {
-            $sizes = [['w' => 'original', 'h' => 'original'], ['w' => '100', 'h' => '100']];
-        } else if ($type == 'blog_topic') {
-            $sizes = [['w' => 'original', 'h' => 'original'],['w' => '100', 'h' => '100'], ['w' => '394', 'h' => '204']];
-        }else if ($type == 'blog_post') {
-            $sizes = [['w' => 'original', 'h' => 'original'],['w' => '100', 'h' => '100'], ['w' => '1360', 'h' => '278']];
-        }else {
-            $sizes = [['w' => 'original', 'h' => 'original'], ['w' => '100', 'h' => '100'], ['w' => '150', 'h' => '200'], ['w' => '228', 'h' => '228'], ['w' => '268', 'h' => '50'], ['w' => '500', 'h' => '500'], ['w' => '1140', 'h' => '380'], ['w' => '1140', 'h' => '300'], ['w' => '1200', 'h' => '498'], ['w' => '600', 'h' => '189'], ['w' => '750', 'h' => '460'], ['w' => '532', 'h' => '553'], ['w' => '1242', 'h' => '810'], ['w' => '1150', 'h' => '380'], ['w' => '432', 'h' => '370'], ['w' => '1456', 'h' => '264'], ['w' => '750', 'h' => '500'], ['w' => '571', 'h' => '300'], ['w' => '1500', 'h' => '1500']];
-        }
-
-
-//$dat = [];
-
-        foreach ($sizes as $size) {
-
-            if ($size['w'] == 'original') {
-                $DB_path_name = $folderName . '/' . $name_only . '.' . $extension;
-                $new_name = $directory . '/' . $name_only . '.' . $extension;
-                $original_name = $folderName . '/' . $name_only . '.' . $extension;
-                $image = \Image::make($file);
-                $image->stream();
-            } else {
-                if ($mineType == 'image/png') {
-                    $image = \Image::make($file);
-                    $image->resize($size['w'], $size['h']);
-                    $image->stream();
-
-                } else {
-                    $image = \Image::make($file)->resize($size['w'], $size['h']);
-                    $image->stream();
-                }
-                $new_name = $directory . '/' . $name_only . '-' . $size['w'] . 'x' . $size['h'] . '.' . $extension;
-                $DB_path_name = $folderName . '/' . $name_only . '-' . $size['w'] . 'x' . $size['h'] . '.' . $extension;
-            }
-            Storage::disk('s3')->put($new_name, $image->__toString());
-
-            $AmazonS3ImageRepo = new AmazonS3ImageRepository();
-            $AmazonS3ImageRepo->store([
-                'filename'=>$DB_path_name
-            ]);
-
-        }
-
-
-        return $original_name;
-    }
-
-
     /**
      * Optimizes PNG file with pngquant 1.8 or later (reduces file size of 24-bit/32-bit PNG images).
      *
@@ -287,7 +215,7 @@ abstract class BaseService extends Service
 //        return $compressed_jpg_content;
     }
 
-    public function uploadFileS3($file=null, $folderName, $driver = 's3',$content =null)
+    public function uploadFileS3($file, $folderName, $driver = 's3', $content = null)
     {
         if(!$content && $file){
             $file_name = '';
@@ -420,18 +348,8 @@ abstract class BaseService extends Service
 
     }
 
-    public function preview_excel($file,$folder_name = 'product_category_update_requests')
-    {
-        $data = Excel::toArray(new DataImport, $file);
-        return $data;
-    }
-
     public function upload_s3_with_file_content($path,$content){
        return Storage::disk('s3')->put($path, $content);
-    }
-
-    public function get_suppliers() {
-        return DB::connection('dashboard')->table('NetsuiteStockLogger')->get();
     }
 
 //    protected function sendEmailTemplate($to, $subject, $text, $data,$template='mail.plain-text')

@@ -19,14 +19,15 @@ class Permission
      */
     public function handle($request, Closure $next)
     {
+        $authUser = Auth::guard('user')->user();
         if (Auth::guard('user')->check()) {
-            if (Auth::guard('user')->user()->status == 'in-active' || empty(Auth::guard('user')->user()->permission_group_id)) {
+            if ($authUser->status == 'in-active' || empty($authUser->permission_group_id) && $authUser->user_type != 2) {
                 Auth::logout();
                 return redirect('/system/login');
             }
 
-            $canAccess = array_merge(ignoredRoutes(), User::UserPerms(Auth::guard('user')->user()->id)->toArray());
-            
+            $canAccess = array_merge(ignoredRoutes(), User::UserPerms($authUser->id)->toArray());
+
             if (!in_array(Route::currentRouteName(), $canAccess)) {
                 abort(401, 'Unauthorized.');
             }

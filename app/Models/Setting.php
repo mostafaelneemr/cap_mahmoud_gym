@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\GlobalModel;
 
 class Setting extends GlobalModel
 {

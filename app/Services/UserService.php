@@ -48,7 +48,6 @@ class UserService extends BaseService
 
         $this->clearRetunData();
 
-
         $this->pageTitle('View User');
         $this->breadcrumb('User', 'system.user.index');
 
@@ -56,7 +55,7 @@ class UserService extends BaseService
 
 
         $this->otherData(['result' => $this->user_repository->find($id)]);
-        $this->otherData(['UserArray' => $this->user_repository->get()->toArray()]);
+            $this->otherData(['UserArray' => $this->user_repository->get()->toArray()]);
 
         return $this->retunData;
     }
@@ -129,8 +128,14 @@ class UserService extends BaseService
             })
 
             ->addColumn('permission_group', function ($data) {
-                if (isset($data->permission_group->id)) {
-                    return datatable_links('system.permission-group.edit', route('system.permission-group.edit', $data->permission_group->id), $data->permission_group_name);
+                $group = $data->permission_group;
+
+                if ($group) {
+                    return datatable_links(
+                        'system.permission-group.edit',
+                        route('system.permission-group.edit', $group->id),
+                        $group->name
+                    );
                 }
             })
             ->addColumn('created_at', function ($data) {
@@ -255,7 +260,6 @@ class UserService extends BaseService
 
     }
 
-
     public function userPassword($password): string
     {
         return Hash::make($password);
@@ -264,12 +268,10 @@ class UserService extends BaseService
     public function loadActivityLogDetails($id)
     {
         return $this->activity_log_service->loadDataTableData($id);
-
     }
 
     public function loadAuthSessionDetails($id)
     {
         return $this->auth_session_service->loadDataTableData($id);
-
     }
 }

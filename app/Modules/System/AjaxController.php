@@ -5,33 +5,17 @@ namespace App\Modules\System;
 
 use Illuminate\Http\Request;
 use App;
-use App\Services\{Address\RegionService, ZoneService};
-
-
 
 class AjaxController extends SystemController{
 
-
-    protected
-        $zoneService,
-        $regionService;
-
-    public function __construct(
-
-        ZoneService $zoneService,
-        RegionService $regionService
-    )
+    public function __construct()
     {
         parent::__construct();
-        $this->zoneService = $zoneService;
-        $this->regionService = $regionService;
     }
 
     public function index(Request $request)
     {
-
         switch ($request->type) {
-
             case 'user':
                 $word = $request->word;
 
@@ -52,23 +36,7 @@ class AjaxController extends SystemController{
 
                 if (!$data) return [];
                 return $data;
-
-            case 'zone':
-                $data = $this->zoneService->search_zone($request->word);
-                if (!$data)
-                    return [];
-                return $data;
-                break;
-
-            case 'region':
-                $data = $this->regionService->search_region($request->word);
-                if (!$data)
-                    return [];
-                return $data;
-                break;
-
         }
-
+        return [];
     }
-
 }

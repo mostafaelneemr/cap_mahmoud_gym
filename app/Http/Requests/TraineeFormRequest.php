@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Requests;
+
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TraineeFormRequest extends FormRequest
 {
@@ -13,46 +15,59 @@ class TraineeFormRequest extends FormRequest
 
     public function rules()
     {
-        $rowid = $this->segment(3);
-        switch($this->method())
-        {
+        switch ($this->method()) {
             case 'GET':
             case 'DELETE':
             {
                 return [];
             }
-            case 'POST': {
+            case 'POST':
+            {
                 return [
-                    'name' =>  'required',
-                    'email'      =>  'required|email|unique:user,email',
-                    'status'     =>  'required|in:1,0',
-                    'password'                  =>  'required|confirmed',
-                    'password_confirmation'     =>  'required',
+                    'name' => 'required|string|max:255',
+                    'email' => 'required|email|unique:user,email',
+                    'status' => 'required|in:active,inactive,expired',
+                    'password' => 'required|confirmed',
+                    'password_confirmation' => 'required',
                     'membership_start' => 'required|date',
                     'membership_end' => 'required|date|after:membership_start',
+                    'weight' => 'nullable|numeric|decimal:0,2|min:0|max:999.99',
+                    'height' => 'nullable|numeric|decimal:0,2|min:0|max:999.99',
+                    'age' => 'nullable|integer|min:0|max:150',
+                    'training_level' => 'required|in:beginner,intermediate,advanced',
                 ];
 
             }
             case 'PUT':
             case 'PATCH':
             {
+                $trainee = $this->route('trainee');
+                $userId = is_object($trainee) ? $trainee->user_id : $this->segment(3);
                 return [
-                    'name' =>  'required',
-                    'email'      =>  'required|email|unique:user,email,'.$rowid.',id',
-                    'status'     =>  'required|in:1,0',
-                    'password'                  =>  'nullable|confirmed',
-                    'password_confirmation'     =>  'required_with:password',
+                    'name' => 'required|string|max:255',
+                    'email' => ['required', 'email', Rule::unique('user', 'email')->ignore($userId)],
+                    'status' => 'required|in:active,inactive,expired',
+                    'password' => 'nullable|confirmed',
+                    'password_confirmation' => 'required_with:password',
+                    'membership_start' => 'required|date',
+                    'membership_end' => 'required|date|after:membership_start',
+                    'weight' => 'nullable|numeric|decimal:0,2|min:0|max:999.99',
+                    'height' => 'nullable|numeric|decimal:0,2|min:0|max:999.99',
+                    'age' => 'nullable|integer|min:0',
+                    'training_level' => 'required|in:beginner,intermediate,advanced',
                 ];
             }
-            default:break;
+            default:
+                break;
         }
 
     }
+
     public function messages()
     {
         return [
-            'telephone.min' =>__('The phone number must be at least 9 digits long'),
-            'telephone.max' =>__('The phone number must be at most 12 digits long'),
+            'telephone.min' => __('The phone number must be at least 9 digits long'),
+            'telephone.max' => __('The phone number must be at most 12 digits long'),
         ];
     }
 }

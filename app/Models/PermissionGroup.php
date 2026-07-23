@@ -30,4 +30,20 @@ class PermissionGroup extends GlobalModel
         return Carbon::parse($value)->format('Y-m-d H:i');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function ($group) {
+            \App\Models\User::where('permission_group_id', $group->id)->pluck('id')->each(function ($userId) {
+                \Illuminate\Support\Facades\Cache::forget("user_perms_{$userId}");
+            });
+        });
+
+        static::deleted(function ($group) {
+            \App\Models\User::where('permission_group_id', $group->id)->pluck('id')->each(function ($userId) {
+                \Illuminate\Support\Facades\Cache::forget("user_perms_{$userId}");
+            });
+        });
+    }
 }

@@ -15,6 +15,7 @@
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^3.0",
         "laravel/ui": "^4.2",
+        "laravellux/html": "^7.1",
         "maatwebsite/excel": "^4.x-dev",
         "opcodesio/log-viewer": "*",
         "predis/predis": "^2.2",

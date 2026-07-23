@@ -17,18 +17,13 @@ class UserRepository extends BaseRepository
      */
     public function getDataTableQuery()
     {
-
         return $this->modeler
-         ->select([
-             'user.id',
-             'permission_groups.name as permission_group_name',
-             'user.permission_group_id',
-             'user.status',
-             "user.name",
-             'user.email',
-             'user.mobile',
-             'user.created_at'])
-            ->leftjoin('permission_groups','permission_groups.id','user.permission_group_id');
+            ->with('permission_group:id,name')
+            ->select(['id', 'permission_group_id', 'status', 'name', 'email', 'mobile', 'created_at'])
+            ->where(function ($query) {
+                $query->where('user_type', 1)
+                    ->orWhereNull('user_type');
+            });
     }
     public function get(array $columns = [ '*' ])
     {

@@ -1,7 +1,13 @@
 <?php
 
 use App\Models\{Active_section,Setting};
-use App\Enums\{DefaultStatus, EventEnum, ReadMessageEnum, SliderTypeEnum, StatusEnum, TrainingLevelEnum};
+use App\Enums\{DefaultStatus,
+    EventEnum,
+    ReadMessageEnum,
+    SliderTypeEnum,
+    StatusEnum,
+    TraineesStatusEnum,
+    TrainingLevelEnum};
 use Illuminate\Support\Facades\Log;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use libphonenumber\NumberParseException;
@@ -125,8 +131,8 @@ function ignoredRoutes()
     return [
         'log-viewer.index',
         'system.change',
-        'system.change',
         'system.dashboard',
+        'system.dashboard.trainer',
         'login',
         'logout',
         'system.misc.ajax',
@@ -139,6 +145,7 @@ function ignoredRoutes()
         'system.user.show-profile',
         'system.user.update-profile',
         'system.reset-password',
+        'system.workout.create',
     ];
 }
 
@@ -395,7 +402,7 @@ function fixMobileNumber($Mobile)
 {
     $regionCode = "SA";
     $telephone = toEnglishNumrics($Mobile);
-    if (strncmp($telephone, "9", 1) === 0) {
+    if (strncmp($telephone, "966", 3) === 0) {
         $telephone = "+" . $telephone;
         $regionCode = null;
     }
@@ -410,6 +417,7 @@ function fixMobileNumber($Mobile)
     }
     return $Mobile;
 }
+
 function toEnglishNumrics($number)
 {
     $number = str_replace('+', '', $number);
@@ -637,6 +645,23 @@ function training_level($key = null, $withLang = false, $replacePendingValue = f
         return TrainingLevelEnum::values()[$key];
 
     return TrainingLevelEnum::values();
+}
+
+function trainee_status($key = null, $withLang = false, $replacePendingValue = false)
+{
+    if ($withLang) {
+        return TraineesStatusEnum::values_lang($replacePendingValue);
+    }
+    if (!empty($key))
+        return TraineesStatusEnum::values()[$key];
+
+    return TraineesStatusEnum::values();
+}
+
+function datatable_menu_workout($link, $route)
+{
+    if (userCan($route))
+        return view('system.partials.links.datatable_menu_workout', compact('link', 'route'));
 }
 
 

@@ -18,12 +18,12 @@ class PermissionGroupRepository extends BaseRepository
     public function getDataTableQuery()
     {
         return $this->modeler
-         ->select([
-             'permission_groups.id',
-             'permission_groups.name',
-             "permission_groups.updated_at",
-             DB::raw( "(SELECT COUNT(*) FROM `user` WHERE permission_group_id = `permission_groups`.`id`) as `count`" )
-         ]);
+            ->select([
+                'permission_groups.id',
+                'permission_groups.name',
+                "permission_groups.updated_at",
+                DB::raw("(SELECT COUNT(*) FROM `user` WHERE permission_group_id = `permission_groups`.`id`) as `count`")
+            ])->where('id', '!=', '125');
     }
     public function get(array $columns = [ '*' ])
     {

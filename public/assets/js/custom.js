@@ -909,20 +909,6 @@ function filterFunction(datatableURL, datatableVar, $this, downloadExcel = false
 
 }
 
-function check_telephone() {
-    var phone = $(".valid_telephone").val();
-    if (phone != '') {
-        phone = phone.replace(/\D/g, '')
-        if (phone.substring(0, 1) == 0) {
-            $(".valid_telephone").val(phone.substring(1));
-            check_telephone()
-            return;
-        }
-        $(".valid_telephone").val(phone);
-
-    }
-}
-
 $(function () {
     $('.valid_telephone').change(function () {
         check_telephone();
@@ -932,6 +918,10 @@ $(function () {
     });
     $('.valid_telephone').keydown(function () {
         check_telephone();
+    });
+
+    $('.numeric-only').on('input', function (event) {
+        $(this).val($(this).val().replace(/\D/g, ''));
     });
 })
 

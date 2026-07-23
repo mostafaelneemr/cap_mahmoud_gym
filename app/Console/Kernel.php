@@ -2,8 +2,6 @@
 
 namespace App\Console;
 
-use App\Models\IntegrationShippingLog;
-use App\Models\ShippingCompany;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -17,7 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         // convert pending shipping log to false
+        //
     }
 
     /**
