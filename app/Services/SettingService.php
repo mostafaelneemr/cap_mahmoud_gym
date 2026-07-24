@@ -5,8 +5,11 @@ namespace App\Services;
 use App\Models\setting;
 use App\Repositories\Setting\SettingRepository;
 use Illuminate\Support\Facades\DB;
-use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File; // ✅ استدعاء Facade التعامل مع الملفات
 
+// ✅ Spatie Image
+use Spatie\Image\Image;
 
 class SettingService extends BaseService
 {
@@ -42,51 +45,51 @@ class SettingService extends BaseService
 
             $data = $request->all();
 
-            $settingTable = Setting::get(['name', 'input_type']);
+            $settingTable = Setting::get(['name', 'input_type', 'value']);
+            $uploadDir = public_path('upload/setting');
 
-            foreach ($settingTable as $key => $value) {
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            foreach ($settingTable as $value) {
 
                 switch ($value->input_type) {
                     case 'image':
-                        $validator = \Validator::make($request->all(), [
+                        $validator = Validator::make($request->all(), [
                             $value->name => 'nullable|image',
                         ]);
-//                    if (!$validator->fails() && $request->file($value->name)) {
-//                        $path = $request->file($value->name)->store(setting('system_path').'/setting/'.date('Y/m/d'),'first_public');
-//                        if($path){
-//                            Setting::where(['name'=>$value->name])->where('is_visible','yes')->update(['value'=>$path]);
-//                        }
-//                    }
-//                    break;
 
-                        if (!$validator->fails() && $request->file($value->name)) {
-                            // $path = $request->file($value->name)->store(setting('system_path').'/setting/'.date('Y/m/d'),'first_public');
+                        if (!$validator->fails() && $request->hasFile($value->name) && $request->file($value->name)->isValid()) {
 
-                            if ($request->file('site_logo')) {
-                                $path = $request->file('site_logo');
-                                $name_gen = hexdec(uniqid()) . '.' . $path->getClientOriginalExtension();
-                                Image::make($path)->resize(230, 70)->save('upload/setting/' . $name_gen);
-                                $save_url = 'upload/setting/' . $name_gen;
-                                if ($path) {
-                                    Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => $save_url]);
-                                }
-                            } elseif ($request->file('profile_image')) {
-                                $path = $request->file('profile_image');
-                                $name_gen = hexdec(uniqid()) . '.' . $path->getClientOriginalExtension();
-                                Image::make($path)->save('upload/setting/' . $name_gen);
-                                $save_url = 'upload/setting/' . $name_gen;
-                                if ($path) {
-                                    Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => $save_url]);
-                                }
-                            } elseif ($request->file('logo')) {
-                                $path = $request->file('logo');
-                                $name_gen = hexdec(uniqid()) . '.' . $path->getClientOriginalExtension();
-                                Image::make($path)->save('upload/setting/' . $name_gen);
-                                $save_url = 'upload/setting/' . $name_gen;
-                                if ($path) {
-                                    Setting::where(['name' => $value->name])->where('is_visible', 'yes')->update(['value' => $save_url]);
+                            // 🗑️ 1. جلب مسار الصورة القديمة ومسحها إن وجدت
+                            $oldSetting = Setting::where('name', $value->name)->first();
+                            if ($oldSetting && !empty($oldSetting->value)) {
+                                $oldFilePath = public_path($oldSetting->value);
+                                if (File::exists($oldFilePath)) {
+                                    File::delete($oldFilePath); // مسح الصورة القديمة من السيرفر
                                 }
                             }
+
+                            // 📤 2. تجهيز ورفع الصورة الجديدة
+                            $file = $request->file($value->name);
+                            $name_gen = hexdec(uniqid()) . '.' . $file->getClientOriginalExtension();
+                            $save_url = 'upload/setting/' . $name_gen;
+                            $destinationPath = public_path($save_url);
+
+                            // معالجة الصورة بـ Spatie Image
+                            $image = Image::load($file->getRealPath());
+
+                            if ($value->name === 'site_logo') {
+                                $image->width(230)->height(70);
+                            }
+
+                            $image->save($destinationPath);
+
+                            // 💾 3. تحديث قايمة البيانات بالمسار الجديد
+                            Setting::where('name', $value->name)
+                                ->where('is_visible', 'yes')
+                                ->update(['value' => $save_url]);
                         }
                         break;
 
@@ -107,12 +110,10 @@ class SettingService extends BaseService
 
             DB::commit();
             return ['status' => true];
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             errorLog($e->getMessage());
             return false;
         }
     }
-
-
 }

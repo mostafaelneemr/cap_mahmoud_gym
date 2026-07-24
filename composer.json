@@ -19,6 +19,7 @@
         "maatwebsite/excel": "^4.x-dev",
         "opcodesio/log-viewer": "*",
         "predis/predis": "^2.2",
+        "spatie/image": "^3.9",
         "spatie/laravel-activitylog": "^4.7",
         "yajra/laravel-datatables": "13.0"
     },
