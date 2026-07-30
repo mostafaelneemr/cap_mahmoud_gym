@@ -52,7 +52,7 @@ class WorkoutService extends BaseService
         return \Datatables::eloquent($query)
             ->addColumn('id', '{{$id}}')
             ->addColumn('trainee_name', function ($data) {
-                return $data->trainee ? ($data->trainee->user ? $data->trainee->user->name : '') : '';
+                return $data->trainee ? $data->trainee->name : '';
             })
             ->addColumn('day_name', '{{$day_name}}')
             ->editColumn('action', function ($data) {
@@ -68,7 +68,7 @@ class WorkoutService extends BaseService
         return \Datatables::eloquent($query)
             ->addColumn('id', '{{$id}}')
             ->addColumn('trainee_name', function ($data) {
-                return $data->trainee ? ($data->trainee->user ? $data->trainee->user->name : '') : '';
+                return $data->trainee ? $data->trainee->name : '';
             })
             ->addColumn('day_name', '{{$day_name}}')
             ->editColumn('action', function ($data) {

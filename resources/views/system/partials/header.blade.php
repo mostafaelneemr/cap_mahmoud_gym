@@ -154,12 +154,21 @@
                             <!--end::Avatar-->
                             <!--begin::Username-->
                             <div class="d-flex flex-column">
-                                <div class="fw-bold d-flex align-items-center fs-5">{{auth()->user()->name}}</div>
-                                <div class="fw-bold d-flex align-items-center fs-5"><span
-                                        class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">{{auth()->user()->permission_group->name}}</span>
-                                </div>
-
-                                <a class="fw-semibold text-muted text-hover-primary fs-7">{{auth()->user()->email}}</a>
+                                @php
+                                    // Resolve active user from whichever guard is authenticated
+                                    $authUser = auth('user')->user() ?? auth('trainee')->user();
+                                @endphp
+                                <div class="fw-bold d-flex align-items-center fs-5">{{ $authUser?->name }}</div>
+                                @if(auth('user')->check())
+                                    <div class="fw-bold d-flex align-items-center fs-5"><span
+                                            class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">{{ $authUser?->permission_group?->name }}</span>
+                                    </div>
+                                @else
+                                    <div class="fw-bold d-flex align-items-center fs-5"><span
+                                            class="badge badge-light-primary fw-bold fs-8 px-2 py-1 ms-2">{{ __('Trainee') }}</span>
+                                    </div>
+                                @endif
+                                <a class="fw-semibold text-muted text-hover-primary fs-7">{{ $authUser?->email }}</a>
                             </div>
                             <!--end::Username-->
                         </div>
@@ -248,7 +257,7 @@
                     </div>
                     <!--end::Menu item-->
                     <!--begin::Menu item-->
-                    @if(auth()->user()->user_type == 1 || auth()->user()->user_type == null)
+                    @if(auth('user')->check() && (auth('user')->user()->user_type == 1 || auth('user')->user()->user_type == null))
                     <div class="menu-item px-5 my-1">
 
                         <a href="{{route('system.user.show-profile')}}" class="menu-link px-5">{{__('Profile')}}</a>

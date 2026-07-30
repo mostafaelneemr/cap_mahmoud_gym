@@ -1,9 +1,9 @@
 @php
-    $authUser = auth()->user();
+    $authUser = auth()->guard('user');
+    $authTrainer = auth()->guard('trainee');
 @endphp
 
-@if($authUser && $authUser->user_type == 2)
-    {{-- ===== Trainee Menu ===== --}}
+@if($authTrainer)
     @php
         $menu['MyProgram'] = [
             'permission' => ['system.dashboard.trainer'],
@@ -17,7 +17,6 @@
         {!! generateMenu($onemenu) !!}
     @endforeach
 @else
-    {{-- ===== Admin / Moderator Menu ===== --}}
     @php
         $menu['Dashboard'] = [
             'permission' => ['system.dashboard'],

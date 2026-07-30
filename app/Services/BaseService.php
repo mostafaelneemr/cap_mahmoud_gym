@@ -318,18 +318,20 @@ abstract class BaseService extends Service
         $DATA = $this->handleActivityLogData($newData, $oldData);
 
         $activityLogRepo = new ActivityLogRepository();
+        // Resolve causer: check user guard first, then trainee guard
+        $causer = auth('user')->user() ?? auth('trainee')->user();
         $activityLogRepo->store([
-            'log_name' => config('activitylog.default_log_name'),
-            'description' => $event,
-            'subject_id' => $subject_id,
+            'log_name'     => config('activitylog.default_log_name'),
+            'description'  => $event,
+            'subject_id'   => $subject_id,
             'subject_type' => $subject_type,
-            'causer_id' => \Auth::id(),
-            'causer_type' => \Auth::user()->modelPath,
-            'ip' => getRealIP(),
-            'user_agent' => getUserAgent(),
-            'url' => request()->url(),
-            'properties' => $DATA,
-            'event' => $event
+            'causer_id'    => $causer?->id,
+            'causer_type'  => $causer?->modelPath ?? 'unknown',
+            'ip'           => getRealIP(),
+            'user_agent'   => getUserAgent(),
+            'url'          => request()->url(),
+            'properties'   => $DATA,
+            'event'        => $event
         ]);
     }
 
@@ -337,13 +339,16 @@ abstract class BaseService extends Service
     {
 
         $DATA = $this->handleActivityLogData($newData, $oldData);
-        if (!empty($DATA))
+        if (!empty($DATA)) {
+            // Resolve causer: check user guard first, then trainee guard
+            $causer = auth('user')->user() ?? auth('trainee')->user();
             activity()
                 ->withProperties($DATA)
                 ->performedOn($elquentModel)
-                ->causedBy(auth()->user())
+                ->causedBy($causer)
                 ->event($event)
                 ->log($description ?? $event);
+        }
 
 
     }

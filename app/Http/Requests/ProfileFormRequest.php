@@ -25,7 +25,7 @@ class ProfileFormRequest extends FormRequest
      */
     public function rules()
     {
-        $rowid = auth()->user()->id;
+        $rowid = auth('user')->id();
         switch($this->method())
         {
             case 'GET':

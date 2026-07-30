@@ -34,14 +34,13 @@ class TraineeService extends BaseService
     {
         $trainee = $this->traineeRepository->find($id);
         $trainee->load(['activeWorkoutPlans.exercises', 'archivedWorkoutPlans.exercises']);
-        $user_id = $trainee->user_id ?? 0;
 
         $activityLogData = $this->activity_log_service->loadViewData();
-        $activityLogData['datatableURL'] = route('system.trainee.get-activity-log', $user_id);
+        $activityLogData['datatableURL'] = route('system.trainee.get-activity-log', $id);
         $activityLogData['datatableID'] = 'activity-log';
 
         $authSessionData = $this->auth_session_service->loadViewData();
-        $authSessionData['datatableURL'] = route('system.trainee.get-auth-session', $user_id);
+        $authSessionData['datatableURL'] = route('system.trainee.get-auth-session', $id);
         $authSessionData['datatableID'] = 'auth-session';
 
         $workoutData = $this->workoutService->loadViewData();
@@ -104,21 +103,10 @@ class TraineeService extends BaseService
     {
         $query = $this->traineeRepository->getDataTableQuery();
 
-        //        $eloquentData = app(Pipeline::class)
-        //            ->send($query)
-        //            ->through([
-        //                Id::class,
-        //                PermissionGroupId::class,
-        //                Name::class,
-        //                Email::class,
-        //                CreatedAtFrom::class,
-        //                CreatedAtTo::class
-        //            ])->thenReturn();
         return Datatables::eloquent($query)
             ->addColumn('id', '{{$id}}')
             ->addColumn('user_id', function ($data) {
-                if ($data->user_id)
-                    return datatable_links('system.trainee.show', route('system.trainee.show', $data->id), $data->user?->name);
+                return datatable_links('system.trainee.show', route('system.trainee.show', $data->id), $data->name);
             })
             ->editColumn('weight', '{{$weight}}')
             ->editColumn('height', '{{$height}}')
@@ -140,9 +128,9 @@ class TraineeService extends BaseService
                         )
                     );
                 }
-                $this->actionButtons(datatable_menu_edit(route('system.trainee.edit', $data->user_id), 'system.trainee.edit'));
+                $this->actionButtons(datatable_menu_edit(route('system.trainee.edit', $data->id), 'system.trainee.edit'));
                 $this->actionButtons(datatable_menu_show(route('system.trainee.show', $data->id), 'system.trainee.show'));
-                return $this->actionButtonsRender($this->traineeRepository->modelPath(), $data->user_id);
+                return $this->actionButtonsRender($this->traineeRepository->modelPath(), $data->id);
             })->escapeColumns([])
             ->make(true);
     }
@@ -163,21 +151,12 @@ class TraineeService extends BaseService
         DB::beginTransaction();
 
         try {
-            $mobile = $request->telephone_code . $request->telephone;
-            $userData = [
+            $mobile = $request->telephone ? ($request->telephone_code . $request->telephone) : '';
+            $traineeData = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'status' => $request->status,
-                'permission_group_id' => 125,
-                'user_type' => 2,
-                'password' => $this->userPassword($request->password),
-                'mobile' => $mobile ?? '',
-            ];
-
-            $user = $this->userRepository->store($userData);
-
-            $traineeData = [
-                'user_id' => $user->id,
+                'mobile' => $mobile,
+                'password' => $request->password ? $this->userPassword($request->password) : null,
                 'training_level' => $request->training_level,
                 'membership_start' => $request->membership_start,
                 'membership_end' => $request->membership_end,
@@ -186,6 +165,7 @@ class TraineeService extends BaseService
                 'height' => $request->height,
                 'status' => $request->status,
             ];
+
             $trainee = $this->traineeRepository->store($traineeData);
 
             DB::commit();
@@ -199,18 +179,17 @@ class TraineeService extends BaseService
 
     public function edit($id): array
     {
-        $user = $this->userRepository->find($id);
-        $trainee = $this->traineeRepository->getTraineeFirst($user->id);
+        $trainee = $this->traineeRepository->find($id);
+        $mobile = $trainee->mobile ?? '';
         $this->pageTitle('Update Trainee');
         $this->breadcrumb('Trainee', 'system.trainee.index');
 
         $this->otherData([
-            'result' => $user,
+            'result' => $trainee,
             'trainee' => $trainee,
-            'telephone' => strlen($user->mobile) < 11 ? $user->mobile : substr($user->mobile, 3),
-            'telephone_code' => strlen($user->mobile) < 11 ? '966' : substr($user->mobile, 0, 3),
-            'code' => $this->getCode($user->mobile)
-
+            'telephone' => strlen($mobile) < 11 ? $mobile : substr($mobile, 3),
+            'telephone_code' => strlen($mobile) < 11 ? '966' : substr($mobile, 0, 3),
+            'code' => $this->getCode($mobile)
         ]);
 
         return $this->retunData;
@@ -220,31 +199,27 @@ class TraineeService extends BaseService
     {
         DB::beginTransaction();
         try {
-            $userData = $request->only(['name', 'email']);
+            $traineeData = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'training_level' => $request->training_level,
+                'membership_start' => $request->membership_start,
+                'membership_end' => $request->membership_end,
+                'age' => $request->age,
+                'weight' => $request->weight,
+                'height' => $request->height,
+                'status' => $request->status,
+            ];
 
             if ($request->password) {
-                $userData['password'] = $this->userPassword($request->password);
+                $traineeData['password'] = $this->userPassword($request->password);
             }
 
             if ($request->telephone) {
-                $userData['mobile'] = fixMobileNumber($request->telephone);
+                $traineeData['mobile'] = fixMobileNumber($request->telephone);
             }
 
-            $this->userRepository->update($userData, $id);
-
-            $trainee = $this->traineeRepository->getTraineeFirst($id);
-
-            if ($trainee) {
-                $this->traineeRepository->update([
-                    'training_level' => $request->training_level,
-                    'membership_start' => $request->membership_start,
-                    'membership_end' => $request->membership_end,
-                    'age' => $request->age,
-                    'weight' => $request->weight,
-                    'height' => $request->height,
-                    'status' => $request->status,
-                ], $trainee->id);
-            }
+            $this->traineeRepository->update($traineeData, $id);
 
             DB::commit();
             return true;
@@ -275,8 +250,8 @@ class TraineeService extends BaseService
         return $this->workoutService->loadDataTableDataForTrainee($id);
     }
 
-    public function getTraineeFirst($userId)
+    public function getTraineeFirst($id)
     {
-        return $this->traineeRepository->getTraineeFirst($userId);
+        return $this->traineeRepository->find($id);
     }
 }

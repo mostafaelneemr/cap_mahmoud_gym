@@ -48,32 +48,37 @@ class TraineeController extends SystemController
 
     public function show($id, Request $request)
     {
+        \App\Models\Trainee::findOrFail($id); // 404 if trainee does not exist
         return $this->view('trainee.show', $this->traineeService->findById($id));
     }
 
     public function getUserActivityLog($id)
     {
+        \App\Models\Trainee::findOrFail($id); // 404 if trainee does not exist
         return $this->traineeService->loadActivityLogDetails($id);
     }
 
     public function getAuthSession($id)
     {
+        \App\Models\Trainee::findOrFail($id); // 404 if trainee does not exist
         return $this->traineeService->loadAuthSessionDetails($id);
     }
 
     public function getWorkout($id)
     {
+        \App\Models\Trainee::findOrFail($id); // 404 if trainee does not exist
         return $this->traineeService->loadWorkoutDetails($id);
     }
 
     public function edit($id)
     {
+        \App\Models\Trainee::findOrFail($id); // 404 if trainee does not exist
         return $this->view('trainee.create', $this->traineeService->edit($id));
     }
 
     public function showProfile()
     {
-        return $this->view('user.show-profile', $this->traineeService->findById(Auth::id()));
+        return $this->view('user.show-profile', $this->traineeService->findById(auth('user')->id()));
     }
 
     public function update(TraineeFormRequest $request, $id)

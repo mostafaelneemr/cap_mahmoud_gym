@@ -258,7 +258,7 @@
 
     <div class="d-flex align-items-center gap-3">
         <span class="d-inline-block">
-            {{ edit_links('system.trainee.edit', route('system.trainee.edit', $result->user_id)) }}
+            {{ edit_links('system.trainee.edit', route('system.trainee.edit', $result->id)) }}
         </span>
         @if($result->activeWorkoutPlans->count() > 0)
             <form action="{{ route('system.trainee.reset-plan', $result->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to archive the current workout plan for this trainee? This action cannot be undone.') }}')">
@@ -280,31 +280,31 @@
             <!-- Avatar -->
             <div class="symbol symbol-100px symbol-fixed position-relative flex-shrink-0">
                 <img class="rounded-4" src="{{ asset('assets/media/avatars/blank.png') }}" style="border: 2px solid var(--gym-neon-lime); width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
-                <div class="position-absolute bottom-0 end-0 rounded-circle border border-dark w-20px h-20px {{ $result->status == 1 ? 'bg-success' : 'bg-danger' }}" title="{{ $result->status == 1 ? __('Active') : __('In-Active') }}"></div>
+                <div class="position-absolute bottom-0 end-0 rounded-circle border border-dark w-20px h-20px {{ in_array($result->status, ['active', '1', 1]) ? 'bg-success' : 'bg-danger' }}" title="{{ in_array($result->status, ['active', '1', 1]) ? __('Active') : __('In-Active') }}"></div>
             </div>
 
             <!-- Details -->
             <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
                     <div class="d-flex align-items-center gap-3">
-                        <span class="text-white fs-1 fw-bold">{{ $result->user->name ?? '' }}</span>
-                        <span class="badge {{ $result->status == 1 ? 'badge-gym-neon' : 'badge-light-danger' }}">
-                            {{ $result->status == 1 ? __('Active Trainee') : __('In-Active') }}
+                        <span class="text-white fs-1 fw-bold">{{ $result->name ?? '' }}</span>
+                        <span class="badge {{ in_array($result->status, ['active', '1', 1]) ? 'badge-gym-neon' : 'badge-light-danger' }}">
+                            {{ in_array($result->status, ['active', '1', 1]) ? __('Active Trainee') : __('In-Active') }}
                         </span>
                     </div>
                 </div>
 
                 <div class="d-flex flex-wrap fw-semibold fs-6 text-gray-400 mb-6 gap-6">
-                    @if(!empty($result->user->email))
+                    @if(!empty($result->email))
                         <div class="d-flex align-items-center gap-2">
                             <i class="ki-duotone ki-sms fs-4 text-gray-500"></i>
-                            <span>{{ $result->user->email }}</span>
+                            <span>{{ $result->email }}</span>
                         </div>
                     @endif
-                    @if(!empty($result->user->mobile))
+                    @if(!empty($result->mobile))
                         <div class="d-flex align-items-center gap-2">
                             <i class="ki-duotone ki-phone fs-4 text-gray-500"></i>
-                            <span style="direction: ltr; display: inline-block;">{{ $result->user->mobile }}</span>
+                            <span style="direction: ltr; display: inline-block;">{{ $result->mobile }}</span>
                         </div>
                     @endif
                 </div>

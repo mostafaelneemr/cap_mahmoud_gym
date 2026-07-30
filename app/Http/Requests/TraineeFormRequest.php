@@ -25,10 +25,10 @@ class TraineeFormRequest extends FormRequest
             {
                 return [
                     'name' => 'required|string|max:255',
-                    'email' => 'required|email|unique:user,email',
+                    'email' => 'required|email|unique:trainees,email',
                     'status' => 'required|in:active,inactive,expired',
-                    'password' => 'required|confirmed',
-                    'password_confirmation' => 'required',
+                    'password' => 'nullable|confirmed',
+                    'password_confirmation' => 'required_with:password',
                     'membership_start' => 'required|date',
                     'membership_end' => 'required|date|after:membership_start',
                     'weight' => 'nullable|numeric|decimal:0,2|min:0|max:999.99',
@@ -42,10 +42,10 @@ class TraineeFormRequest extends FormRequest
             case 'PATCH':
             {
                 $trainee = $this->route('trainee');
-                $userId = is_object($trainee) ? $trainee->user_id : $this->segment(3);
+                $traineeId = is_object($trainee) ? $trainee->id : $this->segment(3);
                 return [
                     'name' => 'required|string|max:255',
-                    'email' => ['required', 'email', Rule::unique('user', 'email')->ignore($userId)],
+                    'email' => ['required', 'email', Rule::unique('trainees', 'email')->ignore($traineeId)],
                     'status' => 'required|in:active,inactive,expired',
                     'password' => 'nullable|confirmed',
                     'password_confirmation' => 'required_with:password',

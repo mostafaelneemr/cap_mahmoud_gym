@@ -56,15 +56,25 @@ function languageId()
     return $language_id;
 }
 
-function whereBetween(&$eloquent, $columnName, $form, $to)
+function whereBetween(&$eloquent, string $columnName, $form, $to)
 {
+    // Security: validate column name against an allowlist to prevent SQL injection via interpolation
+    $allowedColumns = [
+        'created_at', 'updated_at', 'deleted_at',
+        'membership_start', 'membership_end',
+        'date', 'start_date', 'end_date',
+    ];
+    if (!in_array($columnName, $allowedColumns, true)) {
+        throw new \InvalidArgumentException("Unsafe column name passed to whereBetween(): [{$columnName}]");
+    }
+
     if (!empty($form) && empty($to)) {
-        $eloquent->whereRaw("$columnName >= ?", [$form]);
+        $eloquent->whereRaw("`{$columnName}` >= ?", [$form]);
     } elseif (empty($form) && !empty($to)) {
-        $eloquent->whereRaw("$columnName <= ?", [$to]);
+        $eloquent->whereRaw("`{$columnName}` <= ?", [$to]);
     } elseif (!empty($form) && !empty($to)) {
         $eloquent->where(function ($query) use ($columnName, $form, $to) {
-            $query->whereRaw("$columnName BETWEEN ? AND ?", [$form, $to]);
+            $query->whereRaw("`{$columnName}` BETWEEN ? AND ?", [$form, $to]);
         });
     }
 }
@@ -151,23 +161,39 @@ function ignoredRoutes()
 
 function userCan($routename, $userId = null)
 {
+    if (auth('trainee')->check()) {
+        $allowedTraineeRoutes = [
+            'system.dashboard.trainer',
+            'logout',
+            'auth.google',
+            'auth.google.callback'
+        ];
 
-    if ($userId && $userId == request()->user()->id) {
-        $userId = null;
+        if (is_array($routename)) {
+            return !empty(array_intersect($routename, $allowedTraineeRoutes));
+        }
+
+        return in_array($routename, $allowedTraineeRoutes);
     }
 
-    $userObj = $userId ? \App\Models\User::where('id', $userId)->first() : auth('user')->user();
+    $userObj = $userId ? User::find($userId) : auth('user')->user();
+
+    if (!$userObj) {
+        return false;
+    }
 
     static $permissions;
     if (is_null($permissions)) {
-        $permissions = \App\Models\User::UserPerms($userObj->id)->toArray();
+        $permissions = User::UserPerms($userObj->id)->toArray();
     }
+
     $permissions = array_merge($permissions, ignoredRoutes());
+
     if (is_array($routename)) {
         $arr = array_diff($routename, $permissions);
         return (!$arr) ? true : ((count($arr) == count($routename)) ? false : true);
     } else {
-        return (in_array($routename, $permissions)) ? true : false;
+        return in_array($routename, $permissions);
     }
 }
 

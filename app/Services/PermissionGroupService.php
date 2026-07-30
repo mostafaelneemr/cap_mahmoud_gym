@@ -192,7 +192,7 @@ class PermissionGroupService extends BaseService
             $attributes['new'] = json_encode($permission_group->permission()->select(['route_name', 'permission_group_id'])->get());
             activity()
                 ->performedOn($permission_group)
-                ->causedBy(auth()->user())
+                ->causedBy(auth('user')->user())
                 ->withProperties(['name' => $permission_group->name, 'attributes' => $attributes])
                 ->log('Update');
             DB::commit();

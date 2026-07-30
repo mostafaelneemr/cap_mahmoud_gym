@@ -26,7 +26,11 @@ class Dashboard extends SystemController
         TraineeRepository $traineeRepository,
         SocialLinkRepository $socialLinkRepository
     ) {
-        parent::__construct();
+        // Apply the default system middleware (auth:user) to everything EXCEPT the trainee dashboard
+        $this->middleware(['auth:user', 'check_password_reset'])->except('trainerDashboard');
+        // Trainee dashboard requires trainee guard authentication
+        $this->middleware('auth:trainee')->only('trainerDashboard');
+
         $this->traineeService = $traineeService;
         $this->workoutRepository = $workoutRepository;
         $this->traineeRepository = $traineeRepository;
@@ -35,7 +39,10 @@ class Dashboard extends SystemController
 
     public function index(Request $request)
     {
-        $user = Auth()->user()->user_type;
+        if (auth('trainee')->check()) {
+            return redirect(route('system.dashboard.trainer'));
+        }
+        $user = Auth()->user() ? Auth()->user()->user_type : null;
         if ($user == 2) {
             return redirect(route('system.dashboard.trainer'));
         }
@@ -57,7 +64,7 @@ class Dashboard extends SystemController
             $clicksCount = $linksCount > 0 ? $linksCount * 28 + 42 : 185;
         }
 
-        $pendingTrainees = $this->traineeRepository->getModelar()->with('user')
+        $pendingTrainees = $this->traineeRepository->getModelar()
             ->whereDoesntHave('activeWorkoutPlans')->latest()->take(5)->get();
 
         // Public Linktree URL
@@ -77,6 +84,9 @@ class Dashboard extends SystemController
     public function logout()
     {
         Auth::logout();
+        if (auth('trainee')->check()) {
+            auth('trainee')->logout();
+        }
         return redirect()->route('system.dashboard');
     }
 
@@ -90,13 +100,15 @@ class Dashboard extends SystemController
                 'password_confirmation' => 'required'
             ]);
 
-            if (!Hash::check($request->old_password, Auth::user()->password) && md5($request->old_password) != Auth::user()->password) {
+            $authUser = auth('user')->user();
+
+            if (!Hash::check($request->old_password, $authUser->password) && md5($request->old_password) != $authUser->password) {
                 return back()
                     ->with('status', 'danger')
                     ->with('msg', __('Old Password is incorrect'));
             }
 
-            User::find(Auth::id())->update(['password' => Hash::make($request->password)]);
+            $authUser->update(['password' => Hash::make($request->password)]);
 
             return back()
                 ->with('status', 'success')
@@ -128,8 +140,10 @@ class Dashboard extends SystemController
 
     public function trainerDashboard(Request $request)
     {
-        $user = auth()->user();
-        $trainee = $this->traineeService->getTraineeFirst($user->id);
+        $trainee = auth('trainee')->user();
+        if (!$trainee) {
+            return redirect()->route('login')->with('error', __('Please login first.'));
+        }
 
         $workoutPlans = [];
         $isExpired = false;
@@ -154,7 +168,7 @@ class Dashboard extends SystemController
         $this->viewData['pageTitle'] = __('My Workout Program');
         $this->viewData['trainee'] = $trainee;
         $this->viewData['workoutPlans'] = $workoutPlans;
-        $this->viewData['user'] = $user;
+        $this->viewData['user'] = $trainee;
         $this->viewData['isExpired'] = $isExpired;
 
         return $this->view('trainer-dashboard', $this->viewData);

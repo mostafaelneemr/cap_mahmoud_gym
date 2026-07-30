@@ -61,17 +61,17 @@ class UserController extends SystemController
     }
     public function editProfile()
     {
-        return $this->view('user.edit-profile', $this->user_service->updateProfile(auth()->user()->id));
+        return $this->view('user.edit-profile', $this->user_service->updateProfile(auth('user')->id()));
     }
 
     public function showProfile()
     {
-        return $this->view('user.show-profile', $this->user_service->findById(Auth::id()));
+        return $this->view('user.show-profile', $this->user_service->findById(auth('user')->id()));
     }
 
     public function updateProfile(ProfileFormRequest $request)
     {
-        $update = $this->user_service->update($request,auth()->id());
+        $update = $this->user_service->update($request, auth('user')->id());
         if ($update) {
             flash_msg('success',__( 'Profile Updated successfully' ));
             return $this->success( __( 'Profile Updated successfully' ));

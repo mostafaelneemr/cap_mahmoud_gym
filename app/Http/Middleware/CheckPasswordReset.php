@@ -17,13 +17,13 @@ class CheckPasswordReset
     public function handle(Request $request, Closure $next): Response
     {
 
-        if (Auth::check() && Auth::user()->force_reset_password ) {
+        if (Auth::guard('user')->check() && Auth::guard('user')->user()->force_reset_password) {
             session(['force_password_reset' => true]);
         } else {
             session()->forget('force_password_reset');
         }
 
-        if (Auth::check() && Auth::user()->force_reset_password) {
+        if (Auth::guard('user')->check() && Auth::guard('user')->user()->force_reset_password) {
             if (request()->route()->getName() != 'system.dashboard' && request()->route()->getName() != 'system.reset-password') {
                 return redirect()->route('system.dashboard');
             }

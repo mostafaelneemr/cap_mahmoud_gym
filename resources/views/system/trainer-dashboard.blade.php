@@ -396,7 +396,7 @@
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-4">
             <div>
                 <h1 class="welcome-title">
-                    {{ __('Welcome') }}, {{ $user->name }} 👋
+                    {{ __('Welcome') }}, {{ $trainee->name }} 👋
                 </h1>
                 <p class="welcome-subtitle mb-0">{{ __('Here is your workout program') }}</p>
             </div>

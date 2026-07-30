@@ -2,25 +2,55 @@
 
 namespace App\Models;
 
-
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
-class Trainee extends GlobalModel
+class Trainee extends Authenticatable implements AuthenticatableContract
 {
     use SoftDeletes, Notifiable, LogsActivity;
 
     protected $table = 'trainees';
     public $timestamps = true;
     public $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $fillable = ['user_id', 'age', 'weight', 'height', 'membership_start', 'membership_end', 'training_level', 'status'];
+    public $modelPath = 'App\Models\Trainee';
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
 
-    public function user()
+    protected $fillable = [
+        'name',
+        'email',
+        'mobile',
+        'password',
+        'age',
+        'weight',
+        'height',
+        'membership_start',
+        'membership_end',
+        'training_level',
+        'remember_token',
+        // NOTE: 'google_id' and 'status' are intentionally excluded from $fillable.
+        // Set them explicitly: $trainee->google_id = ...; $trainee->status = ...; $trainee->save();
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 
     public function workoutPlans()
@@ -54,3 +84,4 @@ class Trainee extends GlobalModel
         });
     }
 }
+

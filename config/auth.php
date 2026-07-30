@@ -45,6 +45,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'trainee' => [
+            'driver' => 'session',
+            'provider' => 'trainees',
+        ],
     ],
 
     /*
@@ -74,6 +78,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\UserBk::class,
         ],
+        'trainees' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Trainee::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',
@@ -99,6 +107,12 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'trainees' => [
+            'provider' => 'trainees',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

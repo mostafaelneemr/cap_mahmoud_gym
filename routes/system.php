@@ -3,8 +3,11 @@
 
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout'); //
 Route::post('/reset-password', 'Auth\LoginController@updatePassword')->name('system.reset-password');
+Route::get('/auth/google', 'Auth\LoginController@redirectToGoogle')->name('auth.google');
+Route::get('/auth/google/callback', 'Auth\LoginController@handleGoogleCallback')->name('auth.google.callback');
 
 Auth::routes();
+Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 
 Route::controller('UserController')->prefix('user')->group(function () {
     Route::get('/change-password', 'changePassword')->name('system.user.change-password');

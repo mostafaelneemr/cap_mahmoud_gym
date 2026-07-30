@@ -97,9 +97,9 @@
     <!-- WhatsApp -->
     @forelse($links as $link)
         <div class="link-item">
-            <img src="{!!  $link->icon !!}" class="link-icon" alt="Online Training">
-            <a href="{!! $link->link_url !!}" class="link-title" target="_blank">{!! $link->title !!}</a>
-            <button class="share-button" onclick="shareLink('{!!  $link->link_url !!}')">🔗</button>
+            <img src="{{ $link->icon }}" class="link-icon" alt="Online Training">
+            <a href="{{ $link->link_url }}" class="link-title" target="_blank">{{ $link->title }}</a>
+            <button class="share-button" onclick="shareLink('{{ addslashes(e($link->link_url)) }}')">🔗</button>
         </div>
     @empty
 
