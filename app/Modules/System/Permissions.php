@@ -56,6 +56,17 @@
         ],
 
         [
+            'name' => __('Nutrition'),
+            'permissions' => [
+                'view-all-nutrition' => ['system.nutrition.index'],
+                'create-nutrition' => ['system.nutrition.create', 'system.nutrition.store'],
+                'show-nutrition' => ['system.nutrition.show'],
+                'delete-nutrition' => ['system.nutrition.destroy'],
+                'show-my-nutrition' => ['system.nutrition.my-plan'],
+            ]
+        ],
+
+        [
             'group_title' => __('Setting'),
             'name' => __('Activity Log'),
             'permissions' => [

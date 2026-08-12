@@ -21,4 +21,9 @@ class TraineeRepository extends BaseRepository
     {
         return $this->modeler->with('user')->whereDoesntHave('activeWorkoutPlans')->get();
     }
+
+    public function getTraineeWithUser()
+    {
+        return $this->modeler->with('user')->get();
+    }
 }

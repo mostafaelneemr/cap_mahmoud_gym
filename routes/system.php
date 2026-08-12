@@ -52,7 +52,10 @@ Route::resource('/trainee', 'TraineeController', ['as' => 'system']); //
 Route::post('/workout/day/{dayId}/update', 'WorkoutController@storeDayExercises')->name('system.workout.updateDay');
 Route::resource('/workout', 'WorkoutController', ['as' => 'system']); //
 
+Route::get('/nutrition/my-plan', 'NutritionController@myPlan')->name('system.nutrition.my-plan');
+Route::resource('/nutrition', 'NutritionController', ['as' => 'system']);
 
 Route::resource('/social-links', 'SocialLinkController', ['as' => 'system']); //
 
 Route::get('/trainer', 'Dashboard@trainerDashboard')->name('system.dashboard.trainer');
+

@@ -11,6 +11,12 @@
             'icon' => '<i class="fa fa-dumbbell"></i>',
             'text' => __('My Workout Program'),
         ];
+        $menu['MyNutritionPlan'] = [
+            'permission' => ['system.nutrition.my-plan'],
+            'url' => route('system.nutrition.my-plan'),
+            'icon' => '<i class="fa fa-utensils"></i>',
+            'text' => __('My Nutrition Plan'),
+        ];
     @endphp
 
     @foreach ($menu as $onemenu)
@@ -73,6 +79,20 @@
                     'url' => route('system.workout.index'),
                     'text' => __('Workout Plans'),
                     'icon' => '<i class="fa-solid fa-clipboard-list"></i>',
+                ],
+            ],
+        ];
+
+        $menu['Nutrition'] = [
+            'permission' => ['system.nutrition.index','system.nutrition.create'],
+            'icon' => '<i class="fa-solid fa-utensils"></i>',
+            'text' => __('Nutrition'),
+            'sub' => [
+                [
+                    'permission' => ['system.nutrition.index','system.nutrition.create'],
+                    'url' => route('system.nutrition.index'),
+                    'text' => __('Nutrition Plans'),
+                    'icon' => '<i class="fa-solid fa-apple-whole"></i>',
                 ],
             ],
         ];

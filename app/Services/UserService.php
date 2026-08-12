@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Filters\{CreatedAtFrom,CreatedAtTo,Email,Id,Name,PermissionGroupId};
+use App\Filters\{CreatedAtFrom, CreatedAtTo, Email, Id, Name, PermissionGroupId};
 use App\Repositories\ActivityLog\ActivityLogRepository;
 use App\Repositories\PermissionGroup\PermissionGroupRepository;
 use App\Repositories\User\UserRepository;
@@ -15,20 +15,19 @@ class UserService extends BaseService
 {
     protected $user_repository, $activity_log_repository, $permission_group_repository, $activity_log_service, $auth_session_service;
 
-    public function __construct(UserRepository $user_repository,
-                                ActivityLogRepository $activity_log_repository,
-                                PermissionGroupRepository $permission_group_repository,
-                                AuthSessionService $auth_session_service,
-                                ActivityLogService $activity_log_service
-    )
-    {
+    public function __construct(
+        UserRepository $user_repository,
+        ActivityLogRepository $activity_log_repository,
+        PermissionGroupRepository $permission_group_repository,
+        AuthSessionService $auth_session_service,
+        ActivityLogService $activity_log_service
+    ) {
         parent::__construct();
         $this->user_repository = $user_repository;
         $this->permission_group_repository = $permission_group_repository;
         $this->activity_log_service = $activity_log_service;
         $this->activity_log_repository = $activity_log_repository;
         $this->auth_session_service = $auth_session_service;
-
     }
 
     public function findById($id)
@@ -55,7 +54,7 @@ class UserService extends BaseService
 
 
         $this->otherData(['result' => $this->user_repository->find($id)]);
-            $this->otherData(['UserArray' => $this->user_repository->get()->toArray()]);
+        $this->otherData(['UserArray' => $this->user_repository->get()->toArray()]);
 
         return $this->retunData;
     }
@@ -142,10 +141,9 @@ class UserService extends BaseService
                 if ($data->created_at)
                     return $data->created_at->format('Y-m-d H:i');
                 return '--';
-
             })
             ->editColumn('action', function ($data) {
-                 $this->actionButtons(datatable_menu_show(route('system.user.show', $data->id), 'system.user.show'));
+                $this->actionButtons(datatable_menu_show(route('system.user.show', $data->id), 'system.user.show'));
                 $this->actionButtons(datatable_menu_edit(route('system.user.edit', $data->id), 'system.user.edit'));
                 return $this->actionButtonsRender($this->user_repository->modelPath(), $data->id);
             })->escapeColumns([])
@@ -212,7 +210,7 @@ class UserService extends BaseService
             }
 
             if ($request->telephone)
-            $theRequest['mobile'] = fixMobileNumber($request->telephone);
+                $theRequest['mobile'] = fixMobileNumber($request->telephone);
 
             $user = $this->user_repository->store($theRequest);
             DB::commit();
@@ -222,7 +220,6 @@ class UserService extends BaseService
             errorLog($e->getMessage());
             return false;
         }
-
     }
 
     /**
@@ -257,7 +254,6 @@ class UserService extends BaseService
             errorLog($e->getMessage());
             return false;
         }
-
     }
 
     public function userPassword($password): string

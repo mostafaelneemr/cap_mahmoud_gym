@@ -57,13 +57,13 @@ class SocialLinkService extends BaseService
             ->addColumn('icon', function ($data) {
                 return '<i class="fa-solid ' . ($data->icon ?? 'fa-link') . '"></i>';
             })
-            ->addColumn('status', function($data) {
+            ->addColumn('status', function ($data) {
                 return status_icon($data->is_active);
             })
-            ->addColumn('order', function($data) {
+            ->addColumn('order', function ($data) {
                 return $data->order;
             })
-            ->addColumn('action', function($data) {
+            ->addColumn('action', function ($data) {
                 $this->actionButtons(datatable_menu_edit(route('system.social-links.edit', $data->id), 'system.social-links.edit'));
                 return $this->actionButtonsRender($this->socialLinkRepository->modelPath(), $data->id);
             })
@@ -110,7 +110,7 @@ class SocialLinkService extends BaseService
     {
         try {
             DB::beginTransaction();
-            $update = $this->socialLinkRepository->update( $data,$id);
+            $update = $this->socialLinkRepository->update($data, $id);
             DB::commit();
             return $update;
         } catch (\Exception $e) {
