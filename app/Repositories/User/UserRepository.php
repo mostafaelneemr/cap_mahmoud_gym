@@ -33,4 +33,9 @@ class UserRepository extends BaseRepository
                 DB::raw("name"),
            ])->get();
     }
+
+    public function getUserTrainee()
+    {
+        return $this->modeler->where('user_type', 2)->get();
+    }
 }

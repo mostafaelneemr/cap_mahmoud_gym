@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Filters\CreatedAtFrom;
@@ -37,12 +38,12 @@ class ActivityLogService extends BaseService
         ]);
 
         $this->jsColumns([
-            'id'=>'activity_log.id',
-            'event'=>'activity_log.event',
-            'causer'=>'activity_log.causer_id',
-            'subject'=>'user.subject_type',
-            'created_at'=>'activity_log.created_at',
-            'action'=>'action'
+            'id' => 'activity_log.id',
+            'event' => 'activity_log.event',
+            'causer' => 'activity_log.causer_id',
+            'subject' => 'user.subject_type',
+            'created_at' => 'activity_log.created_at',
+            'action' => 'action'
         ]);
 
         $this->breadcrumb('Setting');
@@ -83,31 +84,31 @@ class ActivityLogService extends BaseService
             ->through([
                 Id::class,
                 Event::class,
-//                SubjectId::class,
-//                SubjectType::class,
+                //                SubjectId::class,
+                //                SubjectType::class,
                 CreatedAtFrom::class,
                 CreatedAtTo::class
             ])->thenReturn();
         return datatables()->eloquent($eloquentData)
-            ->addColumn('id','{{$id}}')
-            ->addColumn('event',function($data){
+            ->addColumn('id', '{{$id}}')
+            ->addColumn('event', function ($data) {
                 return __($data->event);
             })
-            ->addColumn('causer',function($data){
-                if($data->causer) {
-                    return links('system.user.show', route('system.user.show',  $data->causer->id), $data->causer->name );
+            ->addColumn('causer', function ($data) {
+                if ($data->causer) {
+                    return links('system.user.show', route('system.user.show',  $data->causer->id), $data->causer->name);
                 }
                 return '--';
             })
-            ->addColumn('subject',function($data){
-                $subject = last(explode('\\',$data->subject_type));
-                return $subject. '( '. $data->subject_id .' )';
+            ->addColumn('subject', function ($data) {
+                $subject = last(explode('\\', $data->subject_type));
+                return $subject . '( ' . $data->subject_id . ' )';
             })
-            ->addColumn('created_at',function($data){
+            ->addColumn('created_at', function ($data) {
                 if ($data->created_at)
-                return $data->created_at->format('Y-m-d H:i:s');
+                    return $data->created_at->format('Y-m-d H:i:s');
             })
-            ->addColumn('action',function($data){
+            ->addColumn('action', function ($data) {
                 return show_links('system.activity-log.show', route('system.activity-log.show', $data->id), __("View"));
             })
             ->escapeColumns([])
@@ -127,17 +128,15 @@ class ActivityLogService extends BaseService
         $agent->setUserAgent($result->user_agent);
         $result->agent = $agent;
 
-        $location = @json_decode(file_get_contents('http://ip-api.com/json/'.$result->ip));
+        $location = @json_decode(file_get_contents('http://ip-api.com/json/' . $result->ip));
 
-        if(isset($location->status) && $location->status!='fail')
+        if (isset($location->status) && $location->status != 'fail')
             $result->location = $location;
 
         $this->pageTitle('View Activity Log');
         $this->breadcrumb('Setting');
         $this->breadcrumb('Activity Log', 'system.activity-log.index');
-        $this->otherData(['result'=> $result] );
+        $this->otherData(['result' => $result]);
         return $this->retunData;
     }
-
-
 }

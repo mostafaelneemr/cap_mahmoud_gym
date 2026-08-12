@@ -251,6 +251,42 @@
             color: rgba(255, 255, 255, 0.35);
             font-style: italic;
         }
+
+        /* ===== CKEditor Inner HTML Content Adaptation ===== */
+        .nutrition-content {
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .nutrition-content p { color: inherit; margin-bottom: 0.85rem; }
+        .nutrition-content h1, .nutrition-content h2, .nutrition-content h3, .nutrition-content h4, .nutrition-content h5 {
+            color: var(--bs-gray-900, #181c32);
+            font-weight: 700;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        [data-bs-theme="dark"] .nutrition-content h1,
+        [data-bs-theme="dark"] .nutrition-content h2,
+        [data-bs-theme="dark"] .nutrition-content h3,
+        [data-bs-theme="dark"] .nutrition-content h4,
+        [data-bs-theme="dark"] .nutrition-content h5 {
+            color: #ffffff !important;
+        }
+        .nutrition-content ul, .nutrition-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .nutrition-content li { margin-bottom: 0.35rem; }
+        .nutrition-content table { width: 100%; margin-bottom: 1.25rem; border-collapse: collapse; }
+        .nutrition-content th, .nutrition-content td { padding: 0.75rem 1rem; border: 1px solid var(--bs-gray-300, #e4e6ef); }
+        [data-bs-theme="dark"] .nutrition-content th,
+        [data-bs-theme="dark"] .nutrition-content td { border-color: rgba(255, 255, 255, 0.1) !important; }
+        .nutrition-content th { background: var(--bs-gray-100, #f8f9fa); font-weight: 700; }
+        [data-bs-theme="dark"] .nutrition-content th { background: rgba(255, 255, 255, 0.05) !important; }
+        .nutrition-content blockquote {
+            border-left: 4px solid #50cd89;
+            padding: 0.75rem 1.25rem;
+            background: var(--bs-gray-100, #f8f9fa);
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+        [data-bs-theme="dark"] .nutrition-content blockquote { background: rgba(255, 255, 255, 0.04) !important; }
     </style>
 @endsection
 
@@ -260,6 +296,12 @@
         <span class="d-inline-block">
             {{ edit_links('system.trainee.edit', route('system.trainee.edit', $result->user_id)) }}
         </span>
+
+        <a href="{{ route('system.nutrition.create', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-sm btn-light-success fw-bold rounded-3 d-flex align-items-center gap-2">
+            <i class="fa-solid fa-apple-whole fs-4"></i>
+            <span>{{ __('Add Nutrition Plan') }}</span>
+        </a>
+
         @if($result->activeWorkoutPlans->count() > 0)
             <form action="{{ route('system.trainee.reset-plan', $result->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to archive the current workout plan for this trainee? This action cannot be undone.') }}')">
                 @csrf
@@ -365,6 +407,12 @@
                 <a class="nav-link active d-flex align-items-center gap-2" data-bs-toggle="tab" href="#kt_staff_programs_tab">
                     <span>⚡</span>
                     <span>{{ __('Workout Program') }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#kt_staff_nutrition_tab">
+                    <span>🥗</span>
+                    <span>{{ __('Nutrition Plan') }}</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -648,6 +696,59 @@
                                 @endforeach
                             </div>
                         </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        <!-- NUTRITION PLAN TAB -->
+        <div class="tab-pane fade" id="kt_staff_nutrition_tab" role="tabpanel">
+            @php
+                $activeNutrition = $result->activeNutritionPlans->first() ?? \App\Models\NutritionPlan::where('trainee_id', $result->user_id)->active()->latest()->first();
+            @endphp
+
+            @if($activeNutrition)
+                <div class="card card-flush shadow-sm mb-8">
+                    <div class="card-header pt-6 pb-5 border-bottom border-gray-200 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div class="card-title m-0">
+                            <h2 class="text-gray-900 fw-bold m-0 d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-apple-whole text-success"></i>
+                                <span>{{ $activeNutrition->name ? $activeNutrition->name : __('Current Nutrition Plan') }}</span>
+                                <span class="badge badge-light-success fs-8 ms-2">{{ __('Active') }}</span>
+                            </h2>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="{{ route('system.nutrition.edit', $activeNutrition->id) }}" class="btn btn-sm btn-light-primary fw-bold rounded-3">
+                                <i class="fa-solid fa-pen-to-square me-1"></i>@lang('Edit Plan')
+                            </a>
+                            <a href="{{ route('system.nutrition.create', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-sm btn-success fw-bold rounded-3">
+                                <i class="fa-solid fa-plus me-1"></i>@lang('New Plan')
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-6 p-lg-8">
+                        <div class="nutrition-content text-gray-800 fs-6 lh-base">
+                            @if($activeNutrition->description)
+                                {!! $activeNutrition->description !!}
+                            @else
+                                <div class="text-gray-500 text-center py-5">
+                                    @lang('No written details in this nutrition plan.')
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="card card-flush shadow-sm mb-8">
+                    <div class="card-body text-center py-12">
+                        <div class="symbol symbol-100px bg-light-success rounded-circle mb-6 d-inline-flex flex-center">
+                            <i class="fa-solid fa-apple-whole fs-1x text-success"></i>
+                        </div>
+                        <h3 class="text-gray-900 fw-bolder mb-3 fs-2">@lang('No Active Nutrition Plan Assigned')</h3>
+                        <p class="text-gray-600 fs-5 mb-8 max-w-500px mx-auto">@lang('This trainee does not currently have an active nutrition plan.')</p>
+                        <a href="{{ route('system.nutrition.create', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-success fw-bold px-6 py-3">
+                            <i class="ki-duotone ki-plus fs-2 me-1"></i> @lang('Assign Nutrition Plan')
+                        </a>
                     </div>
                 </div>
             @endif

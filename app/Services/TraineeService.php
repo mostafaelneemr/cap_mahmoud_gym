@@ -20,8 +20,7 @@ class TraineeService extends BaseService
         ActivityLogService $activity_log_service,
         AuthSessionService $auth_session_service,
         WorkoutService     $workoutService
-    )
-    {
+    ) {
         parent::__construct();
         $this->traineeRepository = $traineeRepository;
         $this->userRepository = $userRepository;
@@ -33,7 +32,7 @@ class TraineeService extends BaseService
     public function findById($id)
     {
         $trainee = $this->traineeRepository->find($id);
-        $trainee->load(['activeWorkoutPlans.exercises', 'archivedWorkoutPlans.exercises']);
+        $trainee->load(['activeWorkoutPlans.exercises', 'archivedWorkoutPlans.exercises', 'activeNutritionPlans']);
         $user_id = $trainee->user_id ?? 0;
 
         $activityLogData = $this->activity_log_service->loadViewData();

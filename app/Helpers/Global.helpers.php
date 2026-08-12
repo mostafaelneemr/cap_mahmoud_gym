@@ -1,13 +1,16 @@
 <?php
 
-use App\Models\{Active_section,Setting};
-use App\Enums\{DefaultStatus,
+use App\Models\{Active_section, Setting, User};
+use App\Enums\{
+    DefaultStatus,
     EventEnum,
     ReadMessageEnum,
-    SliderTypeEnum,
     StatusEnum,
     TraineesStatusEnum,
-    TrainingLevelEnum};
+    TrainingLevelEnum
+};
+
+
 use Illuminate\Support\Facades\Log;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use libphonenumber\NumberParseException;
@@ -15,6 +18,7 @@ use libphonenumber\PhoneNumberUtil;
 
 function img($path)
 {
+
     return asset('storage/' . $path);
 }
 
@@ -69,36 +73,36 @@ function whereBetween(&$eloquent, $columnName, $form, $to)
     }
 }
 
-function imageResize($imagePath, $width, $height)
-{
-    $vImagePath = $imagePath;
-    $imagePath = storage_path('app/public/' . $imagePath);
+// function imageResize($imagePath, $width, $height)
+// {
+//     $vImagePath = $imagePath;
+//     $imagePath = storage_path('app/public/' . $imagePath);
 
-    if (File::exists($imagePath) && explode('/', File::mimeType($imagePath))[0] == 'image') {
-        $resizedFileName = File::dirname($imagePath) . '/' . File::name($imagePath) . '_' . $width . 'X' . $height . '.' . File::extension($imagePath);
+//     if (File::exists($imagePath) && explode('/', File::mimeType($imagePath))[0] == 'image') {
+//         $resizedFileName = File::dirname($imagePath) . '/' . File::name($imagePath) . '_' . $width . 'X' . $height . '.' . File::extension($imagePath);
 
-        if (!Storage::exists($resizedFileName)) {
-            Image::make($imagePath)
-                ->resize($width, $height)
-                ->save($resizedFileName);
-        }
+//         if (!Storage::exists($resizedFileName)) {
+//             Image::make($imagePath)
+//                 ->resize($width, $height)
+//                 ->save($resizedFileName);
+//         }
 
-        return File::dirname($vImagePath) . '/' . File::name($imagePath) . '_' . $width . 'X' . $height . '.' . File::extension($imagePath);
+//         return File::dirname($vImagePath) . '/' . File::name($imagePath) . '_' . $width . 'X' . $height . '.' . File::extension($imagePath);
 
-        //        return $resizedFileName;
-    }
-
-
-    return false;
-}
+//         //        return $resizedFileName;
+//     }
 
 
+//     return false;
+// }
 
 
-function image($imagePath, $width, $height)
-{
-    return imageResize($imagePath, $width, $height);
-}
+
+
+// function image($imagePath, $width, $height)
+// {
+//     return imageResize($imagePath, $width, $height);
+// }
 
 
 function generateMenu(array $array)
@@ -146,6 +150,7 @@ function ignoredRoutes()
         'system.user.update-profile',
         'system.reset-password',
         'system.workout.create',
+        'system.nutrition.my-plan',
     ];
 }
 
@@ -156,11 +161,11 @@ function userCan($routename, $userId = null)
         $userId = null;
     }
 
-    $userObj = $userId ? \App\Models\User::where('id', $userId)->first() : auth('user')->user();
+    $userObj = $userId ? User::where('id', $userId)->first() : auth('user')->user();
 
     static $permissions;
     if (is_null($permissions)) {
-        $permissions = \App\Models\User::UserPerms($userObj->id)->toArray();
+        $permissions = User::UserPerms($userObj->id)->toArray();
     }
     $permissions = array_merge($permissions, ignoredRoutes());
     if (is_array($routename)) {
@@ -224,25 +229,25 @@ function ajax_btn($action, $title, $params = [])
 function delete_links($route, $link, $params = [], $row_id = null)
 {
     if (userCan($route))
-        return view('system.partials.buttons.delete_links', compact('route', 'link','params','row_id'));
+        return view('system.partials.buttons.delete_links', compact('route', 'link', 'params', 'row_id'));
 }
 
 function add_links($link, $route, $title = '')
 {
     if (userCan($route))
-        return  view('system.partials.links.add_links', compact('title', 'link','route'));
+        return  view('system.partials.links.add_links', compact('title', 'link', 'route'));
 }
 
 function show_links($link, $route)
 {
     if (userCan($link))
-        return view('system.partials.links.show_links', compact('route', 'link','route'));
+        return view('system.partials.links.show_links', compact('route', 'link', 'route'));
 }
 
 function edit_links($link, $route)
 {
     if (userCan($link))
-        return view('system.partials.links.edit_links', compact('route','link'));
+        return view('system.partials.links.edit_links', compact('route', 'link'));
 }
 
 
@@ -277,10 +282,10 @@ function datatable_menu_log($link)
 function datatable_menu_edit($link, $route)
 {
     if (userCan($route))
-        return view('system.partials.links.datatable_menu_edit', compact('link','route'));
+        return view('system.partials.links.datatable_menu_edit', compact('link', 'route'));
 }
 
-function datatable_menu_button($link, $route, $icon = 'fa-check', $status = 'approve', $rowId = null )
+function datatable_menu_button($link, $route, $icon = 'fa-check', $status = 'approve', $rowId = null)
 {
     $btnClass = $icon == 'fa-check' ? 'btn-success' : 'btn-danger';
     if (userCan($route))
@@ -300,10 +305,10 @@ function datatable_menu_show($link, $route, $target = null)
         return view('system.partials.links.datatable_menu_show', compact('link', 'route', 'target'));
 }
 
-function datatable_menu_link($link, $route,$label, $target = null)
+function datatable_menu_link($link, $route, $label, $target = null)
 {
     if (userCan($route))
-        return view('system.partials.links.datatable_menu_link', compact('link', 'route','label', 'target'));
+        return view('system.partials.links.datatable_menu_link', compact('link', 'route', 'label', 'target'));
 }
 
 function datatable_menu_popup($linkId, $route, $type)
@@ -318,10 +323,10 @@ function link_modal($route, $title, $modalId, $icon)
     if (userCan($route))
         return view('system.partials.buttons.link_modal', compact('route', 'title', 'modalId', 'color', 'icon'));
 }
-function link_add_modal_icon($route, $modalId,$title =null)
+function link_add_modal_icon($route, $modalId, $title = null)
 {
     if (userCan($route))
-        return view('system.partials.buttons.link_add_modal_icon', compact('route', 'modalId','title'));
+        return view('system.partials.buttons.link_add_modal_icon', compact('route', 'modalId', 'title'));
 }
 function link_modal_edit($route, $link, $modalId, $rowId = null, $prevStatus = null, $type = null, $updateUrl = null, $class = 'btn-sm')
 {
@@ -497,15 +502,15 @@ function amount($number, $decimal = 2)
 
 function break_word($text)
 {
-    return view('system.partials.spans.break_word' , compact('text'));
+    return view('system.partials.spans.break_word', compact('text'));
 }
 
-function get_types_trans($text)
-{
-    $types = get_types();
+// function get_types_trans($text)
+// {
+//     $types = get_types();
 
-    return isset($types[$text]) ? $types[$text] : '';
-}
+//     return isset($types[$text]) ? $types[$text] : '';
+// }
 
 
 function language_data()
@@ -531,9 +536,9 @@ function datatableImage($path)
 }
 
 
-function datatable_badge($value,$class){
+function datatable_badge($value, $class)
+{
     return view('system.partials.spans.badge', compact('value', 'class'));
-
 }
 
 
@@ -569,22 +574,10 @@ function default_status($key = null, $withLang = false)
     return DefaultStatus::values();
 }
 
-function slider_type_enum($key = null, $withLang = false)
-{
-    if ($withLang) {
-        return SliderTypeEnum::values_lang();
-    }
-    if (!empty($key))
-        return SliderTypeEnum::values()[$key];
-
-    return SliderTypeEnum::values();
-}
-
 function Setting($name)
 {
-    $setting = Setting::where('name',$name)->first();
+    $setting = Setting::where('name', $name)->first();
     return $setting ? $setting->value : null;
-
 }
 
 function rate_values()
@@ -606,8 +599,8 @@ function event_enum($key = null, $withLang = false)
 function datatable_read_button_message($link, $route, $icon = 'fa-check', $status = 'approve', $rowId = null)
 {
     $btnClass = $icon == 'fa-check' ? 'btn-success' : 'btn-danger';
-//    if (userCan($route))
-        return view('system.partials.buttons.datatable_read_button_message', compact('link', 'route', 'icon', 'status', 'rowId', 'btnClass'));
+    //    if (userCan($route))
+    return view('system.partials.buttons.datatable_read_button_message', compact('link', 'route', 'icon', 'status', 'rowId', 'btnClass'));
 }
 
 function message_read($key = null, $withLang = false, $replacePendingValue = false)
@@ -633,7 +626,7 @@ if (!function_exists('notify')) {
 
 function active_section($name)
 {
-    return Active_section::where('name',$name)->first()->value == DefaultStatus::Active->value;
+    return Active_section::where('name', $name)->first()->value == DefaultStatus::Active->value;
 }
 
 function training_level($key = null, $withLang = false, $replacePendingValue = false)
@@ -663,23 +656,3 @@ function datatable_menu_workout($link, $route)
     if (userCan($route))
         return view('system.partials.links.datatable_menu_workout', compact('link', 'route'));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

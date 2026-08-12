@@ -38,6 +38,16 @@ class Trainee extends GlobalModel
         return $this->hasMany(WorkoutPlan::class, 'trainee_id', 'id')->where('status', 'archived');
     }
 
+    public function nutritionPlans()
+    {
+        return $this->hasMany(NutritionPlan::class, 'trainee_id', 'id');
+    }
+
+    public function activeNutritionPlans()
+    {
+        return $this->hasMany(NutritionPlan::class, 'trainee_id', 'id')->where('status', 'active');
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -47,10 +57,16 @@ class Trainee extends GlobalModel
             foreach ($workoutPlans as $workoutPlan) {
                 $trainee->isForceDeleting() ? $workoutPlan->forceDelete() : $workoutPlan->delete();
             }
+
+            $nutritionPlans = $trainee->nutritionPlans()->get();
+            foreach ($nutritionPlans as $nutritionPlan) {
+                $trainee->isForceDeleting() ? $nutritionPlan->forceDelete() : $nutritionPlan->delete();
+            }
         });
 
         static::restoring(function ($trainee) {
             WorkoutPlan::onlyTrashed()->where('trainee_id', $trainee->id)->get()->each->restore();
+            NutritionPlan::onlyTrashed()->where('trainee_id', $trainee->id)->get()->each->restore();
         });
     }
 }

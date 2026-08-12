@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\Crypt;
 
 class WorkoutService extends BaseService
 {
-    protected $workoutRepository,$traineeRepository,$exerciseRepository;
+    protected $workoutRepository, $traineeRepository, $exerciseRepository;
 
-    public function __construct(WorkoutRepository $workoutRepository, TraineeRepository $traineeRepository,
-                                ExerciseRepository $exerciseRepository)
-    {
+    public function __construct(
+        WorkoutRepository $workoutRepository,
+        TraineeRepository $traineeRepository,
+        ExerciseRepository $exerciseRepository
+    ) {
         parent::__construct();
         $this->workoutRepository = $workoutRepository;
         $this->traineeRepository = $traineeRepository;
