@@ -7,6 +7,9 @@ use App\Repositories\BaseRepository;
 
 class NutritionRepository extends BaseRepository
 {
+    /**
+     * @var NutritionPlan
+     */
     protected $modeler = NutritionPlan::class;
 
     public function getDataTableQuery()

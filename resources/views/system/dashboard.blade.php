@@ -247,8 +247,7 @@
                 </div>
             </div>
             <div class="card-body pt-0">
-                <p class="text-muted fs-7 mb-4">{{ __('Share this link tree on social bios (Instagram, TikTok) for
-                    trainees to connect.') }}</p>
+                <p class="text-muted fs-7 mb-4">{{ __('Share this link tree on social bios (Instagram, TikTok) for trainees to connect.') }}</p>
                 <div class="input-group mb-3">
                     <input type="text" id="linktree-url"
                         class="form-control form-control-solid bg-light theme-copy-input" readonly
