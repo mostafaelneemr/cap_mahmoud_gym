@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Modules\System\SystemController;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends SystemController
 {
@@ -50,6 +51,7 @@ class LoginController extends SystemController
         if ($user_query && Hash::check($request->password, $user_query->password)) {
             session()->put('user', $user_query);
             $session_user = session()->get('user');
+
             $user = User::where('email', $session_user->email)->first();
             \Auth::guard('user')->loginUsingId($user->id);
             if ($user->user_type == 1 || $user->user_type == null) {
@@ -63,6 +65,41 @@ class LoginController extends SystemController
         }
     }
 
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->stateless()->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+        } catch (\Exception $e) {
+            \Log::error('Google Auth Error: ' . $e->getMessage());
+            return redirect('/system/login')->with('error', __('Google authentication failed.'));
+        }
+
+        $email = $googleUser->getEmail();
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return redirect('/system/login')->with('error', __('Unauthorized or inactive account.'));
+        }
+
+        if (empty($user->google_id)) {
+            $user->update(['google_id' => $googleUser->getId()]);
+        }
+        \Auth::guard('user')->loginUsingId($user->id);
+
+        if ($user->user_type == 2) {
+            $route = route('system.dashboard.trainer');
+        } elseif ($user->user_type == 1 || $user->user_type == null) {
+            $route = auth('user')->user()->permission_group->new_admin_default_route ? route(auth('user')->user()->permission_group->new_admin_default_route) : route('system.dashboard');
+        }
+        session()->flash('success', __('Logged In successfully'));
+        return redirect($route);
+    }
+
     protected function logout(Request $request)
     {
         $this->guard()->logout();
@@ -72,7 +109,7 @@ class LoginController extends SystemController
 
     public function updatePassword(ResetPasswordRequest $request)
     {
-        $user =  auth('user')->user();
+        $user = auth('user')->user();
         $user->update(['force_reset_password' => 0, 'password' => Hash::make($request->password)]);
         return $this->success(__('Password reset successfully!'), ['url' => route('system.dashboard')]);
     }

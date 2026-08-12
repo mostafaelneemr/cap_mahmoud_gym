@@ -20,7 +20,6 @@ class Dashboard extends SystemController
 
     protected $traineeService, $workoutRepository, $traineeRepository, $socialLinkRepository;
     public function __construct(
-        Request $request,
         TraineeService $traineeService,
         WorkoutRepository $workoutRepository,
         TraineeRepository $traineeRepository,
@@ -36,7 +35,7 @@ class Dashboard extends SystemController
     public function index(Request $request)
     {
         $user = Auth()->user()->user_type;
-        if ($user == 2) {
+        if ($user == 2 || $user == 3) {
             return redirect(route('system.dashboard.trainer'));
         }
         $this->viewData['breadcrumb'] = [
@@ -130,7 +129,6 @@ class Dashboard extends SystemController
     {
         $user = auth()->user();
         $trainee = $this->traineeService->getTraineeFirst($user->id);
-
         $workoutPlans = [];
         $isExpired = false;
         if ($trainee) {

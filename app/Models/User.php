@@ -29,7 +29,8 @@ class User extends Authenticatable
         'two_fa_secret',
         'department_id',
         'force_reset_password',
-        'user_type' // 1 mean user moderator / 2 mean trainer without permission
+        'user_type', // 1 mean user moderator / 2 mean trainer without permission / 3 mean trainee
+        'google_id'
     ];
 
     //Log Activity

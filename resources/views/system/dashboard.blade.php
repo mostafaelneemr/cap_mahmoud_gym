@@ -146,7 +146,7 @@
                         </span>
                     </div>
                     <div>
-                        <span class="text-gray-800 text-hover-primary fw-bold fs-4">{{ __('Linktree Clicks') }}</span>
+                        <span class="text-gray-800 text-hover-primary fw-bold fs-4">{{ __('Website Clicks') }}</span>
                         <div class="text-muted fs-7 fw-semibold">{{ __('Total profile clicks') }}</div>
                     </div>
                 </div>
@@ -273,7 +273,7 @@
     copyText.select();
     copyText.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(copyText.value);
-    
+
     Swal.fire({
         text: "{{ __('Link copied to clipboard') }}",
         icon: "success",

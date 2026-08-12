@@ -6,6 +6,9 @@ Route::post('/reset-password', 'Auth\LoginController@updatePassword')->name('sys
 
 Auth::routes();
 
+Route::get('/auth/google', 'Auth\LoginController@redirectToGoogle')->name('auth.google');
+Route::get('/auth/google/callback', 'Auth\LoginController@handleGoogleCallback')->name('auth.google.callback');
+
 Route::controller('UserController')->prefix('user')->group(function () {
     Route::get('/change-password', 'changePassword')->name('system.user.change-password');
     Route::post('/change-password', 'changePasswordPost')->name('system.user.change-password-post');

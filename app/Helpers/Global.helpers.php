@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\{Active_section,Setting};
+use App\Models\{Active_section, Setting, User};
 use App\Enums\{DefaultStatus,
     EventEnum,
     ReadMessageEnum,
@@ -135,6 +135,8 @@ function ignoredRoutes()
         'system.dashboard.trainer',
         'login',
         'logout',
+        'auth.google',
+        'auth.google.callback',
         'system.misc.ajax',
         'system.user.change-password',
         'system.user.change-password-post',
@@ -151,16 +153,25 @@ function ignoredRoutes()
 
 function userCan($routename, $userId = null)
 {
-
-    if ($userId && $userId == request()->user()->id) {
+    if ($userId && request()->user() && $userId == request()->user()->id) {
         $userId = null;
     }
 
-    $userObj = $userId ? \App\Models\User::where('id', $userId)->first() : auth('user')->user();
+    $userObj = $userId ? User::where('id', $userId)->first() : auth('user')->user();
+
+    if ($userObj && $userObj->user_type == 2) {
+        $traineeRoutes = ['system.dashboard.trainer', 'logout', 'auth.google', 'auth.google.callback'];
+        if (is_array($routename)) {
+            $arr = array_diff($routename, $traineeRoutes);
+            return (!$arr) ? true : ((count($arr) == count($routename)) ? false : true);
+        } else {
+            return in_array($routename, $traineeRoutes);
+        }
+    }
 
     static $permissions;
     if (is_null($permissions)) {
-        $permissions = \App\Models\User::UserPerms($userObj->id)->toArray();
+        $permissions = $userObj ? User::UserPerms($userObj->id)->toArray() : [];
     }
     $permissions = array_merge($permissions, ignoredRoutes());
     if (is_array($routename)) {
