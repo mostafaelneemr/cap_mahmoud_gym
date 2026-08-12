@@ -164,7 +164,7 @@ function userCan($routename, $userId = null)
     $userObj = $userId ? User::where('id', $userId)->first() : auth('user')->user();
 
     if ($userObj && $userObj->user_type == 2) {
-        $traineeRoutes = ['system.dashboard.trainer', 'logout', 'auth.google', 'auth.google.callback'];
+        $traineeRoutes = ['system.dashboard.trainer', 'system.nutrition.my-plan', 'logout', 'auth.google', 'auth.google.callback'];
         if (is_array($routename)) {
             $arr = array_diff($routename, $traineeRoutes);
             return (!$arr) ? true : ((count($arr) == count($routename)) ? false : true);

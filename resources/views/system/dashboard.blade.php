@@ -2,7 +2,6 @@
 
 @section('header')
 <style>
-    /* Premium Timeline Widget Styling */
     .dashboard-timeline {
         position: relative;
         padding-left: 28px;

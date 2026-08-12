@@ -27,7 +27,7 @@ class Permission
             }
 
             if ($authUser->user_type == 2) {
-                $whitelist = ['system.dashboard.trainer', 'logout', 'auth.google', 'auth.google.callback'];
+                $whitelist = ['system.dashboard.trainer', 'system.nutrition.my-plan', 'logout', 'auth.google', 'auth.google.callback'];
                 if (in_array(Route::currentRouteName(), $whitelist)) {
                     return $next($request);
                 }
