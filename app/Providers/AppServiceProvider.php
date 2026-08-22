@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        ini_set('memory_limit', '5000M');
+
         if($this->app->environment('production')) {
             \URL::forceScheme('https');
             $this->app['request']->server->set('HTTPS', true);
@@ -40,8 +42,8 @@ class AppServiceProvider extends ServiceProvider
             return new DBSessionAuth($providerData['model'],$name);
         });
 
-//        LogViewer::auth(function ($request) {
-//           return auth('staff')->check() && staffCan(Route::currentRouteName());
-//        });
+        LogViewer::auth(function () {
+            return auth('user')->check() ;
+        });
     }
 }

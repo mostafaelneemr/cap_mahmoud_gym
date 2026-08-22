@@ -6,9 +6,7 @@ use App\Models\setting;
 use App\Repositories\Setting\SettingRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\File; // ✅ استدعاء Facade التعامل مع الملفات
-
-// ✅ Spatie Image
+use Illuminate\Support\Facades\File;
 use Spatie\Image\Image;
 
 class SettingService extends BaseService

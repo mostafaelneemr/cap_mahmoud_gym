@@ -58,4 +58,3 @@ Route::resource('/nutrition', 'NutritionController', ['as' => 'system']);
 Route::resource('/social-links', 'SocialLinkController', ['as' => 'system']); //
 
 Route::get('/trainer', 'Dashboard@trainerDashboard')->name('system.dashboard.trainer');
-

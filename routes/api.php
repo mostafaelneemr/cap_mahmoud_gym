@@ -18,5 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::post('order-shipment-callback','OrderController@orderWebHook');
+Route::post('order-shipment-callback', 'OrderController@orderWebHook');
