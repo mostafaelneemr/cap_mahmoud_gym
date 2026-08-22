@@ -718,6 +718,9 @@
                             </h2>
                         </div>
                         <div class="d-flex align-items-center gap-2">
+                            <a href="{{ route('system.nutrition.my-plan', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-sm btn-light-info fw-bold rounded-3">
+                                <i class="fa-solid fa-eye me-1"></i>@lang('Trainee View')
+                            </a>
                             <a href="{{ route('system.nutrition.edit', $activeNutrition->id) }}" class="btn btn-sm btn-light-primary fw-bold rounded-3">
                                 <i class="fa-solid fa-pen-to-square me-1"></i>@lang('Edit Plan')
                             </a>

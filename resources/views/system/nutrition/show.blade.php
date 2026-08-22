@@ -75,6 +75,9 @@
     @if($plan)
         <div class="d-flex align-items-center gap-2">
             <span class="badge badge-light-success fs-7 fw-bolder px-4 py-2 text-uppercase">{{ ucfirst($plan->status) }}</span>
+            <a href="{{ route('system.nutrition.my-plan', ['trainee' => \Illuminate\Support\Facades\Crypt::encrypt($plan->trainee_id)]) }}" class="btn btn-light-info btn-sm">
+                <i class="fa-solid fa-eye me-1"></i>@lang('Trainee View')
+            </a>
             <a href="{{ route('system.nutrition.edit', $plan->id) }}" class="btn btn-primary btn-sm">
                 <i class="fa-solid fa-pen-to-square me-1"></i>@lang('Edit Plan')
             </a>

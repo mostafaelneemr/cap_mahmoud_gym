@@ -88,21 +88,46 @@ class NutritionController extends SystemController
     }
 
     /**
-     * Trainee View: Active Nutrition Plan
+     * Trainee / Admin View: Active Nutrition Plan
      */
     public function myPlan(Request $request)
     {
         $user = Auth::guard('user')->user();
-        $trainee = $this->traineeService->getTraineeFirst($user->id);
-        $plan = $this->nutritionService->getActivePlanForTraineeUser($user);
+        $targetUser = $user;
+        $trainee = null;
+
+        if ($request->filled('trainee')) {
+            try {
+                $decryptedId = \Illuminate\Support\Facades\Crypt::decrypt($request->trainee);
+                $trainee = \App\Models\Trainee::find($decryptedId) ?? \App\Models\Trainee::where('user_id', $decryptedId)->first();
+            } catch (\Exception $e) {
+                $trainee = null;
+            }
+        } elseif ($request->filled('trainee_id')) {
+            $trainee = \App\Models\Trainee::find($request->trainee_id) ?? \App\Models\Trainee::where('user_id', $request->trainee_id)->first();
+        }
+
+        if (!$trainee) {
+            $trainee = $this->traineeService->getTraineeFirst($user->id);
+            if (!$trainee && ($user->user_type == 1 || $user->user_type === null)) {
+                $trainee = \App\Models\Trainee::first();
+            }
+        }
+
+        if ($trainee) {
+            $targetUser = $trainee->user ?? $user;
+            $plan = $this->nutritionService->getActivePlanForTraineeUser($targetUser);
+        } else {
+            $plan = null;
+        }
 
         $this->viewData['breadcrumb'] = [
             [
                 'text' => __('My Nutrition Plan'),
             ]
         ];
-        $this->viewData['pageTitle'] = __('My Nutrition Plan');
-        $this->viewData['user'] = $user;
+        $this->viewData['pageTitle'] = __('Nutrition Plan');
+        $this->viewData['user'] = $targetUser;
         $this->viewData['trainee'] = $trainee;
         $this->viewData['plan'] = $plan;
 
