@@ -6,7 +6,6 @@ use App\Enums\TraineesStatusEnum;
 use App\Models\User;
 use App\Repositories\Workout\WorkoutRepository;
 use App\Repositories\Trainee\TraineeRepository;
-use App\Repositories\SocialLink\SocialLinkRepository;
 use App\Services\TraineeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,18 +17,16 @@ use Spatie\Activitylog\Models\Activity;
 class Dashboard extends SystemController
 {
 
-    protected $traineeService, $workoutRepository, $traineeRepository, $socialLinkRepository;
+    protected $traineeService, $workoutRepository, $traineeRepository;
     public function __construct(
         TraineeService $traineeService,
         WorkoutRepository $workoutRepository,
         TraineeRepository $traineeRepository,
-        SocialLinkRepository $socialLinkRepository
     ) {
         parent::__construct();
         $this->traineeService = $traineeService;
         $this->workoutRepository = $workoutRepository;
         $this->traineeRepository = $traineeRepository;
-        $this->socialLinkRepository = $socialLinkRepository;
     }
 
     public function index(Request $request)
@@ -51,23 +48,22 @@ class Dashboard extends SystemController
         $activeMemberships = $this->traineeRepository->count(['status' => TraineesStatusEnum::active->value]);
 
         $clicksCount = Activity::where('log_name', 'linktree_click')->count();
-        if ($clicksCount === 0) {
-            $linksCount = $this->socialLinkRepository->count(['is_active' => '1']);
-            $clicksCount = $linksCount > 0 ? $linksCount * 28 + 42 : 185;
+        if ($clicksCount == 0) {
+//            $linksCount = $this->socialLinkRepository->count(['is_active' => '1']);
+//            $clicksCount = $linksCount > 0 ? $linksCount * 28 + 42 : 185;
         }
 
         $pendingTrainees = $this->traineeRepository->getModelar()->with('user')
             ->whereDoesntHave('activeWorkoutPlans')->latest()->take(5)->get();
 
-        // Public Linktree URL
-        $linktreeUrl = route('connect');
+        $websiteUrl = env('APP_URL');
 
         $this->viewData['totalTrainees'] = $totalTrainees;
         $this->viewData['pendingWorkouts'] = $pendingWorkouts;
         $this->viewData['activeMemberships'] = $activeMemberships;
-        $this->viewData['clicksCount'] = $clicksCount;
+//        $this->viewData['clicksCount'] = $clicksCount;
         $this->viewData['pendingTrainees'] = $pendingTrainees;
-        $this->viewData['linktreeUrl'] = $linktreeUrl;
+        $this->viewData['websiteUrl'] = $websiteUrl;
 
         return $this->view('dashboard', $this->viewData);
     }

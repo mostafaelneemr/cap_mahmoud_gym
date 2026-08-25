@@ -1,6 +1,5 @@
 <?php
 
-use App\Modules\Web\Controllers\SocialLinkWebController;
 use App\Modules\Web\SendEmailController;
 use App\Modules\Web\WebController;
 use Illuminate\Support\Facades\Route;
@@ -16,11 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::controller(WebController::class)->group(function () {
-    Route::get('/', 'home')->name('home');
-    Route::get('/contact', 'contact')->name('contact');
-});
-
-Route::get('/connect', [SocialLinkWebController::class, 'index'])->name('connect');
+Route::get('/', [WebController::class, 'index'])->name('home');
 
 Route::post('send-email', [SendEmailController::class, 'store'])->name('sendmail');

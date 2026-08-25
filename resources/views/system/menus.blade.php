@@ -70,9 +70,10 @@
         ];
 
         $menu['Workout'] = [
-            'permission' => ['system.workout.index','system.workout.create'],
+            'permission' => ['system.workout.index','system.workout.create',
+            'system.nutrition.index','system.nutrition.create'],
             'icon' => '<i class="fa-solid fa-dumbbell"></i>',
-            'text' => __('Workouts'),
+            'text' => __('Plans'),
             'sub' => [
                 [
                     'permission' => ['system.workout.index','system.workout.create'],
@@ -80,14 +81,6 @@
                     'text' => __('Workout Plans'),
                     'icon' => '<i class="fa-solid fa-clipboard-list"></i>',
                 ],
-            ],
-        ];
-
-        $menu['Nutrition'] = [
-            'permission' => ['system.nutrition.index','system.nutrition.create'],
-            'icon' => '<i class="fa-solid fa-utensils"></i>',
-            'text' => __('Nutrition'),
-            'sub' => [
                 [
                     'permission' => ['system.nutrition.index','system.nutrition.create'],
                     'url' => route('system.nutrition.index'),
@@ -97,19 +90,26 @@
             ],
         ];
 
-        $menu['Setting'] = [
+        $menu['Website'] = [
+            'permission' => ['system.website.index','system.website.create'],
+            'icon' => '<i class="fa-solid fa-Global"></i>',
+            'text' => __('Website'),
+            'sub' => [
+                [
+                    'permission' => ['system.website.index'],
+                    'url' => route('system.website.index'),
+                    'text' => __('website Pages'),
+                    'icon' => '<i class="fa-solid fa-list-ul"></i>',
+                ],
+            ],
+        ];
 
+        $menu['Setting'] = [
             'permission' => ['system.activity-log.index','system.activity-log.show','system.auth-sessions.index',
-                            'system.language.index','system.activate.index','system.social-links.index','system.setting.index'],
+                            'system.language.index','system.activate.index', 'system.setting.index'],
             'icon' => '<i class="fa-solid fa-gear"></i>',
             'text' => __('Settings'),
             'sub' => [
-                [
-                    'permission' => ['system.social-links.index'],
-                    'url' => route('system.social-links.index'),
-                    'icon' => '<i class="fa-solid fa-link"></i>',
-                    'text' => __('Social Links'),
-                ],
                 [
                     'permission' => ['system.setting.index'],
                     'url' => route('system.setting.index'),

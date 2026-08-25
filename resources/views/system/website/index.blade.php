@@ -13,7 +13,7 @@
                     </h3>
                 </div>
             </div>
-            
+
             <div class="card-body pt-0">
                 <!--begin::Nav Tabs (6 Tabs)-->
                 <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x mb-8 fs-5 fw-semibold" role="tablist">
@@ -59,11 +59,11 @@
                     <div class="tab-pane fade show active" id="tab_hero" role="tabpanel">
                         {!! Form::open([
                             'id' => 'hero-form',
-                            'onsubmit' => 'FormSubmit("' . route('system.landing.settings.update') . '", "hero-form"); return false;',
+                            'onsubmit' => 'FormSubmit("' . route('system.website.settings.update') . '", "hero-form"); return false;',
                             'files' => true,
                             'method' => 'POST'
                         ]) !!}
-                        
+
                         <div id="hero-form-alert"></div>
 
                         <div class="row g-6 mb-8">
@@ -166,7 +166,7 @@
                     <div class="tab-pane fade" id="tab_about" role="tabpanel">
                         {!! Form::open([
                             'id' => 'about-form',
-                            'onsubmit' => 'FormSubmit("' . route('system.landing.settings.update') . '", "about-form"); return false;',
+                            'onsubmit' => 'FormSubmit("' . route('system.website.settings.update') . '", "about-form"); return false;',
                             'files' => true,
                             'method' => 'POST'
                         ]) !!}
@@ -298,7 +298,8 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-700 fw-semibold">
-                                    @forelse($services as $item)
+                                @if(!empty($services))
+                                @forelse($services as $item)
                                         <tr>
                                             <td>{{ $item->id }}</td>
                                             <td><i class="{{ $item->link ?: 'fa-solid fa-dumbbell' }} fs-3 text-primary"></i></td>
@@ -325,6 +326,7 @@
                                             <td colspan="8" class="text-center text-muted py-8">{{ __('No service cards found.') }}</td>
                                         </tr>
                                     @endforelse
+                                @endif
                                 </tbody>
                             </table>
                         </div>
@@ -359,6 +361,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-700 fw-semibold">
+                                @if(!empty($transformations))
                                     @forelse($transformations as $item)
                                         <tr>
                                             <td>{{ $item->id }}</td>
@@ -398,6 +401,7 @@
                                             <td colspan="8" class="text-center text-muted py-8">{{ __('No transformation cards found.') }}</td>
                                         </tr>
                                     @endforelse
+                                @endif
                                 </tbody>
                             </table>
                         </div>
@@ -432,6 +436,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-700 fw-semibold">
+                                @if(!empty($whyUsItems))
                                     @forelse($whyUsItems as $item)
                                         <tr>
                                             <td>{{ $item->id }}</td>
@@ -458,6 +463,7 @@
                                             <td colspan="7" class="text-center text-muted py-6">{{ __('No Why Us items found.') }}</td>
                                         </tr>
                                     @endforelse
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -466,10 +472,10 @@
 
                         <!-- Motivation Quote Form -->
                         <h4 class="fw-bold text-gray-900 mb-6"><i class="fa-solid fa-quote-left text-primary me-2"></i> {{ __('Motivation Quote & Final CTA Settings') }}</h4>
-                        
+
                         {!! Form::open([
                             'id' => 'motivation-form',
-                            'onsubmit' => 'FormSubmit("' . route('system.landing.settings.update') . '", "motivation-form"); return false;',
+                            'onsubmit' => 'FormSubmit("' . route('system.website.settings.update') . '", "motivation-form"); return false;',
                             'files' => true,
                             'method' => 'POST'
                         ]) !!}
@@ -561,6 +567,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-700 fw-semibold">
+                                @if(!empty($reviews))
                                     @forelse($reviews as $item)
                                         <tr>
                                             <td>{{ $item->id }}</td>
@@ -594,6 +601,7 @@
                                             <td colspan="8" class="text-center text-muted py-6">{{ __('No reviews found.') }}</td>
                                         </tr>
                                     @endforelse
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -605,7 +613,7 @@
 
                         {!! Form::open([
                             'id' => 'socials-form',
-                            'onsubmit' => 'FormSubmit("' . route('system.landing.settings.update') . '", "socials-form"); return false;',
+                            'onsubmit' => 'FormSubmit("' . route('system.website.settings.update') . '", "socials-form"); return false;',
                             'method' => 'POST'
                         ]) !!}
                         <div id="socials-form-alert"></div>
@@ -735,9 +743,9 @@
 
                     <!-- Sort Order & Status -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ __('Sort Order') }}</label>
-                        {!! Form::number('sort_order', 0, ['class' => 'form-control form-control-solid', 'id' => 'sort_order-form-input']) !!}
-                        <div class="invalid-feedback" id="sort_order-form-error"></div>
+                        <label class="form-label fw-bold">{{ __('Sort') }}</label>
+                        {!! Form::number('sort', 0, ['class' => 'form-control form-control-solid', 'id' => 'sort-form-input']) !!}
+                        <div class="invalid-feedback" id="sort-form-error"></div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label required fw-bold">{{ __('Status') }}</label>
@@ -764,8 +772,9 @@
 
 @endsection
 
-@section('scripts')
+@section('footer')
 <script>
+
     // Live Image Preview Helper
     function previewImage(input, previewSelector) {
         if (input.files && input.files[0]) {
@@ -780,7 +789,7 @@
     // Modal Visibility Configuration based on Type
     function configureModalForType(type) {
         $('#post_type').val(type);
-        
+
         // Reset visibility
         $('#field-post-subtitle').show();
         $('#field-post-price').hide();
@@ -824,10 +833,11 @@
 
     // Open Modal for New Record
     function openPostModal(type) {
+        console.log(type)
         configureModalForType(type);
         $('#form-post')[0].reset();
         $('#post_type').val(type);
-        $('#form-post').attr('onsubmit', 'FormSubmit("{{ route("system.landing.posts.store") }}", "form-post"); return false;');
+        $('#form-post').attr('onsubmit', 'FormSubmit("{{ route("system.website.posts.store") }}", "form-post"); return false;');
         $('#modal-post').modal('show');
     }
 
@@ -835,7 +845,7 @@
     function editPost(item) {
         configureModalForType(item.type);
         $('#modal-post-title').text('{{ __("Edit Item") }} #' + item.id);
-        
+
         $('#title-form-input').val(item.title || '');
         $('#subtitle-form-input').val(item.subtitle || '');
         $('#price-form-input').val(item.price || '');
@@ -844,7 +854,7 @@
         $('#sort_order-form-input').val(item.sort_order || 0);
         $('#status-form-input').val(item.status || 'active');
 
-        var updateUrl = "{{ url('system/landing/posts') }}/" + item.id;
+        var updateUrl = "{{ url('system/website/posts') }}/" + item.id;
         $('#form-post').attr('onsubmit', 'FormSubmit("' + updateUrl + '", "form-post"); return false;');
         $('#modal-post').modal('show');
     }

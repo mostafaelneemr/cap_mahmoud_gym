@@ -55,6 +55,13 @@ Route::resource('/workout', 'WorkoutController', ['as' => 'system']); //
 Route::get('/nutrition/my-plan', 'NutritionController@myPlan')->name('system.nutrition.my-plan');
 Route::resource('/nutrition', 'NutritionController', ['as' => 'system']);
 
-Route::resource('/social-links', 'SocialLinkController', ['as' => 'system']); //
+Route::resource('/website', 'WebsiteController', ['as' => 'system']); //
+Route::controller('WebsiteController')->group(function () {
+    Route::post('website/settings','updateSettings')->name('system.website.settings.update');
+    Route::post('website/posts', 'storePost')->name('system.website.posts.store');
+    Route::post('website/posts/{id}',  'updatePost')->name('website.posts.update');
+    Route::delete('website/posts/{id}',  'destroyPost')->name('website.posts.destroy');
+});
+
 
 Route::get('/trainer', 'Dashboard@trainerDashboard')->name('system.dashboard.trainer');

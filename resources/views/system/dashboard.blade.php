@@ -150,7 +150,7 @@
                     </div>
                 </div>
                 <div class="d-flex flex-column mt-5">
-                    <span class="fs-2hx fw-bold text-gray-900 lh-1 ls-n2">{{ $clicksCount }}</span>
+                    <span class="fs-2hx fw-bold text-gray-900 lh-1 ls-n2">{{ $clicksCount ?? 0 }}</span>
                 </div>
             </div>
         </div>
@@ -242,15 +242,15 @@
         <div class="card card-flush mb-6 shadow-sm">
             <div class="card-header py-5">
                 <div class="card-title">
-                    <h3 class="card-label fw-bold text-gray-900 fs-3">{{ __('Quick Share Linktree') }}</h3>
+                    <h3 class="card-label fw-bold text-gray-900 fs-3">{{ __('Quick Share Website') }}</h3>
                 </div>
             </div>
             <div class="card-body pt-0">
-                <p class="text-muted fs-7 mb-4">{{ __('Share this link tree on social bios (Instagram, TikTok) for trainees to connect.') }}</p>
+                <p class="text-muted fs-7 mb-4">{{ __('Share this link website on social bios (Instagram, TikTok) for trainees to connect.') }}</p>
                 <div class="input-group mb-3">
                     <input type="text" id="linktree-url"
                         class="form-control form-control-solid bg-light theme-copy-input" readonly
-                        value="{{ $linktreeUrl }}">
+                        value="{{ $websiteUrl }}">
                     <button class="btn btn-primary theme-copy-btn" type="button" onclick="copyLinktreeUrl()">
                         <i class="fa-solid fa-copy"></i>
                     </button>

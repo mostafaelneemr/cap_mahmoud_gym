@@ -65,6 +65,13 @@ return [
     ],
 
     [
+        'name' => __('website'),
+        'permissions' => [
+            'view-website-pages' => ['system.website.index'],
+        ]
+    ],
+
+    [
         'name' => __('Setting'),
         'permissions' => [
             'view-setting' => ['system.setting.index', 'system.setting.update'],

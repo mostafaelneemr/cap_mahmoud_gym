@@ -3,10 +3,7 @@
 namespace App\Services;
 
 
-use App\Filters\Id;
 use App\Filters\MessageRead;
-use App\Filters\Name;
-use App\Filters\Status;
 use App\Repositories\Message\MessageRepository;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
