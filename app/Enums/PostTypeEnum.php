@@ -8,6 +8,10 @@ enum PostTypeEnum: string
     case PricingPlan = 'pricing_plan';
     case Faq = 'faq';
     case Testimonial = 'testimonial';
+    case Service = 'service';
+    case Attribute = 'attribute';
+    case WhyUs = 'why_us';
+    case Review = 'review';
 
     public static function values(): array
     {

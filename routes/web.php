@@ -15,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [WebController::class, 'index'])->name('home');
-
-Route::post('send-email', [SendEmailController::class, 'store'])->name('sendmail');
+Route::get('/', function () {
+   return redirect(route('system.dashboard'));
+});

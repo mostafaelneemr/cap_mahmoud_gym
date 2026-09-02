@@ -114,7 +114,7 @@
             <div class="topbar-item">
                 <div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1">
                     <span class="svg-icon svg-icon-xl svg-icon-primary">
-                        <a href="{{ route('home')}}" target="_blank">
+                        <a href="#" target="_blank">
                             <span class="svg-icon svg-icon-primary svg-icon-2x">
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                     width="24px" height="24px" viewBox="0 0 24 24" version="1.1">

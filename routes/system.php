@@ -4,7 +4,8 @@
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout'); //
 Route::post('/reset-password', 'Auth\LoginController@updatePassword')->name('system.reset-password');
 
-Auth::routes();
+// Auth::routes();
+Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 
 Route::get('/auth/google', 'Auth\LoginController@redirectToGoogle')->name('auth.google');
 Route::get('/auth/google/callback', 'Auth\LoginController@handleGoogleCallback')->name('auth.google.callback');
@@ -56,11 +57,15 @@ Route::get('/nutrition/my-plan', 'NutritionController@myPlan')->name('system.nut
 Route::resource('/nutrition', 'NutritionController', ['as' => 'system']);
 
 Route::resource('/website', 'WebsiteController', ['as' => 'system']); //
-Route::controller('WebsiteController')->group(function () {
-    Route::post('website/settings','updateSettings')->name('system.website.settings.update');
-    Route::post('website/posts', 'storePost')->name('system.website.posts.store');
-    Route::post('website/posts/{id}',  'updatePost')->name('website.posts.update');
-    Route::delete('website/posts/{id}',  'destroyPost')->name('website.posts.destroy');
+Route::prefix('website')->controller('WebsiteController')->group(function () {
+    Route::post('/settings', 'updateSettings')->name('system.website.settings.update');
+    Route::post('/section/{type}', 'updateSection')->name('system.website.section.update');
+    Route::post('/items', 'storePostItem')->name('system.website.items.store');
+    Route::post('/items/{id}', 'updatePostItem')->name('system.website.items.update');
+    Route::delete('/items/{id}', 'destroyPostItem')->name('system.website.items.destroy');
+    Route::post('/posts', 'storePostItem')->name('system.website.posts.store');
+    Route::post('/posts/{id}', 'updatePostItem')->name('website.posts.update');
+    Route::delete('/posts/{id}', 'destroyPostItem')->name('website.posts.destroy');
 });
 
 

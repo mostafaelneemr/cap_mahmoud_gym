@@ -6,7 +6,10 @@ namespace App\Models;
 class Setting extends GlobalModel
 {
     protected $table = "settings";
-    public $timestamps = true;
+
+    protected $primaryKey = 'name';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'name',
