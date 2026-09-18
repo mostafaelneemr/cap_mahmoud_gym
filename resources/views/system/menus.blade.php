@@ -104,6 +104,26 @@
         ],
         ];
 
+        $menu['Submissions'] = [
+        'permission' => ['system.message.index','system.join-us.index'],
+        'icon' => '<i class="fa-solid fa-inbox"></i>',
+        'text' => __('Submissions'),
+        'sub' => [
+        [
+        'permission' => ['system.message.index'],
+        'url' => route('system.message.index'),
+        'text' => __('Contact Messages'),
+        'icon' => '<i class="fa-solid fa-envelope"></i>',
+        ],
+        [
+        'permission' => ['system.join-us.index'],
+        'url' => route('system.join-us.index'),
+        'text' => __('Join Us Applications'),
+        'icon' => '<i class="fa-solid fa-person-running"></i>',
+        ],
+        ],
+        ];
+
         $menu['Setting'] = [
         'permission' => ['system.activity-log.index','system.activity-log.show','system.auth-sessions.index',
         'system.language.index','system.activate.index', 'system.setting.index'],

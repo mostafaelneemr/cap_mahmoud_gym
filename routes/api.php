@@ -30,9 +30,11 @@ Route::prefix('v1')->group(function () {
     Route::get('join-us/{type}', [WebsiteController::class, 'getJoinUsPageData']);
     Route::get('contact/{type}', [WebsiteController::class, 'getContactPageData']);
 
-    // Form Submissions POST Endpoints
-    Route::post('reviews', [WebsiteController::class, 'submitReview']);
-    Route::post('join-us', [WebsiteController::class, 'submitJoinUs']);
-    Route::post('contact', [WebsiteController::class, 'submitContact']);
+    // Form Submission POST Endpoints (throttled: max 10 requests/minute per IP)
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::post('reviews',  [WebsiteController::class, 'submitReview']);
+        Route::post('join-us',  [WebsiteController::class, 'submitJoinUs']);
+        Route::post('contact',  [WebsiteController::class, 'submitContact']);
+    });
 
 });
