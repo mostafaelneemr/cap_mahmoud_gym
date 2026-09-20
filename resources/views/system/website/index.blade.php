@@ -474,7 +474,7 @@
                         <!-- Dynamic Key Attributes Badges -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <div>
-                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-list-check text-primary me-2"></i> {{ __('Key Attributes & Badges (post_items)') }}</h4>
+                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-list-check text-primary me-2"></i> {{ __('Key Attributes & Badges (posts)') }}</h4>
                                 <div class="text-muted fs-7">{{ __('Key selling points displayed in About section (e.g., Custom Plans, Data Driven, Elite Coaching)') }}</div>
                             </div>
                             <button type="button" class="btn btn-primary" onclick="openPostModal('about', {{ $about?->id ?? 'null' }})">
@@ -599,7 +599,7 @@
                         <!-- Services Post Items Table -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <div>
-                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-dumbbell text-primary me-2"></i> {{ __('Services Offered (post_items)') }}</h4>
+                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-dumbbell text-primary me-2"></i> {{ __('Services Offered (posts)') }}</h4>
                                 <div class="text-muted fs-7">{{ __('Training, nutrition, and tracking service cards offered to trainees') }}</div>
                             </div>
                             <button type="button" class="btn btn-primary" onclick="openPostModal('service', {{ $service?->id ?? 'null' }})">
@@ -724,7 +724,7 @@
                         <!-- Transformations Post Items Table -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <div>
-                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-images text-primary me-2"></i> {{ __('Client Transformation Stories (post_items)') }}</h4>
+                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-images text-primary me-2"></i> {{ __('Client Transformation Stories (posts)') }}</h4>
                                 <div class="text-muted fs-7">{{ __('Before and After photos showcasing trainee fitness transformations') }}</div>
                             </div>
                             <button type="button" class="btn btn-primary" onclick="openPostModal('transformation', {{ $transformation?->id ?? 'null' }})">
@@ -915,7 +915,7 @@
                         <!-- Numbered Why Us Cards (01, 02, 03, 04) -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <div>
-                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-list-ol text-primary me-2"></i> {{ __('Numbered Feature Cards (01, 02, 03, 04) (post_items)') }}</h4>
+                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-list-ol text-primary me-2"></i> {{ __('Numbered Feature Cards (01, 02, 03, 04) (posts)') }}</h4>
                                 <div class="text-muted fs-7">{{ __('Numbered cards highlighting gym advantages with sort index') }}</div>
                             </div>
                             <button type="button" class="btn btn-primary" onclick="openPostModal('why_us', {{ $whyUs?->id ?? 'null' }})">
@@ -927,7 +927,7 @@
                             <table class="table align-middle table-row-dashed fs-6 gy-4">
                                 <thead>
                                     <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                        <th class="w-60px">{{ __('Index') }}</th>
+                                        <th class="w-60px">{{ __('#') }}</th>
                                         <th class="w-80px">{{ __('Icon') }}</th>
                                         <th>{{ __('Title (EN / AR)') }}</th>
                                         <th>{{ __('Subtext / Description (EN / AR)') }}</th>
@@ -1296,7 +1296,7 @@
 
                     <!-- Sort Order & Status -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ __('Sort Order / Index') }}</label>
+                        <label class="form-label fw-bold">{{ __('Sort') }}</label>
                         {!! Form::number('sort', 0, ['class' => 'form-control form-control-solid', 'id' => 'sort-form-input', 'min' => 0]) !!}
                         <div class="invalid-feedback" id="sort-form-error"></div>
                     </div>
