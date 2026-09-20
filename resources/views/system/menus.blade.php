@@ -6,16 +6,17 @@
     {{-- ===== Trainee Menu ===== --}}
     @php
         $menu['MyProgram'] = [
-        'permission' => ['system.dashboard.trainer'],
-        'url' => route('system.dashboard.trainer'),
-        'icon' => '<i class="fa fa-dumbbell"></i>',
-        'text' => __('My Workout Program'),
+            'permission' => ['system.dashboard.trainer'],
+            'url' => route('system.dashboard.trainer'),
+            'icon' => '<i class="fa fa-dumbbell"></i>',
+            'text' => __('My Workout Program'),
         ];
+
         $menu['MyNutritionPlan'] = [
-        'permission' => ['system.nutrition.my-plan'],
-        'url' => route('system.nutrition.my-plan'),
-        'icon' => '<i class="fa fa-utensils"></i>',
-        'text' => __('My Nutrition Plan'),
+            'permission' => ['system.nutrition.my-plan'],
+            'url' => route('system.nutrition.my-plan'),
+            'icon' => '<i class="fa fa-utensils"></i>',
+            'text' => __('My Nutrition Plan'),
         ];
     @endphp
 
@@ -36,7 +37,7 @@
             'permission' => ['system.user.index','system.user.show','system.user.create','system.user.edit',
             'system.permission-group.index','system.permission-group.edit','system.permission-group.create',
             ],
-            'icon' => '<i class="fa-users"></i>',
+            'icon' => '<i class="fa fa-users"></i>',
             'text' => __('Users'),
             'sub' => [
                 [
@@ -56,12 +57,12 @@
         ];
 
         $menu['Trainee'] = [
-            'permission' => ['system.trainee.index','system.trainee.create','system.trainee.edit'],
+            'permission' => ['system.trainee.index','system.trainee.create','system.trainee.edit','system.trainee.show'],
             'icon' => '<i class="fa-solid fa-person-running"></i>',
             'text' => __('Trainees'),
             'sub' => [
                 [
-                    'permission' => ['system.trainee.index','system.trainee.create','system.trainee.edit'],
+                    'permission' => ['system.trainee.index','system.trainee.create','system.trainee.edit','system.trainee.show'],
                     'url' => route('system.trainee.index'),
                     'text' => __('All Trainees'),
                     'icon' => '<i class="fa-solid fa-list-ul"></i>',
@@ -70,58 +71,58 @@
         ];
 
         $menu['Workout'] = [
-        'permission' => ['system.workout.index','system.workout.create',
-        'system.nutrition.index','system.nutrition.create'],
-        'icon' => '<i class="fa-solid fa-dumbbell"></i>',
-        'text' => __('Plans'),
-        'sub' => [
-        [
-        'permission' => ['system.workout.index','system.workout.create'],
-        'url' => route('system.workout.index'),
-        'text' => __('Workout Plans'),
-        'icon' => '<i class="fa-solid fa-clipboard-list"></i>',
-        ],
-        [
-        'permission' => ['system.nutrition.index','system.nutrition.create'],
-        'url' => route('system.nutrition.index'),
-        'text' => __('Nutrition Plans'),
-        'icon' => '<i class="fa-solid fa-apple-whole"></i>',
-        ],
-        ],
+            'permission' => ['system.workout.index','system.workout.create',
+            'system.nutrition.index','system.nutrition.create'],
+            'icon' => '<i class="fa-solid fa-dumbbell"></i>',
+            'text' => __('Plans'),
+            'sub' => [
+                [
+                    'permission' => ['system.workout.index','system.workout.create'],
+                    'url' => route('system.workout.index'),
+                    'text' => __('Workout Plans'),
+                    'icon' => '<i class="fa-solid fa-clipboard-list"></i>',
+                ],
+                [
+                    'permission' => ['system.nutrition.index','system.nutrition.create'],
+                    'url' => route('system.nutrition.index'),
+                    'text' => __('Nutrition Plans'),
+                    'icon' => '<i class="fa-solid fa-apple-whole"></i>',
+                ],
+            ],
         ];
 
         $menu['Website'] = [
-        'permission' => ['system.website.index','system.website.create'],
-        'icon' => '<i class="fa-solid fa-Global"></i>',
-        'text' => __('Website'),
-        'sub' => [
-        [
-        'permission' => ['system.website.index'],
-        'url' => route('system.website.index'),
-        'text' => __('website Pages'),
-        'icon' => '<i class="fa-solid fa-list-ul"></i>',
-        ],
-        ],
+            'permission' => ['system.website.index','system.website.create'],
+            'icon' => '<i class="fa-solid fa-Global"></i>',
+            'text' => __('Website'),
+            'sub' => [
+                [
+                    'permission' => ['system.website.index'],
+                    'url' => route('system.website.index'),
+                    'text' => __('Website Pages'),
+                    'icon' => '<i class="fa-solid fa-list-ul"></i>',
+                ],
+            ],
         ];
 
         $menu['Submissions'] = [
-        'permission' => ['system.message.index','system.join-us.index'],
-        'icon' => '<i class="fa-solid fa-inbox"></i>',
-        'text' => __('Submissions'),
-        'sub' => [
-        [
-        'permission' => ['system.message.index'],
-        'url' => route('system.message.index'),
-        'text' => __('Contact Messages'),
-        'icon' => '<i class="fa-solid fa-envelope"></i>',
-        ],
-        [
-        'permission' => ['system.join-us.index'],
-        'url' => route('system.join-us.index'),
-        'text' => __('Join Us Applications'),
-        'icon' => '<i class="fa-solid fa-person-running"></i>',
-        ],
-        ],
+            'permission' => ['system.message.index','system.join-us.index'],
+            'icon' => '<i class="fa-solid fa-inbox"></i>',
+            'text' => __('Submissions'),
+            'sub' => [
+                [
+                    'permission' => ['system.message.index'],
+                    'url' => route('system.message.index'),
+                    'text' => __('Contact Messages'),
+                    'icon' => '<i class="fa-solid fa-envelope"></i>',
+                ],
+                [
+                    'permission' => ['system.join-us.index'],
+                    'url' => route('system.join-us.index'),
+                    'text' => __('Join Us Applications'),
+                    'icon' => '<i class="fa-solid fa-person-running"></i>',
+                ],
+            ],
         ];
 
         $menu['Setting'] = [
@@ -130,25 +131,25 @@
         'icon' => '<i class="fa-solid fa-gear"></i>',
         'text' => __('Settings'),
         'sub' => [
-        [
-        'permission' => ['system.setting.index'],
-        'url' => route('system.setting.index'),
-        'icon' => '<i class="fa-solid fa-sliders"></i>',
-        'text' => __('System Settings'),
-        ],
-        [
-        'permission' => ['system.activity-log.index', 'system.activity-log.show'],
-        'url' => route('system.activity-log.index'),
-        'text' => __('Activity Log'),
-        'icon' => '<i class="fa-solid fa-clock-rotate-left"></i>',
-        ],
-        [
-        'permission' => ['system.auth-sessions.index'],
-        'url' => route('system.auth-sessions.index'),
-        'icon' => '<i class="fa-solid fa-shield-halved"></i>',
-        'text' => __('Auth Sessions'),
-        ],
-        ],
+                [
+                    'permission' => ['system.setting.index'],
+                    'url' => route('system.setting.index'),
+                    'icon' => '<i class="fa-solid fa-sliders"></i>',
+                    'text' => __('System Settings'),
+                ],
+                [
+                    'permission' => ['system.activity-log.index', 'system.activity-log.show'],
+                    'url' => route('system.activity-log.index'),
+                    'text' => __('Activity Log'),
+                    'icon' => '<i class="fa-solid fa-clock-rotate-left"></i>',
+                ],
+                [
+                    'permission' => ['system.auth-sessions.index'],
+                    'url' => route('system.auth-sessions.index'),
+                    'icon' => '<i class="fa-solid fa-shield-halved"></i>',
+                    'text' => __('Auth Sessions'),
+                ],
+            ],
         ];
     @endphp
 

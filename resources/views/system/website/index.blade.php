@@ -62,22 +62,22 @@
                         <ul class="nav nav-pills nav-pills-custom mb-7 gap-3" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link active btn btn-outline btn-outline-dashed btn-outline-primary fw-bold px-4 py-3" data-bs-toggle="pill" href="#banner_main_hero">
-                                    <i class="fa-solid fa-house-chimney me-2"></i> {{ __('Main Home Hero') }}
+                                    <i class="fa-solid fa-house-chimney me-2"></i> {{ __('Main Home Page') }}
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link btn btn-outline btn-outline-dashed btn-outline-primary fw-bold px-4 py-3" data-bs-toggle="pill" href="#banner_trans_hero">
-                                    <i class="fa-solid fa-arrows-rotate me-2"></i> {{ __('Transformation Page Hero') }}
+                                    <i class="fa-solid fa-arrows-rotate me-2"></i> {{ __('Transformation Page') }}
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link btn btn-outline btn-outline-dashed btn-outline-primary fw-bold px-4 py-3" data-bs-toggle="pill" href="#banner_join_hero">
-                                    <i class="fa-solid fa-user-plus me-2"></i> {{ __('Join Us Page Hero') }}
+                                    <i class="fa-solid fa-user-plus me-2"></i> {{ __('Join Us Page') }}
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link btn btn-outline btn-outline-dashed btn-outline-primary fw-bold px-4 py-3" data-bs-toggle="pill" href="#banner_contact_hero">
-                                    <i class="fa-solid fa-headset me-2"></i> {{ __('Contact Us Page Hero') }}
+                                    <i class="fa-solid fa-headset me-2"></i> {{ __('Contact Us Page') }}
                                 </a>
                             </li>
                         </ul>
@@ -154,7 +154,7 @@
 
                                     <div class="d-flex justify-content-end mt-6">
                                         <button type="submit" class="btn btn-primary submit">
-                                            <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Main Hero') }}</span>
+                                            <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                             <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                         </button>
                                     </div>
@@ -233,7 +233,7 @@
 
                                     <div class="d-flex justify-content-end mt-6">
                                         <button type="submit" class="btn btn-primary submit">
-                                            <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Transformation Hero') }}</span>
+                                            <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                             <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                         </button>
                                     </div>
@@ -312,7 +312,7 @@
 
                                     <div class="d-flex justify-content-end mt-6">
                                         <button type="submit" class="btn btn-primary submit">
-                                            <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Join Us Hero') }}</span>
+                                            <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                             <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                         </button>
                                     </div>
@@ -391,7 +391,7 @@
 
                                     <div class="d-flex justify-content-end mt-6">
                                         <button type="submit" class="btn btn-primary submit">
-                                            <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Contact Us Hero') }}</span>
+                                            <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                             <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                         </button>
                                     </div>
@@ -464,7 +464,7 @@
 
                             <div class="d-flex justify-content-end mt-6">
                                 <button type="submit" class="btn btn-primary submit">
-                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save About Section') }}</span>
+                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                     <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                 </button>
                             </div>
@@ -589,7 +589,7 @@
 
                             <div class="d-flex justify-content-end mt-6">
                                 <button type="submit" class="btn btn-primary submit">
-                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Services Header') }}</span>
+                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                     <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                 </button>
                             </div>
@@ -714,7 +714,7 @@
 
                             <div class="d-flex justify-content-end mt-6">
                                 <button type="submit" class="btn btn-primary submit">
-                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Transformation Header') }}</span>
+                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                     <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                 </button>
                             </div>
@@ -835,7 +835,7 @@
 
                             <div class="d-flex justify-content-end mt-6">
                                 <button type="submit" class="btn btn-primary submit">
-                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Why Us Header') }}</span>
+                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                     <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                 </button>
                             </div>
@@ -905,7 +905,7 @@
 
                             <div class="d-flex justify-content-end mt-6">
                                 <button type="submit" class="btn btn-primary submit">
-                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Motivation Quote') }}</span>
+                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                     <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                 </button>
                             </div>
@@ -1020,7 +1020,7 @@
 
                             <div class="d-flex justify-content-end mt-6">
                                 <button type="submit" class="btn btn-primary submit">
-                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save Reviews Header') }}</span>
+                                    <span class="indicator-label"><i class="fa-solid fa-check-circle me-1"></i> {{ __('Save') }}</span>
                                     <span class="indicator-progress">{{ __('Please wait') }}... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                                 </button>
                             </div>
@@ -1030,7 +1030,7 @@
                         <!-- Trainee Reviews Post Items Table -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <div>
-                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-comments text-primary me-2"></i> {{ __('Trainee Reviews & Testimonials (post_items)') }}</h4>
+                                <h4 class="fw-bold text-gray-900 mb-1"><i class="fa-solid fa-comments text-primary me-2"></i> {{ __('Trainee Reviews & Testimonials (posts)') }}</h4>
                                 <div class="text-muted fs-7">{{ __('Trainee feedback, star ratings, and review content') }}</div>
                             </div>
                             <button type="button" class="btn btn-primary" onclick="openPostModal('review', {{ $review?->id ?? 'null' }})">
