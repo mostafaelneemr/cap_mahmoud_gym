@@ -11,10 +11,8 @@ class Setting extends GlobalModel
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = [
-        'name',
-        'value'
-    ];
+    protected $guarded = [];
+
 
     public function getOptionListAttribute($value){
         $value = @unserialize($value);
