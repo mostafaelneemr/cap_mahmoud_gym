@@ -171,12 +171,13 @@ class UserService extends BaseService
 
         $this->otherData(['result' => $user]);
 
+        $parsedMobile = $this->parseMobileNumber($user->mobile ?? '');
+
         $this->otherData([
             'PermissionGroup' => (new PermissionGroupService($this->permission_group_repository))->permissionArray(),
-            'telephone' => strlen($user->mobile) < 12 ? $user->mobile : substr($user->mobile, 3),
-            'telephone_code' => strlen($user->mobile) < 12 ? '+20' : substr($user->mobile, 0, 3),
-            'code' => $this->getCode($user->mobile)
-
+            'telephone' => $parsedMobile['telephone'],
+            'telephone_code' => $parsedMobile['telephone_code'],
+            'code' => $parsedMobile['code'],
         ]);
 
         return $this->retunData;
@@ -191,6 +192,89 @@ class UserService extends BaseService
         $this->otherData(['result' => $user]);
 
         return $this->retunData;
+    }
+
+    /**
+     * Format telephone with country code
+     */
+    public function formatMobileNumber(?string $telephone, ?string $telephoneCode = null): ?string
+    {
+        if (empty($telephone)) {
+            return null;
+        }
+
+        $telephone = toEnglishNumrics($telephone);
+        $phoneDigits = preg_replace('/\D/', '', $telephone);
+
+        if (empty($phoneDigits)) {
+            return null;
+        }
+
+        $codeDigits = $telephoneCode ? preg_replace('/\D/', '', $telephoneCode) : '';
+        if (empty($codeDigits)) {
+            $codeDigits = '20';
+        }
+
+        $phoneDigits = ltrim($phoneDigits, '0');
+
+        if (str_starts_with($phoneDigits, $codeDigits)) {
+            $phoneDigits = ltrim(substr($phoneDigits, strlen($codeDigits)), '0');
+        }
+
+        if ($codeDigits === '20') {
+            return '+20' . $phoneDigits;
+        }
+
+        return $codeDigits . $phoneDigits;
+    }
+
+    /**
+     * Parse stored mobile number into components for display/editing
+     */
+    public function parseMobileNumber(?string $mobile): array
+    {
+        if (empty($mobile)) {
+            return [
+                'telephone' => '',
+                'telephone_code' => '+20',
+                'code' => 'eg',
+            ];
+        }
+
+        $raw = trim($mobile);
+        $digits = preg_replace('/\D/', '', $raw);
+
+        $country3Map = [
+            '966' => 'sa',
+            '971' => 'ae',
+            '965' => 'kw',
+            '973' => 'bh',
+            '968' => 'om',
+            '974' => 'qa',
+        ];
+
+        $prefix3 = substr($digits, 0, 3);
+        if (isset($country3Map[$prefix3])) {
+            return [
+                'telephone' => substr($digits, 3),
+                'telephone_code' => $prefix3,
+                'code' => $country3Map[$prefix3],
+            ];
+        }
+
+        if (str_starts_with($digits, '20')) {
+            return [
+                'telephone' => substr($digits, 2),
+                'telephone_code' => '+20',
+                'code' => 'eg',
+            ];
+        }
+
+        return [
+            'telephone' => $digits,
+            'telephone_code' => '+20',
+            'code' => 'eg',
+        ];
     }
 
     /**
@@ -209,8 +293,11 @@ class UserService extends BaseService
                 unset($theRequest['password']);
             }
 
-            if ($request->telephone)
-                $theRequest['mobile'] = fixMobileNumber($request->telephone);
+            if ($request->filled('telephone')) {
+                $theRequest['mobile'] = $this->formatMobileNumber($request->telephone, $request->telephone_code);
+            } else {
+                unset($theRequest['mobile']);
+            }
 
             $user = $this->user_repository->store($theRequest);
             DB::commit();
@@ -244,8 +331,13 @@ class UserService extends BaseService
             } else {
                 unset($theRequest['password']);
             }
-            if ($request->telephone)
-                $theRequest['mobile'] = fixMobileNumber($request->telephone);
+
+            if ($request->filled('telephone')) {
+                $theRequest['mobile'] = $this->formatMobileNumber($request->telephone, $request->telephone_code);
+            } else {
+                unset($theRequest['mobile']);
+            }
+
             $update = $this->user_repository->update($theRequest, $id);
             DB::commit();
             return $update;

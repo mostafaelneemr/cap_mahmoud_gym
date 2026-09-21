@@ -1,72 +1,5 @@
 @extends('system.layout')
-@section('header')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css"
-          integrity="sha512-gxWow8Mo6q6pLa1XH/CcH8JyiSDEtiwJV78E+D+QP0EVasFs8wKXq16G8CLD4CJ2SnonHr4Lm/yY2fSI2+cbmw=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <style>
-        .iti {
-            display: block;
-        }
 
-        @media (min-width: 1200px) and (max-width: 1399px) {
-            .container, .container-sm, .container-md, .container-lg, .container-xl {
-                max-width: 95%;
-            }
-        }
-
-        @media (max-width: 991.98px) {
-            .card.card-custom > .card-header .card-title, .card.card-custom > .card-header .card-title .card-label {
-                font-size: 1rem;
-            }
-        }
-
-        .iti--separate-dial-code .iti__selected-flag {
-            background-color: transparent;
-        }
-
-        .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
-            background-color: transparent;
-        }
-
-        @if(lang() == 'ar')
-
-   /*.iti--allow-dropdown .iti__flag-container, .iti--separate-dial-code .iti__flag-container {*/
-        /*          left: 30px !important;*/
-        /*      }*/
-
-        input[type=tel] {
-            padding-right: 6px;
-            padding-left: 80px !important;
-            margin-left: 0;
-        }
-
-        .iti--separate-dial-code .iti__selected-flag {
-            background-color: transparent;
-        }
-
-        .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
-            background-color: transparent;
-        }
-
-        @else
-
-
-    @endif
-
-    .iti__flag-container {
-            direction: ltr;
-        }
-
-        .iti__country-list {
-            position: relative;
-        }
-
-        .wizard-icon-font:before {
-            font-weight: bold;
-        }
-
-    </style>
-@endsection
 @section('content')
 
     {!! Form::open(['id'=>'main-form','onsubmit' =>  isset($result) ? 'FormSubmit("'.route('system.user.update',$result->id).'");return false;':'FormSubmit("'.route('system.user.store') .'");return false;','method' => isset($result) ?  'PATCH' : 'POST']) !!}
@@ -85,6 +18,7 @@
             <!--end::Input group-->
         </div>
         <!--end::Col-->
+        <input type="hidden" name="telephone_code" value="{{$telephone_code}}">
 
         <!--begin::Col-->
         <div class="col-lg-6 ">
@@ -123,10 +57,9 @@
 
         <!--end::Col-->
         <div class="col-lg-6 ">
-            <input type="hidden" name="telephone_code" value="{{$telephone_code}}">
-            {{ label(__('Telephone')) }}
-            <div class="mb-5">
-                {!! Form::tel('telephone', isset($result) ?$telephone:null,['class'=>'form-control form-control-solid valid_telephone','id'=>'telephone']) !!}
+            {{ label(__('Mobile')) }}
+            <div class="mb-5 telephone_country">
+                {!! Form::tel('telephone', isset($result) ?$telephone:null,['class'=>'form-control form-control-solid valid_telephone add_telephone numeric-only','id'=>'telephone']) !!}
                 <div class="invalid-feedback" id="telephone-form-error"></div>
             </div>
         </div>
@@ -181,44 +114,6 @@
 @endsection
 
 @section('footer')
-    <script type="text/javascript">
-        function check_telephone() {
-            var phone = $("#telephone").val();
-            var country_codes = ['973', '965', '968', '966', '971', '+20'];
-            console.log(phone.substring(0, 3))
 
-            if (phone != '') {
-                phone = phone.replace(/\D/g, '')
-                if (phone.substring(0, 1) == 0) {
-                    $("#telephone").val(phone.substring(1));
-                    check_telephone()
-                    return;
-                }
-                if (country_codes.includes(phone.substring(0, 3))) {
-                    console.log(phone.substring(3));
-                    $("#telephone").val(phone.substring(3));
-                    check_telephone()
-                    return;
-                }
-                $("#telephone").val(phone);
-
-            }
-        }
-
-        $("#telephone").intlTelInput({
-            onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om', 'eg'],
-            initialCountry: '{{$code}}',
-            separateDialCode: true,
-            formatOnDisplay: false,
-            autoHideDialCode: false
-        });
-        $("#telephone").on("countrychange", function () {
-
-            var country_code = $("#telephone").intlTelInput("getSelectedCountryData").dialCode;
-            $("input[name='telephone_code']").val(country_code);
-        });
-
-
-    </script>
 @endsection
 

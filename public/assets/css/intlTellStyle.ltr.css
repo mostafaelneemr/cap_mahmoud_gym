@@ -1,5 +1,7 @@
-.telephone_country .iti {
-    display: block;
+.telephone_country .iti,
+.iti {
+    width: 100% !important;
+    display: block !important;
 }
 
 @media (min-width: 1200px) and (max-width: 1399px) {
@@ -14,21 +16,43 @@
     }
 }
 
-.telephone_country .iti--separate-dial-code .iti__selected-flag {
-    background-color: transparent;
+.telephone_country .iti--separate-dial-code .iti__selected-flag,
+.iti--separate-dial-code .iti__selected-flag {
+    background-color: transparent !important;
+    direction: ltr !important;
 }
 
-.telephone_country .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
-    background-color: transparent;
+.telephone_country .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag,
+.iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
+    background-color: transparent !important;
 }
 
-
-.telephone_country .iti__flag-container {
-    direction: ltr;
+.telephone_country .iti__flag-container,
+.iti__flag-container {
+    direction: ltr !important;
+    left: 0 !important;
+    right: auto !important;
 }
 
-.telephone_country .iti__country-list {
-    position: relative;
+.telephone_country input[type=tel],
+.iti input[type=tel],
+.add_telephone {
+    direction: ltr !important;
+    text-align: left !important;
+    padding-left: 95px !important;
+    padding-right: 12px !important;
+    margin-left: 0 !important;
+    unicode-bidi: plaintext !important;
+}
+
+.telephone_country .iti__country-list,
+.iti__country-list {
+    position: absolute !important;
+    z-index: 1050 !important;
+    direction: ltr !important;
+    text-align: left !important;
+    left: 0 !important;
+    right: auto !important;
 }
 
 .wizard-icon-font:before {

@@ -64,6 +64,8 @@
             }
             .add_telephone{
                 direction: ltr !important;
+                text-align: left !important;
+                unicode-bidi: plaintext !important;
             }
         </style>
     @endif
@@ -73,6 +75,7 @@
     @if(lang() == 'ar')
         <link rel="stylesheet" href="assets/css/intlTellStyle.rtl.css"/>
     @endif
+
     <!--begin::Javascript-->
     <script type="application/javascript">
         var hostUrl = "assets/";
@@ -317,8 +320,8 @@
 </div>
 <!--end::Scrolltop-->
 <script src="assets/js/intlTelInput-jquery-{{opencart_lang()}}.js"></script>
-<script src="{{asset('assets/plugins/custom/summernote/summernote-lite.min.js')}}"></script>
-<script src="{{asset('assets/plugins/custom/summernote/summernote-ar-AR.js')}}"></script>
+<script src="assets/plugins/custom/summernote/summernote-lite.min.js"></script>
+<script src="assets/plugins/custom/summernote/summernote-ar-AR.js"></script>
 <script>
     function text_editor(className, lang_id = 1) {
         var lang = 'en-US';
@@ -545,40 +548,75 @@
 <script>
 
     function check_telephone() {
-        var selector = $("#telephone");
-        var phone = $("#telephone").val();
-        var country_codes = ['973', '965', '968', '966', '971'];
+        var selector = $(".add_telephone");
+        if (!selector.length) {
+            selector = $("#telephone");
+        }
+        var phone = selector.val();
+        var country_codes_3 = [  '966', '971'];
+        // var country_codes_3 = ['973', '965', '968', '966', '971', '974'];
+        var country_codes_2 = ['20'];
 
-        if (phone != '') {
-            phone = phone.replace(/\D/g, '')
-            if (phone.substring(0, 1) == 0) {
+        if (phone && phone != '') {
+            phone = phone.replace(/\D/g, '');
+            if (phone.substring(0, 1) == '0') {
                 selector.val(phone.substring(1));
-                check_telephone()
+                check_telephone();
                 return;
             }
-            if (country_codes.includes(phone.substring(0, 3))) {
+            if (country_codes_3.includes(phone.substring(0, 3))) {
                 selector.val(phone.substring(3));
-                check_telephone()
+                check_telephone();
+                return;
+            }
+            if (country_codes_2.includes(phone.substring(0, 2))) {
+                selector.val(phone.substring(2));
+                check_telephone();
                 return;
             }
             selector.val(phone);
         }
     }
 
+    function updateTelPadding() {
+        $(".add_telephone").each(function () {
+            var $this = $(this);
+            var flag = $this.siblings(".iti__flag-container").find(".iti__selected-flag");
+            if (!flag.length) {
+                flag = $this.closest(".iti").find(".iti__selected-flag");
+            }
+            if (flag.length) {
+                var width = flag.outerWidth();
+                if (width > 0) {
+                    this.style.setProperty('padding-left', (width + 10) + 'px', 'important');
+                }
+            }
+        });
+    }
+
     const x = $(".add_telephone").intlTelInput({
-        onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om', 'qa'],
-        initialCountry: '{{ $code ?? 'sa' }}',
+        // onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om', 'qa', 'eg'],
+        onlyCountries: ['sa', 'ae', 'eg'],
+        initialCountry: '{{ $code ?? 'eg' }}',
         separateDialCode: true,
         formatOnDisplay: false,
         autoHideDialCode: false
     });
 
+    updateTelPadding();
+
     $(".add_telephone").on("countrychange", function () {
-        var country_code = $(".add_telephone").intlTelInput("getSelectedCountryData").dialCode;
+        var country_code = $(this).intlTelInput("getSelectedCountryData").dialCode;
         $("input[name='telephone_code']").val(country_code);
+        updateTelPadding();
+    });
+
+    $(window).on("load", function () {
+        updateTelPadding();
     });
 
 </script>
+
 @yield('footer')
 
 </body>
