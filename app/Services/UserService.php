@@ -250,7 +250,7 @@ class UserService extends BaseService
             }
 
             if ($request->filled('telephone')) {
-                $theRequest['mobile'] = $this->formatMobileNumber($request->telephone, $request->telephone_code);
+                $theRequest['mobile'] = formatMobileNumber($request->telephone, $request->telephone_code);
             } else {
                 unset($theRequest['mobile']);
             }
@@ -265,7 +265,7 @@ class UserService extends BaseService
         }
     }
 
-    public function userPassword($password): string
+    protected function userPassword($password): string
     {
         return Hash::make($password);
     }

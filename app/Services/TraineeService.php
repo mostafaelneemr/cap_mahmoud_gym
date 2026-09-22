@@ -162,11 +162,11 @@ class TraineeService extends BaseService
         DB::beginTransaction();
 
         try {
-            $mobile = $request->telephone_code . $request->telephone;
-            $mobile = '';
+            $mobile = null;
             if ($request->filled('telephone')) {
-                $mobile = formatMobileNumber($request->telephone, $request->telephone_code);
+                $mobile = \formatMobileNumber($request->telephone, $request->telephone_code);
             }
+
             $userData = [
                 'name' => $request->name,
                 'email' => $request->email,
@@ -228,12 +228,12 @@ class TraineeService extends BaseService
         try {
             $userData = $request->only(['name', 'email']);
 
-            if ($request->password) {
+            if ($request->filled('password')) {
                 $userData['password'] = $this->userPassword($request->password);
             }
 
-            if ($request->telephone) {
-                $userData['mobile'] = fixMobileNumber($request->telephone);
+            if ($request->filled('telephone')) {
+                $userData['mobile'] = \formatMobileNumber($request->telephone, $request->telephone_code);
             }
 
             $this->userRepository->update($userData, $id);
@@ -241,7 +241,7 @@ class TraineeService extends BaseService
             $trainee = $this->traineeRepository->getTraineeFirst($id);
 
             if ($trainee) {
-                $this->traineeRepository->update([
+                $traineeData = [
                     'training_level' => $request->training_level,
                     'membership_start' => $request->membership_start,
                     'membership_end' => $request->membership_end,
@@ -249,7 +249,13 @@ class TraineeService extends BaseService
                     'weight' => $request->weight,
                     'height' => $request->height,
                     'status' => $request->status,
-                ], $trainee->id);
+                ];
+
+                if ($request->filled('email')) {
+                    $traineeData['email'] = $request->email;
+                }
+
+                $this->traineeRepository->update($traineeData, $trainee->id);
             }
 
             DB::commit();
@@ -261,7 +267,7 @@ class TraineeService extends BaseService
         }
     }
 
-    public function userPassword($password): string
+    protected function userPassword($password): string
     {
         return Hash::make($password);
     }
