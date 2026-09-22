@@ -18,7 +18,7 @@
             <!--end::Input group-->
         </div>
         <!--end::Col-->
-        <input type="hidden" name="telephone_code" value="{{$telephone_code}}">
+        <input type="hidden" name="telephone_code" id="telephone_code" value="{{ $user->telephone_code ?? '20' }}">
 
         <!--begin::Col-->
         <div class="col-lg-6 ">
@@ -113,7 +113,4 @@
 
 @endsection
 
-@section('footer')
-
-@endsection
 

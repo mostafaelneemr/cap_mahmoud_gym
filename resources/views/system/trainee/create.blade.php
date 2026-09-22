@@ -74,7 +74,7 @@
                 <div class="invalid-feedback" id="membership_end-form-error"></div>
             </div>
         </div>
-
+        <input type="hidden" name="telephone_code" id="telephone_code" value="{{ $user->telephone_code ?? '20' }}">
         <div class="col-lg-6 ">
             {{ label(__('Mobile')) }}
             <div class="mb-5 telephone_country">
@@ -143,6 +143,3 @@
 
 @endsection
 
-@section('footer')
-
-@endsection
