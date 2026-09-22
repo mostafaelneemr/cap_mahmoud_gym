@@ -4164,12 +4164,6 @@ var KTSearch = function(element, options) {
 
     // Handlera
     var _handlers = function() {
-        // Guard: if no input element is found (e.g. custom search panels without
-        // data-kt-search-element="input"), skip all event wiring to prevent TypeError.
-        if (!the.inputElement) {
-            return;
-        }
-
         // Focus
         the.inputElement.addEventListener('focus', _focus);
 

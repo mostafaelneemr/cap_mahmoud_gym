@@ -1,34 +1,30 @@
-/* ============================================================
-   intlTellStyle.rtl.css — overrides for RTL layouts
-   Scoped to html[direction="rtl"] OR html[dir="rtl"] to beat
-   the inline <style> block in layout.blade.php and any
-   Metronic !important rules from style.bundle.rtl.css.
-   ============================================================ */
-
-/* Base container — always needed */
 .telephone_country .iti,
 .iti {
     width: 100% !important;
     display: block !important;
-    position: relative !important;
 }
 
 @media (min-width: 1200px) and (max-width: 1399px) {
-    .container, .container-sm, .container-md, .container-lg, .container-xl {
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl {
         max-width: 95%;
     }
 }
 
 @media (max-width: 991.98px) {
-    .card.card-custom > .card-header .card-title, .card.card-custom > .card-header .card-title .card-label {
+    .card.card-custom > .card-header .card-title,
+    .card.card-custom > .card-header .card-title .card-label {
         font-size: 1rem;
     }
 }
 
-/* Flag background */
 .telephone_country .iti--separate-dial-code .iti__selected-flag,
 .iti--separate-dial-code .iti__selected-flag {
     background-color: transparent !important;
+    direction: ltr !important;
 }
 
 .telephone_country .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag,
@@ -36,46 +32,35 @@
     background-color: transparent !important;
 }
 
-/* RTL: flag/dial-code container anchored to the RIGHT */
-html[direction="rtl"] .telephone_country .iti__flag-container,
-html[direction="rtl"] .iti__flag-container,
-html[dir="rtl"] .telephone_country .iti__flag-container,
-html[dir="rtl"] .iti__flag-container {
-    left: auto !important;
-    right: 0 !important;
-    direction: ltr !important; /* preserve + sign ordering in dial code */
+.telephone_country .iti__flag-container,
+.iti__flag-container {
+    direction: ltr !important;
+    left: 0 !important;
+    right: auto !important;
 }
 
-/* RTL: input gets right-side padding so text clears the flag */
-html[direction="rtl"] .telephone_country input[type=tel],
-html[direction="rtl"] .iti input[type=tel],
-html[direction="rtl"] .add_telephone,
-html[direction="rtl"] #telephone,
-html[dir="rtl"] .telephone_country input[type=tel],
-html[dir="rtl"] .iti input[type=tel],
-html[dir="rtl"] .add_telephone,
-html[dir="rtl"] #telephone {
+.telephone_country input[type=tel],
+.iti input[type=tel],
+.add_telephone {
     direction: ltr !important;
-    text-align: right !important;
-    padding-right: 95px !important;   /* ✅ space for flag + dial code on the right */
-    padding-left: 15px !important;
-    margin-right: 0 !important;
+    text-align: left !important;
+    padding-left: 95px !important;
+    padding-right: 12px !important;
+    margin-left: 0 !important;
     unicode-bidi: plaintext !important;
 }
 
-/* RTL: country dropdown opens from the right */
-html[direction="rtl"] .telephone_country .iti__country-list,
-html[direction="rtl"] .iti__country-list,
-html[dir="rtl"] .telephone_country .iti__country-list,
-html[dir="rtl"] .iti__country-list {
+.telephone_country .iti__country-list,
+.iti__country-list {
     position: absolute !important;
     z-index: 1050 !important;
-    direction: rtl !important;
-    text-align: right !important;
-    left: auto !important;
-    right: 0 !important;
+    direction: ltr !important;
+    text-align: left !important;
+    left: 0 !important;
+    right: auto !important;
 }
 
 .wizard-icon-font:before {
     font-weight: bold;
 }
+
