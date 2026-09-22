@@ -34,12 +34,6 @@
         <link href="assets/css/custom-ar.css?v={{time()}}" rel="stylesheet"/>
     @endif
     <link href="assets/plugins/custom/summernote/summernote-lite.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="assets/css/intlTelInput.css"/>
-    <link rel="stylesheet" href="assets/css/intlTellStyle.ltr.css"/>
-    @if(lang() == 'ar')
-        <link rel="stylesheet" href="assets/css/intlTellStyle.rtl.css"/>
-    @endif
     <!--end::Global Stylesheets Bundle-->
     @if(lang() == 'ar')
         <style>
@@ -76,7 +70,11 @@
         </style>
     @endif
 
-
+    <link rel="stylesheet" href="{{asset('assets/css/intlTelInput.css')}}"/>
+    <link rel="stylesheet" href="{{asset('assets/css/intlTellStyle.ltr.css')}}"/>
+    @if(lang() == 'ar')
+        <link rel="stylesheet" href="{{asset('assets/css/intlTellStyle.rtl.css')}}"/>
+    @endif
 
     <!--begin::Javascript-->
     <script type="application/javascript">
