@@ -163,6 +163,10 @@ class TraineeService extends BaseService
 
         try {
             $mobile = $request->telephone_code . $request->telephone;
+            $mobile = '';
+            if ($request->filled('telephone')) {
+                $mobile = formatMobileNumber($request->telephone, $request->telephone_code);
+            }
             $userData = [
                 'name' => $request->name,
                 'email' => $request->email,
@@ -177,6 +181,7 @@ class TraineeService extends BaseService
 
             $traineeData = [
                 'user_id' => $user->id,
+                'email' => $request->email,
                 'training_level' => $request->training_level,
                 'membership_start' => $request->membership_start,
                 'membership_end' => $request->membership_end,
@@ -203,12 +208,14 @@ class TraineeService extends BaseService
         $this->pageTitle('Update Trainee');
         $this->breadcrumb('Trainee', 'system.trainee.index');
 
+        $parsedMobile = parseMobileNumber($user->mobile ?? '');
+
         $this->otherData([
             'result' => $user,
             'trainee' => $trainee,
-            'telephone' => strlen($user->mobile) < 11 ? $user->mobile : substr($user->mobile, 3),
-            'telephone_code' => strlen($user->mobile) < 11 ? '966' : substr($user->mobile, 0, 3),
-            'code' => $this->getCode($user->mobile)
+            'telephone' => $parsedMobile['telephone'],
+            'telephone_code' => $parsedMobile['telephone_code'],
+            'code' => $parsedMobile['code'],
 
         ]);
 

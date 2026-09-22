@@ -666,3 +666,86 @@ function datatable_menu_workout($link, $route)
     if (userCan($route))
         return view('system.partials.links.datatable_menu_workout', compact('link', 'route'));
 }
+
+/**
+ * Format telephone with country code
+ */
+function formatMobileNumber(?string $telephone, ?string $telephoneCode = null): ?string
+{
+    if (empty($telephone)) {
+        return null;
+    }
+
+    $telephone = toEnglishNumrics($telephone);
+    $phoneDigits = preg_replace('/\D/', '', $telephone);
+
+    if (empty($phoneDigits)) {
+        return null;
+    }
+
+    $codeDigits = $telephoneCode ? preg_replace('/\D/', '', $telephoneCode) : '';
+    if (empty($codeDigits)) {
+        $codeDigits = '20';
+    }
+
+    $phoneDigits = ltrim($phoneDigits, '0');
+
+    if (str_starts_with($phoneDigits, $codeDigits)) {
+        $phoneDigits = ltrim(substr($phoneDigits, strlen($codeDigits)), '0');
+    }
+
+    if ($codeDigits === '20') {
+        return '+20' . $phoneDigits;
+    }
+
+    return $codeDigits . $phoneDigits;
+}
+
+/**
+ * Parse stored mobile number into components for display/editing
+ */
+function parseMobileNumber(?string $mobile): array
+{
+    if (empty($mobile)) {
+        return [
+            'telephone' => '',
+            'telephone_code' => '+20',
+            'code' => 'eg',
+        ];
+    }
+
+    $raw = trim($mobile);
+    $digits = preg_replace('/\D/', '', $raw);
+
+    $country3Map = [
+        '966' => 'sa',
+        '971' => 'ae',
+        '965' => 'kw',
+        '973' => 'bh',
+        '968' => 'om',
+        '974' => 'qa',
+    ];
+
+    $prefix3 = substr($digits, 0, 3);
+    if (isset($country3Map[$prefix3])) {
+        return [
+            'telephone' => substr($digits, 3),
+            'telephone_code' => $prefix3,
+            'code' => $country3Map[$prefix3],
+        ];
+    }
+
+    if (str_starts_with($digits, '20')) {
+        return [
+            'telephone' => substr($digits, 2),
+            'telephone_code' => '+20',
+            'code' => 'eg',
+        ];
+    }
+
+    return [
+        'telephone' => $digits,
+        'telephone_code' => '+20',
+        'code' => 'eg',
+    ];
+}

@@ -171,7 +171,7 @@ class UserService extends BaseService
 
         $this->otherData(['result' => $user]);
 
-        $parsedMobile = $this->parseMobileNumber($user->mobile ?? '');
+        $parsedMobile = parseMobileNumber($user->mobile ?? '');
 
         $this->otherData([
             'PermissionGroup' => (new PermissionGroupService($this->permission_group_repository))->permissionArray(),
@@ -195,89 +195,6 @@ class UserService extends BaseService
     }
 
     /**
-     * Format telephone with country code
-     */
-    public function formatMobileNumber(?string $telephone, ?string $telephoneCode = null): ?string
-    {
-        if (empty($telephone)) {
-            return null;
-        }
-
-        $telephone = toEnglishNumrics($telephone);
-        $phoneDigits = preg_replace('/\D/', '', $telephone);
-
-        if (empty($phoneDigits)) {
-            return null;
-        }
-
-        $codeDigits = $telephoneCode ? preg_replace('/\D/', '', $telephoneCode) : '';
-        if (empty($codeDigits)) {
-            $codeDigits = '20';
-        }
-
-        $phoneDigits = ltrim($phoneDigits, '0');
-
-        if (str_starts_with($phoneDigits, $codeDigits)) {
-            $phoneDigits = ltrim(substr($phoneDigits, strlen($codeDigits)), '0');
-        }
-
-        if ($codeDigits === '20') {
-            return '+20' . $phoneDigits;
-        }
-
-        return $codeDigits . $phoneDigits;
-    }
-
-    /**
-     * Parse stored mobile number into components for display/editing
-     */
-    public function parseMobileNumber(?string $mobile): array
-    {
-        if (empty($mobile)) {
-            return [
-                'telephone' => '',
-                'telephone_code' => '+20',
-                'code' => 'eg',
-            ];
-        }
-
-        $raw = trim($mobile);
-        $digits = preg_replace('/\D/', '', $raw);
-
-        $country3Map = [
-            '966' => 'sa',
-            '971' => 'ae',
-            '965' => 'kw',
-            '973' => 'bh',
-            '968' => 'om',
-            '974' => 'qa',
-        ];
-
-        $prefix3 = substr($digits, 0, 3);
-        if (isset($country3Map[$prefix3])) {
-            return [
-                'telephone' => substr($digits, 3),
-                'telephone_code' => $prefix3,
-                'code' => $country3Map[$prefix3],
-            ];
-        }
-
-        if (str_starts_with($digits, '20')) {
-            return [
-                'telephone' => substr($digits, 2),
-                'telephone_code' => '+20',
-                'code' => 'eg',
-            ];
-        }
-
-        return [
-            'telephone' => $digits,
-            'telephone_code' => '+20',
-            'code' => 'eg',
-        ];
-    }
-
-    /**
      * @param $request
      */
     public function store($request)
@@ -294,7 +211,7 @@ class UserService extends BaseService
             }
 
             if ($request->filled('telephone')) {
-                $theRequest['mobile'] = $this->formatMobileNumber($request->telephone, $request->telephone_code);
+                $theRequest['mobile'] = formatMobileNumber($request->telephone, $request->telephone_code);
             } else {
                 unset($theRequest['mobile']);
             }

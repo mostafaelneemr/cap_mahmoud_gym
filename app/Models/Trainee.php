@@ -15,7 +15,7 @@ class Trainee extends GlobalModel
     public $timestamps = true;
     public $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $fillable = ['user_id', 'age', 'weight', 'height', 'membership_start', 'membership_end', 'training_level', 'status'];
+    protected $fillable = ['user_id','email', 'age', 'weight', 'height', 'membership_start', 'membership_end', 'training_level', 'status'];
 
 
     public function user()
