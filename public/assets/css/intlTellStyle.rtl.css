@@ -2,21 +2,17 @@
 .iti {
     width: 100% !important;
     display: block !important;
+    position: relative !important;
 }
 
 @media (min-width: 1200px) and (max-width: 1399px) {
-    .container,
-    .container-sm,
-    .container-md,
-    .container-lg,
-    .container-xl {
+    .container, .container-sm, .container-md, .container-lg, .container-xl {
         max-width: 95%;
     }
 }
 
 @media (max-width: 991.98px) {
-    .card.card-custom > .card-header .card-title,
-    .card.card-custom > .card-header .card-title .card-label {
+    .card.card-custom > .card-header .card-title, .card.card-custom > .card-header .card-title .card-label {
         font-size: 1rem;
     }
 }
@@ -24,7 +20,6 @@
 .telephone_country .iti--separate-dial-code .iti__selected-flag,
 .iti--separate-dial-code .iti__selected-flag {
     background-color: transparent !important;
-    direction: ltr !important;
 }
 
 .telephone_country .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag,
@@ -32,35 +27,37 @@
     background-color: transparent !important;
 }
 
+/* في الـ RTL: العلم ومفتاح الدولة يجب أن يكونا على اليمين */
 .telephone_country .iti__flag-container,
 .iti__flag-container {
-    direction: ltr !important;
-    left: 0 !important;
-    right: auto !important;
+    left: auto !important;
+    right: 0 !important;
+    direction: ltr !important; /* للحفاظ على ترتيب كود الدولة مع علامة الزائد + */
 }
 
+/* في الـ RTL: المسافة الإجبارية تكون من اليمين حتى لا يغطي العلم الأرقام */
 .telephone_country input[type=tel],
 .iti input[type=tel],
 .add_telephone {
     direction: ltr !important;
-    text-align: left !important;
-    padding-left: 95px !important;
-    padding-right: 12px !important;
-    margin-left: 0 !important;
+    text-align: right !important;
+    padding-right: 95px !important;  /* ✅ مساحة العلم والكود على اليمين */
+    padding-left: 15px !important;
+    margin-right: 0 !important;
     unicode-bidi: plaintext !important;
 }
 
+/* القائمة المنسدلة للدول تنزل من اليمين */
 .telephone_country .iti__country-list,
 .iti__country-list {
     position: absolute !important;
     z-index: 1050 !important;
-    direction: ltr !important;
-    text-align: left !important;
-    left: 0 !important;
-    right: auto !important;
+    direction: rtl !important;
+    text-align: right !important;
+    left: auto !important;
+    right: 0 !important;
 }
 
 .wizard-icon-font:before {
     font-weight: bold;
 }
-

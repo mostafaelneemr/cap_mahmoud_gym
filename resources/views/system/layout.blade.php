@@ -608,18 +608,15 @@
         autoHideDialCode: false
     });
 
-    setTimeout(updateTelPadding, 100);
-    setTimeout(updateTelPadding, 400);
+    updateTelPadding();
 
     $(".add_telephone").on("countrychange", function () {
         var country_code = $(this).intlTelInput("getSelectedCountryData").dialCode;
         $("input[name='telephone_code']").val(country_code);
         updateTelPadding();
-        setTimeout(updateTelPadding, 50);
     });
 
-
-    $(window).on("load resize", function () {
+    $(window).on("load", function () {
         updateTelPadding();
     });
 
