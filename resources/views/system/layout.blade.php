@@ -580,15 +580,20 @@
 
     function updateTelPadding() {
         $(".add_telephone").each(function () {
-            var $this = $(this);
-            var flag = $this.siblings(".iti__flag-container").find(".iti__selected-flag");
-            if (!flag.length) {
-                flag = $this.closest(".iti").find(".iti__selected-flag");
-            }
-            if (flag.length) {
-                var width = flag.outerWidth();
+            var $input = $(this);
+            var $container = $input.closest(".iti");
+            var $flag = $container.find(".iti__selected-flag");
+
+            if ($flag.length) {
+                var width = $flag.outerWidth();
                 if (width > 0) {
-                    this.style.setProperty('padding-left', (width + 10) + 'px', 'important');
+                    var isRtl = $('html').attr('dir') === 'rtl' || $('body').attr('dir') === 'rtl';
+                    if (isRtl) {
+                        this.style.setProperty('padding-right', (width + 12) + 'px', 'important');
+                        this.style.setProperty('padding-left', '12px', 'important');
+                    } else {
+                        this.style.setProperty('padding-left', (width + 12) + 'px', 'important');
+                    }
                 }
             }
         });
