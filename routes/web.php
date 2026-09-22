@@ -1,7 +1,5 @@
 <?php
 
-use App\Modules\Web\SendEmailController;
-use App\Modules\Web\WebController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,5 +14,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-   return redirect(route('system.dashboard'));
+    return view('web.index');
 });

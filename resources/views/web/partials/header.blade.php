@@ -1,34 +1,31 @@
-<div class="container-fluid">
+<header class="navbar">
     <div class="logo">
-        <a href="{{route('home')}}">
-            <img src="{{ setting('logo')->value ?? '' }}" alt="">
+        <a href="index.html">
+            <img src="images/logo.png" alt="Mahmoud Shaltout Logo">
         </a>
     </div>
-{{--    <div class="top-social">--}}
-{{--        <a href="#"><i class="fa fa-pinterest-p"></i></a>--}}
-{{--        <a href="#"><i class="fa fa-linkedin"></i></a>--}}
-{{--        <a href="#"><i class="fa fa-pinterest-p"></i></a>--}}
-{{--        <a href="#"><i class="fa fa-youtube-play"></i></a>--}}
-{{--        <a href="#"><i class="fa fa-instagram"></i></a>--}}
-{{--    </div>--}}
-    <div class="container">
-        <div class="nav-menu" style="text-align: end;">
-            <nav class="mainmenu mobile-menu">
-                <ul>
-                    <li ><a href="{{route('home')}}">Home</a></li>
-{{--                    <li><a href="./about-us.html">About us</a></li>--}}
-{{--                    <li><a href="./schedule.html">Schedule</a></li>--}}
-{{--                    <li><a href="./gallery.html">Gallery</a></li>--}}
-{{--                    <li><a href="./blog.html">Blog</a>--}}
-{{--                        <ul class="dropdown">--}}
-{{--                            <li><a href="./about-us.html">About Us</a></li>--}}
-{{--                            <li><a href="./blog-single.html">Blog Details</a></li>--}}
-{{--                        </ul>--}}
-{{--                    </li>--}}
-                    <li><a href="{{route('contact')}}">Contacts</a></li>
-                </ul>
-            </nav>
+
+    <nav class="nav-links">
+        <a href="index.html" class="active-link">Home</a>
+        <a href="transformations.html">Transformations</a>
+        <a href="join_us.html">Join Us</a>
+        <a href="contact_us.html">Contact Us</a>
+    </nav>
+
+    <div class="nav-right-actions">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Navigation" aria-expanded="false" aria-controls="mobileNav">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="user-profile">
+            <i class="fa-regular fa-user"></i>
         </div>
     </div>
-    <div id="mobile-menu-wrap"></div>
-</div>
+
+    <nav class="mobile-nav-menu" id="mobileNav">
+        <a href="index.html" class="active-link">Home</a>
+        <a href="transformations.html">Transformations</a>
+        <a href="join_us.html">Join Us</a>
+        <a href="contact_us.html">Contact Us</a>
+    </nav>
+</header>
