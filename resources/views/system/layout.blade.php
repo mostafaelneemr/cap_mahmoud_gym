@@ -62,7 +62,8 @@
                 left: 5px;
                 right: unset;
             }
-            .add_telephone{
+            /* LTR-only: RTL overrides are handled by intlTellStyle.rtl.css */
+            html:not([direction="rtl"]) .add_telephone {
                 direction: ltr !important;
                 text-align: left !important;
                 unicode-bidi: plaintext !important;
@@ -587,37 +588,50 @@
             if ($flag.length) {
                 var width = $flag.outerWidth();
                 if (width > 0) {
-                    var isRtl = $('html').attr('dir') === 'rtl' || $('body').attr('dir') === 'rtl';
+                    // Note: layout.blade.php sets direction="rtl" (not dir="rtl") on <html>
+                    var isRtl = $('html').attr('direction') === 'rtl'
+                             || $('html').attr('dir') === 'rtl'
+                             || $('body').attr('dir') === 'rtl';
                     if (isRtl) {
                         this.style.setProperty('padding-right', (width + 12) + 'px', 'important');
                         this.style.setProperty('padding-left', '12px', 'important');
                     } else {
                         this.style.setProperty('padding-left', (width + 12) + 'px', 'important');
+                        this.style.setProperty('padding-right', '12px', 'important');
                     }
                 }
             }
         });
     }
 
-    const x = $(".add_telephone").intlTelInput({
-        // onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om', 'qa', 'eg'],
-        onlyCountries: ['sa', 'ae', 'eg'],
-        initialCountry: '{{ $code ?? 'eg' }}',
-        separateDialCode: true,
-        formatOnDisplay: false,
-        autoHideDialCode: false
-    });
+    $(document).ready(function () {
+        // Only initialize if a phone input field exists on this page
+        if (!$('.add_telephone').length) {
+            return;
+        }
 
-    updateTelPadding();
+        const x = $(".add_telephone").intlTelInput({
+            // onlyCountries: ['sa', 'kw', 'ae', 'bh', 'om', 'qa', 'eg'],
+            onlyCountries: ['sa', 'ae', 'eg'],
+            initialCountry: '{{ $code ?? 'eg' }}',
+            separateDialCode: true,
+            formatOnDisplay: false,
+            autoHideDialCode: false
+        });
 
-    $(".add_telephone").on("countrychange", function () {
-        var country_code = $(this).intlTelInput("getSelectedCountryData").dialCode;
-        $("input[name='telephone_code']").val(country_code);
+        // Initial padding calculation after intlTelInput renders the flag
         updateTelPadding();
-    });
 
-    $(window).on("load", function () {
-        updateTelPadding();
+        $(".add_telephone").on("countrychange", function () {
+            var country_code = $(this).intlTelInput("getSelectedCountryData").dialCode;
+            $("input[name='telephone_code']").val(country_code);
+            updateTelPadding();
+        });
+
+        // Re-run after full page load in case flags haven't fully rendered yet
+        $(window).on("load", function () {
+            updateTelPadding();
+        });
     });
 
 </script>

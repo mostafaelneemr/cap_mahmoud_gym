@@ -1,3 +1,11 @@
+/* ============================================================
+   intlTellStyle.rtl.css — overrides for RTL layouts
+   Scoped to html[direction="rtl"] OR html[dir="rtl"] to beat
+   the inline <style> block in layout.blade.php and any
+   Metronic !important rules from style.bundle.rtl.css.
+   ============================================================ */
+
+/* Base container — always needed */
 .telephone_country .iti,
 .iti {
     width: 100% !important;
@@ -17,6 +25,7 @@
     }
 }
 
+/* Flag background */
 .telephone_country .iti--separate-dial-code .iti__selected-flag,
 .iti--separate-dial-code .iti__selected-flag {
     background-color: transparent !important;
@@ -27,29 +36,38 @@
     background-color: transparent !important;
 }
 
-/* في الـ RTL: العلم ومفتاح الدولة يجب أن يكونا على اليمين */
-.telephone_country .iti__flag-container,
-.iti__flag-container {
+/* RTL: flag/dial-code container anchored to the RIGHT */
+html[direction="rtl"] .telephone_country .iti__flag-container,
+html[direction="rtl"] .iti__flag-container,
+html[dir="rtl"] .telephone_country .iti__flag-container,
+html[dir="rtl"] .iti__flag-container {
     left: auto !important;
     right: 0 !important;
-    direction: ltr !important; /* للحفاظ على ترتيب كود الدولة مع علامة الزائد + */
+    direction: ltr !important; /* preserve + sign ordering in dial code */
 }
 
-/* في الـ RTL: المسافة الإجبارية تكون من اليمين حتى لا يغطي العلم الأرقام */
-.telephone_country input[type=tel],
-.iti input[type=tel],
-.add_telephone {
+/* RTL: input gets right-side padding so text clears the flag */
+html[direction="rtl"] .telephone_country input[type=tel],
+html[direction="rtl"] .iti input[type=tel],
+html[direction="rtl"] .add_telephone,
+html[direction="rtl"] #telephone,
+html[dir="rtl"] .telephone_country input[type=tel],
+html[dir="rtl"] .iti input[type=tel],
+html[dir="rtl"] .add_telephone,
+html[dir="rtl"] #telephone {
     direction: ltr !important;
     text-align: right !important;
-    padding-right: 95px !important;  /* ✅ مساحة العلم والكود على اليمين */
+    padding-right: 95px !important;   /* ✅ space for flag + dial code on the right */
     padding-left: 15px !important;
     margin-right: 0 !important;
     unicode-bidi: plaintext !important;
 }
 
-/* القائمة المنسدلة للدول تنزل من اليمين */
-.telephone_country .iti__country-list,
-.iti__country-list {
+/* RTL: country dropdown opens from the right */
+html[direction="rtl"] .telephone_country .iti__country-list,
+html[direction="rtl"] .iti__country-list,
+html[dir="rtl"] .telephone_country .iti__country-list,
+html[dir="rtl"] .iti__country-list {
     position: absolute !important;
     z-index: 1050 !important;
     direction: rtl !important;
