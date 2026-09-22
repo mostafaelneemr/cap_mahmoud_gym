@@ -66,3 +66,7 @@
 .wizard-icon-font:before {
     font-weight: bold;
 }
+
+#telephone {
+    padding-left: 81px !important;
+}
