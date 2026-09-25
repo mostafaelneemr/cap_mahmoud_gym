@@ -82,5 +82,5 @@ Route::controller('JoinUsController')->prefix('join-us')->group(function () {
     Route::get('/', 'index')->name('system.join-us.index');
     Route::get('/{id}', 'show')->name('system.join-us.show');
     Route::post('/{id}/status', 'updateStatus')->name('system.join-us.update-status');
-    Route::delete('/{id}', 'destroy')->name('system.join-us.destroy');
+//    Route::delete('/{id}', 'destroy')->name('system.join-us.destroy');
 });

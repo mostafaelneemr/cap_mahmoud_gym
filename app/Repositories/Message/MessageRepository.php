@@ -12,6 +12,6 @@ class MessageRepository extends BaseRepository
 
     public function getDataTableQuery()
     {
-        return $this->modeler->select('*');
+        return $this->modeler->select(['id','name','email','telephone','message','is_read']);
     }
 }

@@ -1,34 +1,33 @@
-<div class="container-fluid">
+<header class="navbar">
     <div class="logo">
-        <a href="{{route('home')}}">
-            <img src="{{ setting('logo')->value ?? '' }}" alt="">
+        <a href="{{ route('web.home') }}">
+            <img src="{{ !empty($global['site_logo']) ? $global['site_logo'] : asset('assets/web/img/logo.png') }}" alt="{{ $global['site_title'] ?? 'Mahmoud Shaltout' }} Logo">
         </a>
     </div>
-{{--    <div class="top-social">--}}
-{{--        <a href="#"><i class="fa fa-pinterest-p"></i></a>--}}
-{{--        <a href="#"><i class="fa fa-linkedin"></i></a>--}}
-{{--        <a href="#"><i class="fa fa-pinterest-p"></i></a>--}}
-{{--        <a href="#"><i class="fa fa-youtube-play"></i></a>--}}
-{{--        <a href="#"><i class="fa fa-instagram"></i></a>--}}
-{{--    </div>--}}
-    <div class="container">
-        <div class="nav-menu" style="text-align: end;">
-            <nav class="mainmenu mobile-menu">
-                <ul>
-                    <li ><a href="{{route('home')}}">Home</a></li>
-{{--                    <li><a href="./about-us.html">About us</a></li>--}}
-{{--                    <li><a href="./schedule.html">Schedule</a></li>--}}
-{{--                    <li><a href="./gallery.html">Gallery</a></li>--}}
-{{--                    <li><a href="./blog.html">Blog</a>--}}
-{{--                        <ul class="dropdown">--}}
-{{--                            <li><a href="./about-us.html">About Us</a></li>--}}
-{{--                            <li><a href="./blog-single.html">Blog Details</a></li>--}}
-{{--                        </ul>--}}
-{{--                    </li>--}}
-                    <li><a href="{{route('contact')}}">Contacts</a></li>
-                </ul>
-            </nav>
-        </div>
+
+    <nav class="nav-links">
+        <a href="{{ route('web.home') }}" class="{{ request()->routeIs('web.home') ? 'active-link' : '' }}">{{ __('Home') }}</a>
+        <a href="{{ route('web.transformations') }}" class="{{ request()->routeIs('web.transformations') ? 'active-link' : '' }}">{{ __('Transformations') }}</a>
+        <a href="{{ route('web.join-us') }}" class="{{ request()->routeIs('web.join-us') ? 'active-link' : '' }}">{{ __('Join Us') }}</a>
+        <a href="{{ route('web.contact') }}" class="{{ request()->routeIs('web.contact') ? 'active-link' : '' }}">{{ __('Contact Us') }}</a>
+    </nav>
+
+    <div class="nav-right-actions">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Navigation" aria-expanded="false" aria-controls="mobileNav">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <a href="{{ auth()->check() ? route('system.dashboard') : (Route::has('login') ? route('login') : url('/system/login')) }}" style="text-decoration:none; color:inherit;" title="{{ auth()->check() ? __('Dashboard') : __('Login') }}">
+            <div class="user-profile">
+                <i class="fa-regular fa-user"></i>
+            </div>
+        </a>
     </div>
-    <div id="mobile-menu-wrap"></div>
-</div>
+
+    <nav class="mobile-nav-menu" id="mobileNav">
+        <a href="{{ route('web.home') }}" class="{{ request()->routeIs('web.home') ? 'active-link' : '' }}">{{ __('Home') }}</a>
+        <a href="{{ route('web.transformations') }}" class="{{ request()->routeIs('web.transformations') ? 'active-link' : '' }}">{{ __('Transformations') }}</a>
+        <a href="{{ route('web.join-us') }}" class="{{ request()->routeIs('web.join-us') ? 'active-link' : '' }}">{{ __('Join Us') }}</a>
+        <a href="{{ route('web.contact') }}" class="{{ request()->routeIs('web.contact') ? 'active-link' : '' }}">{{ __('Contact Us') }}</a>
+    </nav>
+</header>

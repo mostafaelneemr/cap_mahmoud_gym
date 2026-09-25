@@ -18,7 +18,8 @@ class JoinUsService extends BaseService
 
     public function loadViewData(): array
     {
-        $this->pageTitle(__('Join Us Submissions'));
+        $this->pageTitle('Join Us Submissions');
+        $this->breadcrumb('Join Us Submissions');
         $this->tableColumns([
             __('ID'),
             __('Name'),
@@ -32,20 +33,49 @@ class JoinUsService extends BaseService
         ]);
 
         $this->jsColumns([
-            'id'           => 'join_us_submissions.id',
-            'name'         => '',
-            'phone'        => '',
-            'age'          => '',
-            'location'     => '',
+            'id' => 'id',
+            'name' => 'name',
+            'phone' => 'mobile',
+            'age' => 'name',
+            'location' => '',
             'training_level' => '',
-            'status'       => '',
-            'created_at'   => '',
-            'actions'      => ['orderable' => false, 'searchable' => false],
+            'status' => '',
+            'created_at' => '',
+            'action' => ''
         ]);
 
-        $this->breadcrumb('Join Us Submissions');
-
         return $this->retunData;
+    }
+
+    /**
+     * Return paginated, searchable DataTable JSON.
+     */
+    public function loadDataTableData()
+    {
+        $query = $this->joinUsRepository->getDataTableQuery();
+
+        return Datatables::eloquent($query)
+            ->addColumn('id', '{{$id}}')
+            ->addColumn('name', function ($data) {
+                return $data->name;
+            })
+            ->addColumn('phone', '{{$phone}}')
+            ->addColumn('status', function ($data) {
+                return $data->status;
+            })
+            ->addColumn('location', function ($data) {
+                return $data->country . ' / ' . $data->governorate;
+            })
+            ->addColumn('created_at', function ($data) {
+                if ($data->created_at)
+                    return $data->created_at->format('Y-m-d H:i');
+                return '--';
+            })
+            ->editColumn('action', function ($data) {
+                $this->actionButtons(datatable_menu_show(route('system.join-us.show', $data->id), 'system.join-us.show'));
+                return $this->actionButtonsRender($this->joinUsRepository->modelPath(), $data->id);
+            })->escapeColumns([])
+            ->make(true);
     }
 
     /**
@@ -86,25 +116,16 @@ class JoinUsService extends BaseService
         }
     }
 
-    /**
-     * Return paginated, searchable DataTable JSON.
-     */
-    public function datatable()
-    {
-        $query = $this->joinUsRepository->getDataTableQuery();
 
-        return Datatables::of($query)
-            ->addColumn('location', fn($row) => $row->country . ' / ' . $row->governorate)
-            ->addColumn('status', fn($row) => $row->status_label)
-            ->addColumn('actions', function ($row) {
-                return '
-                    <a href="' . route('system.join-us.show', $row->id) . '"
-                       class="btn btn-sm btn-light-primary">
-                        <i class="fa-solid fa-eye me-1"></i>' . __('View') . '
-                    </a>';
-            })
-            ->rawColumns(['status', 'actions'])
-            ->make(true);
+    public function show(int $id): array
+    {
+        $data = $this->joinUsRepository->find($id);
+
+        $this->pageTitle('Join Us Submission');
+        $this->breadcrumb('Submissions', 'system.join-us.index');
+
+        $this->otherData(['result' => $data]);
+        return $this->retunData;
     }
 
     /**
@@ -113,10 +134,10 @@ class JoinUsService extends BaseService
     public function statusCounts(): array
     {
         return [
-            'new'       => $this->joinUsRepository->countByStatus('new'),
+            'new' => $this->joinUsRepository->countByStatus('new'),
             'contacted' => $this->joinUsRepository->countByStatus('contacted'),
             'converted' => $this->joinUsRepository->countByStatus('converted'),
-            'rejected'  => $this->joinUsRepository->countByStatus('rejected'),
+            'rejected' => $this->joinUsRepository->countByStatus('rejected'),
         ];
     }
 }
