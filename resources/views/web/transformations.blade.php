@@ -1,81 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transformations - Mahmoud Shaltout Fitness Center</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+@extends('web.layout')
+
+@section('style')
 
     <style>
-        /* --- Reset & Base Styles --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #333333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px 10px;
-        }
-
-        .main-container {
-            width: 100%;
-            max-width: 1100px;
-            background-color: #000000;
-            border-radius: 28px;
-            overflow: hidden;
-            color: #ffffff;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-            border: 1px solid #222222;
-        }
-
-        /* --- Header / Navbar --- */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 25px 40px;
-            background-color: #000000;
-            position: relative;
-            z-index: 100;
-        }
-
-        .logo img {
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .nav-links {
-            background-color: #3f3f3f;
-            padding: 8px 24px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .nav-links a {
-            color: #d1d1d1;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #ffffff;
-        }
-
         .nav-links a.active-link {
             background-color: #9e0000;
             color: #ffffff;
@@ -95,71 +22,6 @@
             cursor: pointer;
         }
 
-        .user-profile i {
-            color: #ffffff;
-            font-size: 16px;
-        }
-
-        /* --- Hamburger Menu Icon & Mobile Navigation --- */
-        .hamburger-btn {
-            display: none;
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 5px;
-            z-index: 101;
-        }
-
-        .nav-right-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .mobile-nav-menu {
-            display: flex;
-            flex-direction: column;
-            background-color: #141414;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            padding: 0 20px;
-            max-height: 0;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            z-index: 100;
-            border-top: 1px solid #262626;
-            transition: max-height 0.35s ease, padding 0.35s ease;
-        }
-
-        .mobile-nav-menu.open {
-            max-height: 320px;
-            padding: 14px 20px;
-        }
-
-        .mobile-nav-menu a {
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 15px;
-            font-size: 15px;
-            font-weight: 500;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-
-        .mobile-nav-menu a:hover {
-            background-color: #262626;
-        }
-
-        .mobile-nav-menu a.active-link {
-            background: linear-gradient(135deg, #c90000, #7a0000);
-            font-weight: 600;
-        }
-
-        /* --- Hero Section --- */
         .hero-section {
             background-image: linear-gradient(90deg, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.15) 100%), url('images/transformation-split.png');
             background-size: cover;
@@ -200,38 +62,6 @@
             border: 2px solid rgba(168, 0, 0, 0.35);
             border-radius: 50%;
             pointer-events: none;
-        }
-
-        .hero-content {
-            max-width: 450px;
-            z-index: 2;
-        }
-
-        .sub-heading {
-            font-size: 12px;
-            letter-spacing: 2.5px;
-            color: #888888;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .hero-content h1 {
-            font-size: 38px;
-            line-height: 1.2;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .hero-content h1 span.highlight {
-            color: #a80000;
-        }
-
-        .hero-content p {
-            color: #888888;
-            font-size: 14px;
-            margin-bottom: 30px;
-            line-height: 1.6;
         }
 
         .btn-primary {
@@ -306,14 +136,14 @@
         }
 
         .results-title .handwriting {
-            font-family: 'Caveat', cursive;
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 42px;
-            text-transform: none;
-            letter-spacing: normal;
-            margin: 0 4px;
-        }
+               font-family: 'Caveat', cursive;
+               color: #ffffff;
+               font-weight: 700;
+               font-size: 42px;
+               text-transform: none;
+               letter-spacing: normal;
+               margin: 0 4px;
+           }
 
         .carousel-container {
             display: flex;
@@ -343,6 +173,7 @@
             overflow-x: auto;
             scroll-behavior: smooth;
         }
+
 
         .results-grid::-webkit-scrollbar {
             display: none;
@@ -588,72 +419,18 @@
             background-color: #a80000;
         }
 
-        /* --- Footer --- */
         footer {
             background-color: #400000;
             margin-top: 20px;
         }
 
-        .footer-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 30px 40px;
-        }
-
-        .footer-logo img {
-            height: 62px;
-            object-fit: contain;
-            animation: footerLogoFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes footerLogoFloat {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-6px) scale(1.04); }
-        }
-
-        .footer-nav {
-            display: flex;
-            gap: 30px;
-        }
-
-        .footer-nav a {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 14px;
-            transition: opacity 0.3s;
-        }
-
-        .footer-nav a:hover {
-            opacity: 0.8;
-        }
-
-        .footer-socials {
-            display: flex;
-            gap: 18px;
-        }
-
-        .footer-socials a {
-            color: #ffffff;
-            font-size: 20px;
-            text-decoration: none;
-        }
-
-        .footer-bottom {
-            background-color: #000000;
-            text-align: center;
-            padding: 16px;
-            font-size: 12px;
-            color: #777777;
-        }
-
-        /* --- Responsive Styles --- */
         @media (max-width: 992px) {
             .hero-section {
                 flex-direction: column;
                 text-align: center;
                 padding: 40px 20px;
             }
+
             .hero-content {
                 max-width: 100%;
                 margin-bottom: 30px;
@@ -661,344 +438,295 @@
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                padding: 18px 20px;
-            }
-            .nav-links {
-                display: none;
-            }
-            .hamburger-btn {
-                display: block;
-            }
             .form-row-2 {
                 grid-template-columns: 1fr;
             }
+
             .reviews-section {
                 padding: 25px 15px;
             }
+
             .footer-top {
                 flex-direction: column;
                 gap: 20px;
                 text-align: center;
             }
+
             .results-title {
                 font-size: 28px;
                 letter-spacing: 5px;
             }
+
             .results-title .handwriting {
                 font-size: 32px;
             }
         }
+
     </style>
-</head>
-<body>
 
-    <div class="main-container">
-        <header class="navbar">
-            <div class="logo">
-                <a href="index.html">
-                    <img src="images/logo.png" alt="Mahmoud Shaltout Logo">
-                </a>
+@endsection
+
+@section('content')
+
+    <section class="hero-section" @if(!empty($transHero['image'])) style="background-image: linear-gradient(90deg, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.15) 100%), url('{{ $transHero['image'] }}');" @endif>
+        <div class="hero-content">
+            <span class="sub-heading">{{ $transHero['tagline'] ?? 'GROW STRONGER' }}</span>
+            <h1>{!! !empty($transHero['title']) ? e($transHero['title']) : '<span class="highlight">The Journey</span> of Transformation' !!}</h1>
+            <p>{{ $transHero['subtitle'] ?? 'Steady steps of training and commitment, see how willpower turned into real results.' }}</p>
+            <a href="{{ route('web.join-us') }}" class="btn-primary">
+                {{ $transHero['button_text'] ?? 'JOIN US' }} <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+        </div>
+    </section>
+
+    <section class="results-section">
+        <h2 class="results-title">
+            <span class="results-line">{{ $transformation['section_title'] ?? 'RESULTS' }}</span>
+            <span class="results-line"><span class="handwriting">don't</span> LIE</span>
+        </h2>
+
+        <div class="carousel-container">
+            <button type="button" class="nav-arrow" id="slidePrev" aria-label="Previous">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <div class="results-grid" id="resultsGrid">
+                @php
+                    $transItems = !empty($transformation['items']) ? $transformation['items'] : [];
+                @endphp
+
+                @forelse($transItems as $item)
+                    <div class="transformation-card">
+                        @if(!empty($item['before_image']))
+                            <div class="photo-box">
+                                <img src="{{ $item['before_image'] }}" alt="{{ $item['trainee_name'] ?? 'Before' }}">
+                                <span class="tag-badge">{{ __('BEFORE') }}</span>
+                            </div>
+                        @endif
+                        @if(!empty($item['after_image']))
+                            <div class="photo-box">
+                                <img src="{{ $item['after_image'] }}" alt="{{ $item['trainee_name'] ?? 'After' }}">
+                                <span class="tag-badge">{{ __('AFTER') }}</span>
+                            </div>
+                        @endif
+                    </div>
+                @empty
+                    <div class="transformation-card">
+                        <div class="photo-box">
+                            <img src="{{ asset('images/about-coach.png') }}" alt="Before Transformation">
+                            <span class="tag-badge">{{ __('BEFORE') }}</span>
+                        </div>
+                        <div class="photo-box">
+                            <img src="{{ asset('images/about-coach.png') }}" alt="After Transformation">
+                            <span class="tag-badge">{{ __('AFTER') }}</span>
+                        </div>
+                    </div>
+                    <div class="transformation-card">
+                        <div class="photo-box">
+                            <img src="{{ asset('images/about-coach.png') }}" alt="Before Transformation">
+                            <span class="tag-badge">{{ __('BEFORE') }}</span>
+                        </div>
+                        <div class="photo-box">
+                            <img src="{{ asset('images/about-coach.png') }}" alt="After Transformation">
+                            <span class="tag-badge">{{ __('AFTER') }}</span>
+                        </div>
+                    </div>
+                @endforelse
             </div>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="transformations.html" class="active-link">Transformations</a>
-                <a href="join_us.html">Join Us</a>
-                <a href="contact_us.html">Contact Us</a>
-            </nav>
 
-            <div class="nav-right-actions">
-                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Navigation" aria-expanded="false" aria-controls="mobileNav">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
+            <button type="button" class="nav-arrow" id="slideNext" aria-label="Next">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
 
-                <div class="user-profile">
-                    <i class="fa-regular fa-user"></i>
-                </div>
-            </div>
+    <section class="reviews-section">
+        <h2>{{ $reviews['section_title'] ?? 'Our Customer Reviews' }}</h2>
 
-            <nav class="mobile-nav-menu" id="mobileNav">
-                <a href="index.html">Home</a>
-                <a href="transformations.html" class="active-link">Transformations</a>
-                <a href="join_us.html">Join Us</a>
-                <a href="contact_us.html">Contact Us</a>
-            </nav>
-        </header>
+        <div class="reviews-list">
+            @php
+                $reviewItems = !empty($reviews['items']) ? $reviews['items'] : [
+                    [
+                        'name' => 'Hamza',
+                        'rating' => 5.0,
+                        'avatar' => asset('images/user1.jpg'),
+                        'review' => "Honestly coach, you've been so committed with me and followed up with me every single day. I lost a lot of weight during the period I trained with you, which was less than 3 months, and of course I found a very satisfying result ❤️❤️"
+                    ],
+                    [
+                        'name' => 'Eyad',
+                        'rating' => 5.0,
+                        'avatar' => asset('images/user2.jpg'),
+                        'review' => "The follow-up was excellent; he monitored me 24 hours a day, tracking the number of meals I ate and the progress at each stage. Overall, I was very happy that I was training with him."
+                    ],
+                    [
+                        'name' => 'Mohamed',
+                        'rating' => 5.0,
+                        'avatar' => asset('images/user3.jpg'),
+                        'review' => "Honestly bro, no need for words — the transformation is unbelievable. Everything changed: my shape, my body, my movement, everything. I went from 130 to 90 kg in 9 months with no starvation, and without losing any muscle. Amazing work, and what's coming next will be even better, God willing."
+                    ],
+                    [
+                        'name' => 'Mustafa',
+                        'rating' => 5.0,
+                        'avatar' => asset('images/user4.jpg'),
+                        'review' => "Of course my testimony about you is biased, but you deserve to know that you're truly one of the best coaches I've worked with. You're very attentive to every detail of the workout, you explain every exercise in a simple way, and you follow up on performance step by step so it's done correctly and gives the best results. The training program was organized and suited to my level, and you always motivate me to keep going and improve myself. Thanks for your care and effort, and may God always grant you success. 💪"
+                    ]
+                ];
+            @endphp
 
-        <section class="hero-section">
-            <div class="hero-content">
-                <span class="sub-heading">GROW STRONGER</span>
-                <h1><span class="highlight">The Journey</span> of Transformation</h1>
-                <p>Steady steps of training and commitment, see how willpower turned into real results.</p>
-                <a href="join_us.html" class="btn-primary">
-                    JOIN US <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-            </div>
-        </section>
-
-        <section class="results-section">
-            <h2 class="results-title">
-                <span class="results-line">RESULTS</span>
-                <span class="results-line"><span class="handwriting">don't</span> LIE</span>
-            </h2>
-            
-            <div class="carousel-container">
-                <div class="results-grid" id="resultsGrid"></div>
-            </div>
-        </section>
-
-        <section class="reviews-section">
-            <h2>Our Customer Reviews</h2>
-
-            <div class="reviews-list">
+            @foreach($reviewItems as $rev)
                 <div class="review-card">
                     <div class="review-avatar">
-                        <img src="images/user1.jpg" alt="Hamza">
+                        <img src="{{ !empty($rev['avatar']) ? $rev['avatar'] : asset('images/user1.jpg') }}" alt="{{ $rev['name'] }}">
                     </div>
                     <div class="review-info">
                         <div class="review-header">
-                            <h4>Hamza</h4>
+                            <h4>{{ $rev['name'] }}</h4>
                             <div class="review-stars">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
+                                @for($s = 1; $s <= 5; $s++)
+                                    <i class="fa-solid fa-star" style="color: {{ $s <= round($rev['rating'] ?? 5) ? '#a80000' : '#888888' }};"></i>
+                                @endfor
+                                <span class="rating-score">{{ number_format($rev['rating'] ?? 5.0, 1) }}</span>
                             </div>
                         </div>
-                        <p class="review-text">Honestly coach, you've been so committed with me and followed up with me every single day. I lost a lot of weight during the period I trained with you, which was less than 3 months, and of course I found a very satisfying result ❤️❤️</p>
+                        <p class="review-text">{{ $rev['review'] }}</p>
+                    </div>
+                    <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="submit-review-card">
+            <h3>{{ __('Submit Your Review') }}</h3>
+            <div id="reviewAlert" style="display:none; margin-bottom: 15px; padding: 12px 18px; border-radius: 10px; font-size: 14px;"></div>
+
+            <form id="reviewForm" action="{{ route('web.reviews.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="rating" id="selectedRating" value="5">
+
+                <div class="star-rating-input">
+                    <p>{{ __('Add Your Rating*') }}</p>
+                    <div class="stars-select" id="starContainer">
+                        <i class="fa-solid fa-star" data-value="1"></i>
+                        <i class="fa-solid fa-star" data-value="2"></i>
+                        <i class="fa-solid fa-star" data-value="3"></i>
+                        <i class="fa-solid fa-star" data-value="4"></i>
+                        <i class="fa-solid fa-star" data-value="5"></i>
                     </div>
                 </div>
 
-                <div class="review-card">
-                    <div class="review-avatar">
-                        <img src="images/user2.jpg" alt="Eyad">
-                    </div>
-                    <div class="review-info">
-                        <div class="review-header">
-                            <h4>Eyad</h4>
-                            <div class="review-stars">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
-                            </div>
-                        </div>
-                        <p class="review-text">The follow-up was excellent; he monitored me 24 hours a day, tracking the number of meals I ate and the progress at each stage. Overall, I was very happy that I was training with him.</p>
-                    </div>
-                </div>
-
-                <div class="review-card">
-                    <div class="review-avatar">
-                        <img src="images/user3.jpg" alt="Mohamed">
-                    </div>
-                    <div class="review-info">
-                        <div class="review-header">
-                            <h4>Mohamed</h4>
-                            <div class="review-stars">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
-                            </div>
-                        </div>
-                        <p class="review-text">Honestly bro, no need for words — the transformation is unbelievable. Everything changed: my shape, my body, my movement, everything. I went from 130 to 90 kg in 9 months with no starvation, and without losing any muscle. Amazing work, and what's coming next will be even better, God willing.</p>
-                    </div>
-                </div>
-
-                <div class="review-card">
-                    <div class="review-avatar">
-                        <img src="images/user4.jpg" alt="Mustafa">
-                    </div>
-                    <div class="review-info">
-                        <div class="review-header">
-                            <h4>Mustafa</h4>
-                            <div class="review-stars">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
-                            </div>
-                        </div>
-                        <p class="review-text">Of course my testimony about you is biased, but you deserve to know that you're truly one of the best coaches I've worked with. You're very attentive to every detail of the workout, you explain every exercise in a simple way, and you follow up on performance step by step so it's done correctly and gives the best results. The training program was organized and suited to my level, and you always motivate me to keep going and improve myself. Thanks for your care and effort, and may God always grant you success. 💪</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="submit-review-card">
-                <h3>Submit Your Review</h3>
-                <form id="reviewForm">
-                    <div class="star-rating-input">
-                        <p>Add Your Rating*</p>
-                        <div class="stars-select" id="starContainer">
-                            <i class="fa-solid fa-star" data-value="1"></i>
-                            <i class="fa-solid fa-star" data-value="2"></i>
-                            <i class="fa-solid fa-star" data-value="3"></i>
-                            <i class="fa-solid fa-star" data-value="4"></i>
-                            <i class="fa-solid fa-star" data-value="5"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-row-2">
-                        <div class="review-field">
-                            <label for="revName">Name*</label>
-                            <input type="text" id="revName" required>
-                        </div>
-                        <div class="review-field">
-                            <label for="revEmail">Email*</label>
-                            <input type="email" id="revEmail" required>
-                        </div>
-                    </div>
-
+                <div class="form-row-2">
                     <div class="review-field">
-                        <label for="revMessage">Write Your Review*</label>
-                        <textarea id="revMessage" required></textarea>
+                        <label for="revName">{{ __('Name*') }}</label>
+                        <input type="text" name="name" id="revName" required value="{{ old('name') }}">
                     </div>
-
-                    <button type="submit" class="btn-feedback">Leave Feedback</button>
-                </form>
-            </div>
-        </section>
-
-        <footer>
-            <div class="footer-top">
-                <div class="footer-logo">
-                    <a href="index.html">
-                        <img src="images/logo.png" alt="Mahmoud Shaltout Logo">
-                    </a>
+                    <div class="review-field">
+                        <label for="revEmail">{{ __('Email*') }}</label>
+                        <input type="email" name="email" id="revEmail" required value="{{ old('email') }}">
+                    </div>
                 </div>
-                <div class="footer-socials">
-                    <a href="https://www.instagram.com/mahmoudshaltout2823" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://wa.me/201144470845" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-                    <a href="https://www.tiktok.com/@mahmoudshaltout2823?_r=1&_t=ZS-9857s4cJBuD" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+
+                <div class="review-field">
+                    <label for="revMessage">{{ __('Write Your Review*') }}</label>
+                    <textarea name="message" id="revMessage" required>{{ old('message') }}</textarea>
                 </div>
-            </div>
-            <div class="footer-bottom">
-                <p>Copyright© Mahmoud Shaltout . All Right Reserved</p>
-            </div>
-        </footer>
-    </div>
+
+                <button type="submit" class="btn-feedback" id="reviewSubmitBtn">{{ __('Leave Feedback') }}</button>
+            </form>
+        </div>
+    </section>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Hamburger mobile navigation
-            const hamburgerBtn = document.getElementById("hamburgerBtn");
-            const mobileNav = document.getElementById("mobileNav");
-
-            if (hamburgerBtn && mobileNav) {
-                const closeMobileNav = () => {
-                    mobileNav.classList.remove("open");
-                    hamburgerBtn.setAttribute("aria-expanded", "false");
-                    const icon = hamburgerBtn.querySelector("i");
-                    icon.classList.remove("fa-xmark");
-                    icon.classList.add("fa-bars");
-                };
-
-                hamburgerBtn.addEventListener("click", () => {
-                    const isOpen = mobileNav.classList.toggle("open");
-                    hamburgerBtn.setAttribute("aria-expanded", String(isOpen));
-                    const icon = hamburgerBtn.querySelector("i");
-                    if (isOpen) {
-                        icon.classList.remove("fa-bars");
-                        icon.classList.add("fa-xmark");
-                    } else {
-                        icon.classList.remove("fa-xmark");
-                        icon.classList.add("fa-bars");
-                    }
-                });
-
-                mobileNav.querySelectorAll("a").forEach((link) => {
-                    link.addEventListener("click", closeMobileNav);
-                });
-            }
-
-            // Build transformation cards
-            const resultsGrid = document.getElementById("resultsGrid");
-
-            const transformationPairs = [
-                { before: "images/person1-before.jpg", after: "images/person1-after.jpg" },
-                { before: "images/person2-before.jpg", after: "images/person2-after.jpg" },
-                { before: "images/person3-before.jpg", after: "images/person3-after.jpg" },
-                { before: "images/person4-before.jpg", after: "images/person4-after.jpg" },
-                { before: "images/person5-before.jpg", after: "images/person5-after.jpg" },
-                { before: "images/person6-before.jpg", after: "images/person6-after.jpg" },
-                { before: "images/person7-before.jpg", after: "images/person7-after.jpg" },
-            ];
-
-            const buildCard = (pair) => {
-                const card = document.createElement("div");
-                card.className = "transformation-card";
-                card.innerHTML = `
-                    <div class="photo-box">
-                        <img src="${pair.before}" alt="Before">
-                        <span class="tag-badge">Before</span>
-                    </div>
-                    <div class="photo-box">
-                        <img src="${pair.after}" alt="After">
-                        <span class="tag-badge">After</span>
-                    </div>
-                `;
-                return card;
-            };
-
-            if (resultsGrid) {
-                [...transformationPairs, ...transformationPairs].forEach((pair) => {
-                    resultsGrid.appendChild(buildCard(pair));
-                });
-            }
-
-            // Continuous auto-scroll
-            if (resultsGrid) {
-                let autoScrollPaused = false;
-                let halfWidth = 0;
-
-                const recalcHalfWidth = () => {
-                    halfWidth = resultsGrid.scrollWidth / 2;
-                };
-                recalcHalfWidth();
-                window.addEventListener("resize", recalcHalfWidth);
-
-                resultsGrid.addEventListener("mouseenter", () => autoScrollPaused = true);
-                resultsGrid.addEventListener("mouseleave", () => autoScrollPaused = false);
-                resultsGrid.addEventListener("touchstart", () => autoScrollPaused = true, { passive: true });
-                resultsGrid.addEventListener("touchend", () => autoScrollPaused = false);
-
-                const autoScrollStep = () => {
-                    if (!autoScrollPaused) {
-                        resultsGrid.scrollLeft += 0.6;
-                        if (resultsGrid.scrollLeft >= halfWidth) {
-                            resultsGrid.scrollLeft -= halfWidth;
-                        }
-                    }
-                    requestAnimationFrame(autoScrollStep);
-                };
-                requestAnimationFrame(autoScrollStep);
-            }
-
             // Interactive Star Rating
             const stars = document.querySelectorAll("#starContainer i");
-            let selectedRating = 5;
+            const ratingInput = document.getElementById("selectedRating");
 
-            stars.forEach((star, index) => {
+            const setStars = (val) => {
+                stars.forEach((star) => {
+                    const sVal = parseInt(star.getAttribute("data-value"), 10);
+                    if (sVal <= val) {
+                        star.classList.remove("fa-regular");
+                        star.classList.add("fa-solid");
+                        star.style.color = "#a80000";
+                    } else {
+                        star.classList.remove("fa-solid");
+                        star.classList.add("fa-regular");
+                        star.style.color = "#666666";
+                    }
+                });
+            };
+
+            setStars(5);
+
+            stars.forEach((star) => {
                 star.addEventListener("click", () => {
-                    selectedRating = index + 1;
-                    stars.forEach((s, idx) => {
-                        if (idx < selectedRating) {
-                            s.style.color = "#a80000";
-                        } else {
-                            s.style.color = "#444444";
-                        }
-                    });
+                    const val = parseInt(star.getAttribute("data-value"), 10);
+                    ratingInput.value = val;
+                    setStars(val);
                 });
             });
+
+            // Results Carousel Navigation
+            const grid = document.getElementById("resultsGrid");
+            const prevBtn = document.getElementById("slidePrev");
+            const nextBtn = document.getElementById("slideNext");
+
+            if (grid && prevBtn && nextBtn) {
+                prevBtn.addEventListener("click", () => {
+                    grid.scrollBy({ left: -280, behavior: "smooth" });
+                });
+                nextBtn.addEventListener("click", () => {
+                    grid.scrollBy({ left: 280, behavior: "smooth" });
+                });
+            }
+
+            // AJAX Form Submission for smooth UX
+            const form = document.getElementById("reviewForm");
+            const alertBox = document.getElementById("reviewAlert");
+            const submitBtn = document.getElementById("reviewSubmitBtn");
+
+            if (form) {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    submitBtn.disabled = true;
+                    submitBtn.innerText = "{{ __('Submitting...') }}";
+
+                    const formData = new FormData(form);
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: "POST",
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest",
+                                "Accept": "application/json"
+                            },
+                            body: formData
+                        });
+
+                        const resData = await response.json();
+
+                        alertBox.style.display = "block";
+                        if (response.ok && resData.status) {
+                            alertBox.style.backgroundColor = "rgba(37, 211, 102, 0.15)";
+                            alertBox.style.border = "1px solid #25D366";
+                            alertBox.style.color = "#25D366";
+                            alertBox.innerText = resData.message || "{{ __('Thank you for your review! It will appear after moderation.') }}";
+                            form.reset();
+                            setStars(5);
+                        } else {
+                            alertBox.style.backgroundColor = "rgba(168, 0, 0, 0.2)";
+                            alertBox.style.border = "1px solid #a80000";
+                            alertBox.style.color = "#ff6b6b";
+                            alertBox.innerText = resData.message || "{{ __('Please check your input and try again.') }}";
+                        }
+                    } catch (err) {
+                        form.submit(); // fallback to standard POST
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "{{ __('Leave Feedback') }}";
+                    }
+                });
+            }
         });
     </script>
-</body>
-</html>
+@endsection

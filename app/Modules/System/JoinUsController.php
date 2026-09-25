@@ -22,7 +22,7 @@ class JoinUsController extends SystemController
     public function index(Request $request)
     {
         if ($request->isDataTable) {
-            return $this->joinUsService->datatable();
+            return $this->joinUsService->loadDataTableData();
         }
 
         $data = $this->joinUsService->loadViewData();
@@ -36,16 +36,7 @@ class JoinUsController extends SystemController
      */
     public function show(int $id)
     {
-        $submission = \App\Models\JoinUsSubmission::findOrFail($id);
-
-        return $this->view('join-us.show', [
-            'pageTitle'  => __('Join Us Submission #') . $id,
-            'submission' => $submission,
-            'breadcrumb' => [
-                ['text' => __('Join Us Submissions'), 'url' => route('system.join-us.index')],
-                ['text' => __('Submission #') . $id],
-            ],
-        ]);
+        return $this->view('join-us.show', $this->joinUsService->show($id));
     }
 
     /**

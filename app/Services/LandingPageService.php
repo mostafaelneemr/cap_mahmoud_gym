@@ -78,7 +78,10 @@ class LandingPageService
 
     protected function getHeroData(string $lang): array
     {
-        $post = Post::where('type', 'hero')->where('status', 'active')->first();
+        $post = Post::where('type', 'hero')
+            ->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->first();
 
         return [
             'tagline'     => $this->getLocalizedValue($post?->subtitle_ar, $post?->subtitle_en, $lang, 'GROW STRONGER'),
@@ -92,7 +95,14 @@ class LandingPageService
 
     protected function getAboutData(string $lang): array
     {
-        $post = Post::with('items')->where('type', 'about')->where('status', 'active')->first();
+        $post = Post::with(['items' => function ($query) {
+            $query->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->orderBy('sort', 'asc');
+        }])->where('type', 'about')
+            ->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->first();
 
         $features = ($post?->items ?? collect())->map(function ($item) use ($lang) {
             return [
@@ -115,7 +125,14 @@ class LandingPageService
 
     protected function getServicesData(string $lang): array
     {
-        $post = Post::with('items')->where('type', 'service')->where('status', 'active')->first();
+        $post = Post::with(['items' => function ($query) {
+            $query->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->orderBy('sort', 'asc');
+        }])->where('type', 'service')
+            ->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->first();
 
         $items = ($post?->items ?? collect())->map(function ($item) use ($lang) {
             return [
@@ -139,7 +156,14 @@ class LandingPageService
 
     protected function getWhyUsData(string $lang): array
     {
-        $post = Post::with('items')->where('type', 'why_us')->where('status', 'active')->first();
+        $post = Post::with(['items' => function ($query) {
+            $query->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->orderBy('sort', 'asc');
+        }])->where('type', 'why_us')
+            ->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->first();
 
         $items = ($post?->items ?? collect())->map(function ($item) use ($lang) {
             return [
@@ -160,7 +184,10 @@ class LandingPageService
 
     protected function getQuoteData(string $lang): array
     {
-        $post = Post::where('type', 'quote')->where('status', 'active')->first();
+        $post = Post::where('type', 'quote')
+            ->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->first();
 
         return [
             'title'       => $this->getLocalizedValue($post?->title_ar, $post?->title_en, $lang, 'Turning Your Potential into Performance'),
@@ -189,7 +216,10 @@ class LandingPageService
 
     protected function getTransformationsHeroData(string $lang): array
     {
-        $post = Post::where('type', 'transformation_hero')->where('status', 'active')->first();
+        $post = Post::where('type', 'transformation_hero')
+            ->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->first();
 
         return [
             'tagline'     => $this->getLocalizedValue($post?->subtitle_ar, $post?->subtitle_en, $lang, 'GROW STRONGER'),
@@ -203,7 +233,14 @@ class LandingPageService
 
     protected function getTransformationsListData(string $lang): array
     {
-        $post = Post::with('items')->where('type', 'transformation')->where('status', 'active')->first();
+        $post = Post::with(['items' => function ($query) {
+            $query->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->orderBy('sort', 'asc');
+        }])->where('type', 'transformation')
+            ->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->first();
 
         $items = ($post?->items ?? collect())->map(function ($item) use ($lang) {
             return [
@@ -224,7 +261,14 @@ class LandingPageService
 
     protected function getReviewsData(string $lang): array
     {
-        $post = Post::with('items')->where('type', 'review')->where('status', 'active')->first();
+        $post = Post::with(['items' => function ($query) {
+            $query->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->orderBy('sort', 'asc');
+        }])->where('type', 'review')
+            ->where(function ($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->first();
 
         $items = ($post?->items ?? collect())->map(function ($item) use ($lang) {
             return [
@@ -253,7 +297,10 @@ class LandingPageService
         $type = strtolower(trim($type));
 
         if ($type === 'hero' || $type === 'header') {
-            $post = Post::where('type', 'join_hero')->where('status', 'active')->first();
+            $post = Post::where('type', 'join_hero')
+                ->where(function ($q) {
+                    $q->where('status', 'active')->orWhereNull('status');
+                })->first();
 
             return [
                 'tagline'     => $this->getLocalizedValue($post?->subtitle_ar, $post?->subtitle_en, $lang, 'GROW STRONGER'),
@@ -283,7 +330,10 @@ class LandingPageService
         $type = strtolower(trim($type));
 
         if ($type === 'hero' || $type === 'header') {
-            $post = Post::where('type', 'contact_hero')->where('status', 'active')->first();
+            $post = Post::where('type', 'contact_hero')
+                ->where(function ($q) {
+                    $q->where('status', 'active')->orWhereNull('status');
+                })->first();
 
             return [
                 'tagline'     => $this->getLocalizedValue($post?->subtitle_ar, $post?->subtitle_en, $lang, 'GROW STRONGER'),

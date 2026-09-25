@@ -65,9 +65,44 @@ return [
     ],
 
     [
+        'group_title' => __('Join US'),
+        'name' => __('Join US'),
+        'permissions' => [
+            'view-join-us' => ['system.join-us.index'],
+            'view-one-join-us' => ['system.join-us.show'],
+            'update-join-us-status' => ['system.join-us.update-status'],
+//            'delete-links' => ['system.social-links.destroy'],
+        ]
+    ],
+
+    [
+        'group_title' => __('Messages'),
+        'name' => __('Messages'),
+        'permissions' => [
+            'view-messages' => ['system.message.index'],
+            'update-message-status' => ['system.message.update-status'],
+        ]
+    ],
+
+    [
         'name' => __('website'),
         'permissions' => [
-            'view-website-pages' => ['system.website.index'],
+            'view-website-pages' => [
+                'system.website.index',
+                'system.website.show',
+            ],
+            'manage-website-settings' => [
+                'system.website.settings.update',
+                'system.website.section.update',
+            ],
+            'manage-website-items' => [
+                'system.website.items.store',
+                'system.website.items.update',
+                'system.website.items.destroy',
+                'system.website.posts.store',
+                'system.website.posts.update',
+                'system.website.posts.destroy',
+            ],
         ]
     ],
 

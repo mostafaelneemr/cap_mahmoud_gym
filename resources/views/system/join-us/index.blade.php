@@ -43,7 +43,6 @@
 
     </div>
 
-    {{-- ── Status Filter Bar ─────────────────────────────────────────────── --}}
     {!! Form::open(['id' => 'filterForm', 'onsubmit' => 'filterFunction("'.$datatableURL.'","'.$datatableVar.'",$(this));return false;']) !!}
     <div class="card mb-7">
         <div class="card-body py-5 d-flex flex-wrap align-items-center gap-3">
@@ -65,7 +64,6 @@
     </div>
     {!! Form::close() !!}
 
-    {{-- ── DataTable ────────────────────────────────────────────────────── --}}
     @include('system.datatable')
 
 @endsection

@@ -93,7 +93,7 @@
 
         $menu['Website'] = [
             'permission' => ['system.website.index','system.website.create'],
-            'icon' => '<i class="fa-solid fa-Global"></i>',
+            'icon' => '<i class="fa-solid fa-globe"></i>',
             'text' => __('Website'),
             'sub' => [
                 [
@@ -106,7 +106,7 @@
         ];
 
         $menu['Submissions'] = [
-            'permission' => ['system.message.index','system.join-us.index'],
+            'permission' => ['system.message.index','system.join-us.index','system.join-us.show'],
             'icon' => '<i class="fa-solid fa-inbox"></i>',
             'text' => __('Submissions'),
             'sub' => [
@@ -117,7 +117,7 @@
                     'icon' => '<i class="fa-solid fa-envelope"></i>',
                 ],
                 [
-                    'permission' => ['system.join-us.index'],
+                    'permission' => ['system.join-us.index','system.join-us.show'],
                     'url' => route('system.join-us.index'),
                     'text' => __('Join Us Applications'),
                     'icon' => '<i class="fa-solid fa-person-running"></i>',

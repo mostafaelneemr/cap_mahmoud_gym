@@ -14,7 +14,7 @@ class JoinUsRepository extends BaseRepository
      */
     public function getDataTableQuery()
     {
-        return $this->modeler->select('*')->latest();
+        return $this->modeler->select(['id','name', 'phone', 'age', 'training_level', 'status', 'country', 'governorate', 'created_at'])->latest();
     }
 
     /**

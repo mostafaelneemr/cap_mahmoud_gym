@@ -13,6 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('web.index');
+Route::name('web.')->group(function () {
+    Route::get('/', 'WebController@home')->name('home');
+    Route::get('/transformation', 'WebController@transformations')->name('transformations');
+    Route::get('/transformations', 'WebController@transformations')->name('transformations.alias');
+    Route::get('/join-us', 'WebController@joinUs')->name('join-us');
+    Route::get('/contact', 'WebController@contact')->name('contact');
+
+    // Form Submissions
+    Route::post('/join-us', 'WebController@submitJoinUs')->name('join-us.store');
+    Route::post('/contact', 'WebController@submitContact')->name('contact.store');
+    Route::post('/reviews', 'WebController@submitReview')->name('reviews.store');
 });

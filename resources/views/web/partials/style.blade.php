@@ -1,15 +1,9 @@
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700,800,900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="{{ asset('assets/web/css/bootstrap.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/web/css/font-awesome.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/web/css/elegant-icons.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/web/css/nice-select.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/web/css/owl.carousel.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/web/css/magnific-popup.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/web/css/slicknav.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/web/css/style.css') }}" type="text/css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Montserrat:wght@900&display=swap" rel="stylesheet">
 
-    @yield('style')
+<link rel="stylesheet" href="{{ asset('assets/web/css/custom.css') }}" type="text/css">
+
+@yield('style')
