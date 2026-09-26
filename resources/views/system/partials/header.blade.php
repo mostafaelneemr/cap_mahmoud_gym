@@ -21,7 +21,7 @@
             <!--begin::Logo-->
 
             <a href="{{route('system.dashboard')}}" class="brand-logo">
-                <img alt="Logo" src="{{ setting('logo') ?? '' }}" style="width:160px;" />
+                <img alt="Logo" src="{{ setting('logo') ?? '' }}" style="width:100%;height: 40px" />
             </a>
             <!--end::Logo-->
         </div>
