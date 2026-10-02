@@ -27,4 +27,9 @@ class SettingRepository extends BaseRepository
     {
         return $this->modeler::whereName($name)->first();
     }
+
+    public function getValuesByName(): array
+    {
+        return $this->modeler->pluck('value', 'name')->toArray();
+    }
 }

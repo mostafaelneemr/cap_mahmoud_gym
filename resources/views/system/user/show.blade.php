@@ -23,14 +23,14 @@
                                      {{$result->status ==1 ? __('Active'):__('In-Active')}}
                                 </span>
                             </div>
-                            <div class="d-flex flex-wrap fw-semibold mb-4 fs-5 text-gray-400">
+                            <div class="d-flex flex-wrap fw-semibold mb-4 fs-5 text-gray-600">
                                 {{$result->username}}
                             </div>
-                            <div class="d-flex flex-wrap fw-semibold mb-4 fs-5 text-gray-400">
+                            <div class="d-flex flex-wrap fw-semibold mb-4 fs-5 text-gray-600">
                                 <a href="mailto:{{$result->email}}">{{$result->email}}</a>
                             </div>
                             @if(!empty($result->department->name))
-                            <div class="d-flex flex-wrap fw-semibold mb-4 fs-5 text-gray-400">
+                            <div class="d-flex flex-wrap fw-semibold mb-4 fs-5 text-gray-600">
                                 {{$result->department->name??""}}
                             </div>
                             @endif
@@ -42,14 +42,14 @@
                                 <div class="d-flex align-items-center">
                                     <div class="fs-4 fw-bold">{{$result->id}}</div>
                                 </div>
-                                <div class="fw-semibold fs-6 text-gray-400">{{__('ID')}}</div>
+                                <div class="fw-semibold fs-6 text-gray-600">{{__('ID')}}</div>
                             </div>
                             @if(!empty($result->createdBy->name))
                             <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                                 <div class="d-flex align-items-center">
                                     <div class="fs-4 fw-bold">{{$result->createdBy->name}}</div>
                                 </div>
-                                <div class="fw-semibold fs-6 text-gray-400">{{__('Created By')}}</div>
+                                <div class="fw-semibold fs-6 text-gray-600">{{__('Created By')}}</div>
                             </div>
                             @endif
                             <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
@@ -60,19 +60,19 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="fw-semibold fs-6 text-gray-400">{{__('Permission Group')}}</div>
+                                <div class="fw-semibold fs-6 text-gray-600">{{__('Permission Group')}}</div>
                             </div>
                             <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                                 <div class="d-flex align-items-center">
                                     <div class="fs-4 fw-bold"> {{$result->created_at->format('Y-m-d')??''}}</div>
                                 </div>
-                                <div class="fw-semibold fs-6 text-gray-400">{{__('Created At')}}</div>
+                                <div class="fw-semibold fs-6 text-gray-600">{{__('Created At')}}</div>
                             </div>
                             <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                                 <div class="d-flex align-items-center">
                                     <div class="fs-4 fw-bold"> {{$result->updated_at->format('Y-m-d')??''}}</div>
                                 </div>
-                                <div class="fw-semibold fs-6 text-gray-400">{{__('Updated At')}}</div>
+                                <div class="fw-semibold fs-6 text-gray-600">{{__('Updated At')}}</div>
                             </div>
                         </div>
                     </div>

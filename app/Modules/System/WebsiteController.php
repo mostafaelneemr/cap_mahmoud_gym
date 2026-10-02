@@ -5,17 +5,21 @@ namespace App\Modules\System;
 use App\Models\Post;
 use App\Models\PostItem;
 use App\Models\Setting;
+use App\Services\PostService;
+use App\Services\SettingService;
 use App\Services\WebsiteService;
 use Illuminate\Http\Request;
 
 class WebsiteController extends SystemController
 {
-    protected $websiteService;
+    protected $websiteService,$postService,$settingService;
 
-    public function __construct(WebsiteService $websiteService)
+    public function __construct(WebsiteService $websiteService, PostService $postService, SettingService $settingService)
     {
         parent::__construct();
         $this->websiteService = $websiteService;
+        $this->postService = $postService;
+        $this->settingService = $settingService;
     }
 
     /**
@@ -23,25 +27,25 @@ class WebsiteController extends SystemController
      */
     public function index(Request $request)
     {
-        $sections = Post::with('items')->get()->keyBy('type');
-        $settings = Setting::pluck('value', 'name')->toArray();
+        $sections = $this->postService->getPostWithItemsByType();
+        $settings = $this->settingService->getValuesByName();
 
-        $this->viewData['sections']           = $sections;
-        $this->viewData['settings']           = $settings;
+        $this->viewData['sections'] = $sections;
+        $this->viewData['settings'] = $settings;
 
         // Named shortcuts for each section in the Blade view
-        $this->viewData['hero']               = $sections->get('hero');
+        $this->viewData['hero'] = $sections->get('hero');
         $this->viewData['transformationHero'] = $sections->get('transformation_hero');
-        $this->viewData['joinHero']           = $sections->get('join_hero');
-        $this->viewData['contactHero']        = $sections->get('contact_hero');
-        $this->viewData['about']              = $sections->get('about');
-        $this->viewData['service']            = $sections->get('service');
-        $this->viewData['whyUs']              = $sections->get('why_us');
-        $this->viewData['quote']              = $sections->get('quote');
-        $this->viewData['transformation']     = $sections->get('transformation');
-        $this->viewData['review']             = $sections->get('review');
+        $this->viewData['joinHero'] = $sections->get('join_hero');
+        $this->viewData['contactHero'] = $sections->get('contact_hero');
+        $this->viewData['about'] = $sections->get('about');
+        $this->viewData['service'] = $sections->get('service');
+        $this->viewData['whyUs'] = $sections->get('why_us');
+        $this->viewData['quote'] = $sections->get('quote');
+        $this->viewData['transformation'] = $sections->get('transformation');
+        $this->viewData['review'] = $sections->get('review');
 
-        $this->viewData['pageTitle']          = __('Landing Page Management');
+        $this->viewData['pageTitle'] = __('Landing Page Management');
 
         return $this->view('website.index', $this->viewData);
     }
@@ -82,8 +86,9 @@ class WebsiteController extends SystemController
             $data['image'] = 'upload/posts/' . $nameGen;
         }
 
-        Post::updateOrCreate(['type' => $type], $data
-        );
+        Post::updateOrCreate(['type' => $type], $data);
+
+        flash_msg('success', __('Section updated successfully'));
 
         return $this->success(__('Section updated successfully'), ['url' => route('system.website.index')]);
     }
@@ -138,6 +143,8 @@ class WebsiteController extends SystemController
 
         PostItem::create($data);
 
+        flash_msg('success', __('Section updated successfully'));
+
         return $this->success(__('Item added successfully'), ['url' => route('system.website.index')]);
     }
 
@@ -174,6 +181,8 @@ class WebsiteController extends SystemController
         }
 
         $item->update($data);
+
+        flash_msg('success', __('Section updated successfully'));
 
         return $this->success(__('Item updated successfully'), ['url' => route('system.website.index')]);
     }
@@ -222,6 +231,8 @@ class WebsiteController extends SystemController
                 ]
             );
         }
+
+        flash_msg('success', __('Section updated successfully'));
 
         return $this->success(__('Settings saved successfully'), ['url' => route('system.website.index')]);
     }

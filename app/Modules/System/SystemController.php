@@ -5,15 +5,14 @@ namespace App\Modules\System;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class SystemController extends Controller{
+class SystemController extends Controller
+{
 
-    protected $viewData = [
-        'breadcrumb'=> []
-    ];
+    protected $viewData = ['breadcrumb' => []];
 
-    public function __construct(){
-
-        $this->middleware(['auth:user','check_password_reset']);
+    public function __construct()
+    {
+        $this->middleware(['auth:user', 'check_password_reset']);
     }
 
     protected function view($file,array $data = [], $mergeData = []){

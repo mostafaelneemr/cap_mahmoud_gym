@@ -581,18 +581,110 @@ table.dataTable thead .sorting::after, table.dataTable thead .sorting_asc::after
 .note-btn:hover         { color: #FACC15 !important; }
 .note-editing-area      { background: var(--gp-bg-input) !important; color: var(--gp-text-primary) !important; }
 
+/* 19.1 NUTRITION PLANS & SUMMERNOTE RICH TEXT SANITIZATION */
+.nutrition-content {
+    line-height: 1.8;
+    font-size: 1rem;
+    color: var(--gp-text-secondary);
+}
+
+.nutrition-content p,
+.nutrition-content li {
+    color: inherit;
+    line-height: 1.75;
+}
+
+.nutrition-content h1,
+.nutrition-content h2,
+.nutrition-content h3,
+.nutrition-content h4,
+.nutrition-content h5,
+.nutrition-content h6 {
+    color: var(--gp-text-primary) !important;
+    font-weight: 700;
+}
+
+/* Strip hardcoded inline background colors pasted from Word/Google Docs */
+.nutrition-content *:not(.badge):not(.btn) {
+    background-color: transparent !important;
+}
+
+/* Ensure pasted spans, fonts, and inline styles adapt cleanly to dark mode */
+[data-bs-theme="dark"] .nutrition-content,
+[data-bs-theme="dark"] .nutrition-content *:not(.badge):not(.btn):not(a):not(i):not(svg) {
+    color: var(--gp-text-secondary) !important;
+}
+
+[data-bs-theme="dark"] .nutrition-content h1,
+[data-bs-theme="dark"] .nutrition-content h2,
+[data-bs-theme="dark"] .nutrition-content h3,
+[data-bs-theme="dark"] .nutrition-content h4,
+[data-bs-theme="dark"] .nutrition-content h5,
+[data-bs-theme="dark"] .nutrition-content h6,
+[data-bs-theme="dark"] .nutrition-content strong,
+[data-bs-theme="dark"] .nutrition-content b {
+    color: var(--gp-text-primary) !important;
+}
+
+/* Ensure pasted spans, fonts, and inline styles adapt cleanly to light mode */
+[data-bs-theme="light"] .nutrition-content,
+[data-bs-theme="light"] .nutrition-content *:not(.badge):not(.btn):not(a):not(i):not(svg) {
+    color: var(--gp-text-secondary) !important;
+}
+
+[data-bs-theme="light"] .nutrition-content h1,
+[data-bs-theme="light"] .nutrition-content h2,
+[data-bs-theme="light"] .nutrition-content h3,
+[data-bs-theme="light"] .nutrition-content h4,
+[data-bs-theme="light"] .nutrition-content h5,
+[data-bs-theme="light"] .nutrition-content h6,
+[data-bs-theme="light"] .nutrition-content strong,
+[data-bs-theme="light"] .nutrition-content b {
+    color: var(--gp-text-primary) !important;
+}
+
+.nutrition-content a {
+    color: var(--gp-accent) !important;
+}
+
+.nutrition-content table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 1.25rem 0 !important;
+}
+
+.nutrition-content th,
+.nutrition-content td {
+    padding: 0.75rem 1rem !important;
+    border: 1px solid var(--gp-border) !important;
+}
+
+.nutrition-content th {
+    background-color: var(--gp-bg-elevated) !important;
+    color: var(--gp-text-primary) !important;
+    font-weight: 700 !important;
+}
+
+.nutrition-content blockquote {
+    border-left: 4px solid var(--gp-accent) !important;
+    background-color: var(--gp-bg-elevated) !important;
+    color: var(--gp-text-secondary) !important;
+    padding: 0.85rem 1.25rem !important;
+    border-radius: 0 var(--gp-radius-sm) var(--gp-radius-sm) 0 !important;
+}
+
 
 /* ==========================================================================
    20. MISC UTILITY OVERRIDES
    ========================================================================== */
 
+.text-gray-300 { color: var(--gp-text-secondary) !important; }
 .text-gray-400 { color: var(--gp-text-muted) !important; }
 .text-gray-500 { color: var(--gp-text-muted) !important; }
 .text-gray-600 { color: var(--gp-text-secondary) !important; }
 .text-gray-700 { color: var(--gp-text-secondary) !important; }
 .text-gray-800 { color: var(--gp-text-primary) !important; }
 .text-gray-900 { color: var(--gp-text-primary) !important; }
-.text-white    { color: var(--gp-text-primary) !important; }
 
 .separator, .separator-dashed { border-top-color: var(--gp-border) !important; }
 #kt_app_toolbar, .app-toolbar { background-color: var(--gp-bg-root) !important; border-bottom: 1px solid var(--gp-border) !important; }
@@ -1042,13 +1134,13 @@ table.dataTable thead .sorting::after, table.dataTable thead .sorting_asc::after
 [data-bs-theme="light"] .symbol .symbol-label { background-color: #F1F5F9 !important; }
 
 /* Utility text */
-[data-bs-theme="light"] .text-gray-400 { color: #94A3B8 !important; }
-[data-bs-theme="light"] .text-gray-500 { color: #94A3B8 !important; }
-[data-bs-theme="light"] .text-gray-600 { color: #64748B !important; }
-[data-bs-theme="light"] .text-gray-700 { color: #64748B !important; }
-[data-bs-theme="light"] .text-gray-800 { color: #334155 !important; }
+[data-bs-theme="light"] .text-gray-300 { color: #64748B !important; }
+[data-bs-theme="light"] .text-gray-400 { color: #64748B !important; }
+[data-bs-theme="light"] .text-gray-500 { color: #64748B !important; }
+[data-bs-theme="light"] .text-gray-600 { color: #475569 !important; }
+[data-bs-theme="light"] .text-gray-700 { color: #334155 !important; }
+[data-bs-theme="light"] .text-gray-800 { color: #1E293B !important; }
 [data-bs-theme="light"] .text-gray-900 { color: #0F172A !important; }
-[data-bs-theme="light"] .text-white    { color: #0F172A !important; }
 [data-bs-theme="light"] .component_sort:hover { color: #D97706 !important; }
 
 /* Trainee profile */

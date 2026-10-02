@@ -27,7 +27,7 @@ return [
             'view-all-trainees' => ['system.trainee.index'],
             'show-trainee' => ['system.trainee.show', 'system.trainee.get-activity-log', 'system.trainee.get-auth-session', 'system.trainee.get-workout'],
             'create-trainee' => ['system.trainee.create', 'system.trainee.store'],
-            'update-trainee' => ['system.trainee.edit', 'system.trainee.update', 'system.trainee.reset-plan'],
+            'update-trainee' => ['system.trainee.edit', 'system.trainee.update', 'system.trainee.reset-plan', 'system.trainee.restore-plan'],
             'show-trainee-dashboard' => ['system.dashboard.trainer'],
         ]
     ],

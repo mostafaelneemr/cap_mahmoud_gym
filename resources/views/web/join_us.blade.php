@@ -281,7 +281,7 @@
         @media (max-width: 992px) {
             .hero-section {
                 background-position: center bottom;
-                background-size: cover;
+                background-size: contain;
                 background-image: linear-gradient(180deg, rgba(13, 13, 13, 0.95) 0%, rgba(13, 13, 13, 0.7) 100%), url('images/hero-man.png');
                 text-align: center;
                 padding: 50px 20px;

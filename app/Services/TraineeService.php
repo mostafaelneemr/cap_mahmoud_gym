@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\StatusEnum;
+use App\Enums\TraineesStatusEnum;
 use App\Repositories\Trainee\TraineeRepository;
 use App\Repositories\User\UserRepository;
 use Datatables;
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -167,14 +168,17 @@ class TraineeService extends BaseService
                 $mobile = \formatMobileNumber($request->telephone, $request->telephone_code);
             }
 
+            $userStatus = ($request->status == TraineesStatusEnum::Active->value) ? StatusEnum::Enable->value : StatusEnum::Disable->value;
+
             $userData = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'status' => $request->status,
+                'status' => $userStatus,
                 'permission_group_id' => 125,
                 'user_type' => 2,
-                'password' => $this->userPassword($request->password),
+                'password' => $this->userPassword('123456'),
                 'mobile' => $mobile ?? '',
+                'default_language' => 'en-gb',
             ];
 
             $user = $this->userRepository->store($userData);
@@ -290,5 +294,15 @@ class TraineeService extends BaseService
     public function getTraineeFirst($userId)
     {
         return $this->traineeRepository->getTraineeFirst($userId);
+    }
+
+    public function restoreLatestArchivedWorkout(int $traineeId, ?string $archivedAt = null): bool
+    {
+        return $this->workoutService->restoreLatestArchivedWorkout($traineeId, $archivedAt);
+    }
+
+    public function getTraineeId($id)
+    {
+        return $this->traineeRepository->find($id);
     }
 }

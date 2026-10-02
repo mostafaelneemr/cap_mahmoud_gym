@@ -32,7 +32,7 @@
                 <div class="card-body current" data-kt-stepper-element="content">
                     <div class="w-100">
                         <div class="pb-10 pb-lg-15">
-                            <h2 class="fw-bolder text-dark">@lang('Setup Workout Program Structure')</h2>
+                            <h2 class="fw-bolder text-gray-900">@lang('Setup Workout Program Structure')</h2>
                             <div
                                 class="text-muted fw-bold fs-6">@lang('Select the trainee and number of training days')</div>
                         </div>
@@ -140,7 +140,7 @@
                         <div class="card-body dynamic-step" data-kt-stepper-element="content">
                             <div class="w-100">
                                 <div class="pb-5 mb-5 border-bottom border-gray-200">
-                                    <h2 class="fw-bolder text-dark">@lang('Title Program') (${i})</h2>
+                                    <h2 class="fw-bolder text-gray-900">@lang('Title Program') (${i})</h2>
                                     <input type="text" name="program[day_${i}][title]" class="form-control form-control-solid mt-2" placeholder="@lang('Push / Pull')" required/>
                                 </div>
 
@@ -150,7 +150,7 @@
                                     <textarea name="program[day_${i}][warmup]" class="form-control form-control-solid" rows="2"></textarea>
                                 </div>
 
-                                <div class="mb-5 border p-5 rounded bg-light-neutral">
+                                <div class="mb-5 border p-5 rounded bg-light">
                                     <label class="form-label fw-bold text-success fs-5 mb-3">@lang('Exercises')</label>
 
                                     <div id="exercises-container-day-${i}" data-exercise-index="1">

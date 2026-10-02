@@ -5,9 +5,9 @@ namespace App\Enums;
 
 enum TraineesStatusEnum: string
 {
-    case active = "active" ;
-    case inactive = "inactive" ;
-    case expired = "expired" ;
+    case Active = "active" ;
+    case Inactive = "inactive" ;
+    case Expired = "expired" ;
 
     public static function values(): array
     {

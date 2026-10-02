@@ -28,10 +28,11 @@
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            color: #ffffff !important;
         }
 
         .trainee-welcome-card .welcome-subtitle {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.75);
             font-size: 1rem;
         }
 
@@ -59,25 +60,27 @@
         }
 
         .stat-badge .stat-label {
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.65);
             font-size: 0.75rem;
         }
 
         .stat-badge .stat-value {
             font-weight: 600;
+            color: #ffffff;
         }
 
         /* Day Tabs */
         .day-tabs-wrapper {
-            background: #fff;
+            background: var(--gp-bg-surface, #fff);
+            border: 1px solid var(--gp-border, #e9ecef);
             border-radius: 14px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+            box-shadow: var(--gp-shadow-sm, 0 2px 15px rgba(0, 0, 0, 0.04));
             overflow: hidden;
         }
 
         .day-tabs .nav-link {
             border: none;
-            color: #7e8299;
+            color: var(--gp-text-secondary, #7e8299);
             font-weight: 600;
             padding: 14px 24px;
             border-radius: 0;
@@ -88,13 +91,13 @@
 
         .day-tabs .nav-link:hover {
             color: #009ef7;
-            background: rgba(0, 158, 247, 0.04);
+            background: rgba(0, 158, 247, 0.05);
         }
 
         .day-tabs .nav-link.active {
             color: #009ef7;
             border-bottom-color: #009ef7;
-            background: rgba(0, 158, 247, 0.06);
+            background: rgba(0, 158, 247, 0.08);
         }
 
         .day-tabs .nav-link .day-number {
@@ -104,7 +107,8 @@
             width: 28px;
             height: 28px;
             border-radius: 8px;
-            background: #f1f1f2;
+            background: var(--gp-bg-elevated, #f1f1f2);
+            color: var(--gp-text-primary, #181c32);
             font-size: 0.8rem;
             font-weight: 700;
             margin-inline-end: 8px;
@@ -113,7 +117,7 @@
 
         .day-tabs .nav-link.active .day-number {
             background: #009ef7;
-            color: #fff;
+            color: #ffffff;
         }
 
         /* Day Content Card */
@@ -121,24 +125,35 @@
             border: none;
             border-radius: 0 0 14px 14px;
             box-shadow: none;
+            background: transparent;
         }
 
         .warmup-section,
         .post-workout-section {
-            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
             border-radius: 12px;
             padding: 16px 20px;
-            border-left: 4px solid #ffc107;
         }
 
         .warmup-section {
-            border-left-color: #ffc107;
-            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+            border-inline-start: 4px solid #ffc107;
+            background: rgba(255, 193, 7, 0.08);
         }
 
         .post-workout-section {
-            border-left-color: #7239ea;
-            background: linear-gradient(135deg, #f8f5ff 0%, #ede5ff 100%);
+            border-inline-start: 4px solid #7239ea;
+            background: rgba(114, 57, 234, 0.08);
+        }
+
+        [data-bs-theme="light"] .warmup-section {
+            background: #fffdf5;
+            border: 1px solid #ffe082;
+            border-inline-start: 4px solid #ffc107;
+        }
+
+        [data-bs-theme="light"] .post-workout-section {
+            background: #fbf9ff;
+            border: 1px solid #d1c4e9;
+            border-inline-start: 4px solid #7239ea;
         }
 
         .section-label {
@@ -146,50 +161,54 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         /* Exercise Table */
         .exercise-table-wrapper {
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #f1f1f2;
+            border: 1px solid var(--gp-border, #f1f1f2);
+            background: var(--gp-bg-surface, #fff);
         }
 
         .exercise-table {
             margin-bottom: 0;
+            background-color: transparent;
         }
 
         .exercise-table thead th {
-            background: #f9fafb;
-            border-bottom: 2px solid #e9ecef;
+            background: var(--gp-bg-elevated, #f9fafb);
+            border-bottom: 2px solid var(--gp-border, #e9ecef);
             font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #7e8299;
+            color: var(--gp-text-secondary, #7e8299);
             padding: 14px 16px;
             white-space: nowrap;
         }
 
         .exercise-table tbody tr {
             transition: all 0.2s ease;
+            background-color: transparent;
         }
 
         .exercise-table tbody tr:hover {
-            background: rgba(0, 158, 247, 0.03);
+            background: var(--gp-bg-elevated, rgba(0, 158, 247, 0.03));
         }
 
         .exercise-table tbody td {
             padding: 14px 16px;
             vertical-align: middle;
-            border-bottom: 1px solid #f5f5f5;
+            border-bottom: 1px solid var(--gp-border, #f5f5f5);
             font-size: 0.95rem;
+            color: var(--gp-text-secondary, #475569);
         }
 
         .exercise-name {
             font-weight: 600;
-            color: #181c32;
+            color: var(--gp-text-primary, #181c32);
         }
 
         .exercise-index {
@@ -216,27 +235,27 @@
         }
 
         .badge-sets {
-            background: rgba(80, 205, 137, 0.1);
+            background: rgba(80, 205, 137, 0.12);
             color: #50cd89;
         }
 
         .badge-reps {
-            background: rgba(0, 158, 247, 0.1);
+            background: rgba(0, 158, 247, 0.12);
             color: #009ef7;
         }
 
         .badge-rest {
-            background: rgba(255, 168, 0, 0.1);
+            background: rgba(255, 168, 0, 0.12);
             color: #ffa800;
         }
 
         .badge-weight {
-            background: rgba(114, 57, 234, 0.1);
+            background: rgba(114, 57, 234, 0.12);
             color: #7239ea;
         }
 
         .badge-tempo {
-            background: rgba(245, 108, 108, 0.1);
+            background: rgba(245, 108, 108, 0.12);
             color: #f56c6c;
         }
 
@@ -264,30 +283,21 @@
 
         /* Video Modal */
         #videoModal .modal-content {
-            background: #1a1a2e;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--gp-bg-surface, #1a1a2e);
+            border: 1px solid var(--gp-border, rgba(255, 255, 255, 0.1));
             border-radius: 16px;
             overflow: hidden;
         }
 
         #videoModal .modal-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid var(--gp-border, rgba(255, 255, 255, 0.08));
             padding: 16px 24px;
         }
 
         #videoModal .modal-title {
-            color: #fff;
+            color: var(--gp-text-primary, #fff);
             font-weight: 700;
             font-size: 1.1rem;
-        }
-
-        #videoModal .btn-close {
-            filter: invert(1);
-            opacity: 0.6;
-        }
-
-        #videoModal .btn-close:hover {
-            opacity: 1;
         }
 
         #videoModal .modal-body {
@@ -323,7 +333,7 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f1f1f2, #e8e8ed);
+            background: var(--gp-bg-elevated, #f1f1f2);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -332,17 +342,17 @@
 
         .empty-state-icon i {
             font-size: 3rem;
-            color: #b5b5c3;
+            color: var(--gp-text-muted, #b5b5c3);
         }
 
         .empty-state h3 {
             font-weight: 700;
-            color: #181c32;
+            color: var(--gp-text-primary, #181c32);
             margin-bottom: 0.5rem;
         }
 
         .empty-state p {
-            color: #a1a5b7;
+            color: var(--gp-text-secondary, #a1a5b7);
             font-size: 1rem;
         }
 

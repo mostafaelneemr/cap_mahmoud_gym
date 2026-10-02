@@ -24,9 +24,10 @@
 
         .hero-section {
             background-image: linear-gradient(90deg, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.15) 100%), url('images/transformation-split.png');
-            background-size: cover;
-            background-position: center 20%;
+            background-size: contain;
+            background-position: right center;
             background-repeat: no-repeat;
+            background-color: #050505;
             margin: 0 20px 25px 20px;
             border-radius: 24px;
             padding: 40px 60px;
@@ -194,12 +195,19 @@
             height: 180px;
             border-radius: 8px;
             overflow: hidden;
+            background-color: #080808;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .photo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .tag-badge {
@@ -267,18 +275,26 @@
         }
 
         .review-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
             overflow: hidden;
             flex-shrink: 0;
             border: 2px solid #a80000;
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
         }
 
         .review-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .review-info {

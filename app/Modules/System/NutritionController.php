@@ -3,6 +3,7 @@
 namespace App\Modules\System;
 
 use App\Http\Requests\NutritionFormRequest;
+use App\Models\Trainee;
 use App\Services\NutritionService;
 use App\Services\TraineeService;
 use Illuminate\Http\Request;
@@ -99,18 +100,18 @@ class NutritionController extends SystemController
         if ($request->filled('trainee')) {
             try {
                 $decryptedId = \Illuminate\Support\Facades\Crypt::decrypt($request->trainee);
-                $trainee = \App\Models\Trainee::find($decryptedId) ?? \App\Models\Trainee::where('user_id', $decryptedId)->first();
+                $trainee = Trainee::find($decryptedId) ?? Trainee::where('user_id', $decryptedId)->first();
             } catch (\Exception $e) {
                 $trainee = null;
             }
         } elseif ($request->filled('trainee_id')) {
-            $trainee = \App\Models\Trainee::find($request->trainee_id) ?? \App\Models\Trainee::where('user_id', $request->trainee_id)->first();
+            $trainee = Trainee::find($request->trainee_id) ?? Trainee::where('user_id', $request->trainee_id)->first();
         }
 
         if (!$trainee) {
             $trainee = $this->traineeService->getTraineeFirst($user->id);
             if (!$trainee && ($user->user_type == 1 || $user->user_type === null)) {
-                $trainee = \App\Models\Trainee::first();
+                $trainee = Trainee::first();
             }
         }
 

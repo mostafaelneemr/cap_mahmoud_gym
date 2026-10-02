@@ -37,24 +37,24 @@
             </div>
         </div>
         <!--begin::Col-->
-        <div class="col-lg-6 ">
-            {{ label(__('Password'),isset($result) ? '':'required') }}
-            <!--begin::Input group-->
-            <div class="mb-5">
-                {!! Form::password('password', ['class' => 'form-control form-control-solid','id'=>'password']) !!}
-                <div class="invalid-feedback" id="password-form-error"></div>
-            </div>
+{{--        <div class="col-lg-6 ">--}}
+{{--            {{ label(__('Password'),isset($result) ? '':'required') }}--}}
+{{--            <!--begin::Input group-->--}}
+{{--            <div class="mb-5">--}}
+{{--                {!! Form::password('password', ['class' => 'form-control form-control-solid','id'=>'password']) !!}--}}
+{{--                <div class="invalid-feedback" id="password-form-error"></div>--}}
+{{--            </div>--}}
 
-        </div>
+{{--        </div>--}}
 
-        <div class="col-lg-6">
-            {{ label( __('Confirm Password'),isset($result) ? '':'required') }}
-            <div class="mb-5">
-                {!! Form::password('password_confirmation',
-                ['class' => 'form-control form-control-solid','id'=>'password_confirmation']) !!}
-                <div class="invalid-feedback" id="password_confirmation-form-error"></div>
-            </div>
-        </div>
+{{--        <div class="col-lg-6">--}}
+{{--            {{ label( __('Confirm Password'),isset($result) ? '':'required') }}--}}
+{{--            <div class="mb-5">--}}
+{{--                {!! Form::password('password_confirmation',--}}
+{{--                ['class' => 'form-control form-control-solid','id'=>'password_confirmation']) !!}--}}
+{{--                <div class="invalid-feedback" id="password_confirmation-form-error"></div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
 
         <div class="col-lg-6 ">
             {{ label(__('Membership Start'),'required') }}
@@ -94,7 +94,7 @@
         </div>
 
         <div class="col-lg-6 ">
-            {{ label(__('Age'),'required') }}
+            {{ label(__('Age')) }}
             <div class="mb-5">
                 {!! Form::number('age',isset($result->id) ? $trainee->age:old('age'),
                 ['class'=>'form-control form-control-solid']) !!}
@@ -103,7 +103,7 @@
         </div>
 
         <div class="col-lg-6 ">
-            {{ label(__('Weight'),'required') }}
+            {{ label(__('Weight')) }}
             <div class="mb-5">
                 {!! Form::number('weight',isset($result->id) ? $trainee->weight:old('weight'),['class'=>'form-control
                 form-control-solid']) !!}
@@ -112,7 +112,7 @@
         </div>
 
         <div class="col-lg-6 ">
-            {{ label(__('Height'),'required') }}
+            {{ label(__('Height')) }}
             <div class="mb-5">
                 {!! Form::number('height',isset($result->id) ? $trainee->height:old('height'),['class'=>'form-control
                 form-control-solid']) !!}

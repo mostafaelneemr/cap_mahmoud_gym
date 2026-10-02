@@ -48,6 +48,7 @@ Route::controller('TraineeController')->prefix('trainee')->group(function () {
     Route::get('/get-auth-session/{id}', 'getAuthSession')->name('system.trainee.get-auth-session');
     Route::get('/get-workout/{id}', 'getWorkout')->name('system.trainee.get-workout');
     Route::post('/{id}/reset-plan', 'resetPlan')->name('system.trainee.reset-plan');
+    Route::post('/{id}/restore-plan', 'restorePlan')->name('system.trainee.restore-plan');
 });
 Route::resource('/trainee', 'TraineeController', ['as' => 'system']); //
 Route::post('/workout/day/{dayId}/update', 'WorkoutController@storeDayExercises')->name('system.workout.updateDay');

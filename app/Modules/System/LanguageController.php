@@ -2,10 +2,6 @@
 
 namespace App\Modules\System;
 
-use App\Http\Requests\AddressFormRequest;
-use App\Http\Requests\LanguageFormRequest;
-use App\Services\AddressService;
-use App\Services\CustomerService;
 use App\Services\LanguageService;
 use Illuminate\Http\Request;
 
@@ -46,7 +42,7 @@ class LanguageController extends SystemController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(LanguageFormRequest $request)
+    public function store(Request $request)
     {
         $row = $this->language_service->store($request);
         if ($row) {
@@ -74,7 +70,7 @@ class LanguageController extends SystemController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(LanguageFormRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $update = $this->language_service->update($request, $id);
         if ($update) {

@@ -3,6 +3,7 @@
 namespace App\Modules\System;
 
 use App\Http\Requests\TraineeFormRequest;
+use App\Models\Trainee;
 use App\Services\TraineeService;
 use App\Services\WorkoutService;
 use Illuminate\Http\Request;
@@ -95,6 +96,37 @@ class TraineeController extends SystemController
     {
         $this->workoutService->updateTraineeWorkout($id);
         flash_msg('success', __('Workout plan has been reset/archived successfully.'));
+        return redirect()->back();
+    }
+
+    public function restorePlan($id, Request $request)
+    {
+        $trainee = $this->traineeService->getTraineeId($id);
+        if (!$trainee) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return $this->fail(__('Trainee not found.'));
+            }
+            flash_msg('error', __('Trainee not found.'));
+            return redirect()->back();
+        }
+
+        $restored = $this->workoutService->restoreLatestArchivedWorkout(
+            (int) $id,
+            $request->input('archived_at') ?: $request->input('archived_date')
+        );
+
+        if ($restored) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return $this->success(__('Archived workout program has been restored successfully.'));
+            }
+            flash_msg('success', __('Archived workout program has been restored successfully.'));
+        } else {
+            if ($request->ajax() || $request->wantsJson()) {
+                return $this->fail(__('No archived workout program found to restore.'));
+            }
+            flash_msg('error', __('No archived workout program found to restore.'));
+        }
+
         return redirect()->back();
     }
 }

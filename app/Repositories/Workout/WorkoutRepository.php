@@ -5,6 +5,7 @@ namespace App\Repositories\Workout;
 use App\Models\Exercise;
 use App\Models\WorkoutPlan;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\DB;
 
 class WorkoutRepository extends BaseRepository
 {
@@ -45,6 +46,44 @@ class WorkoutRepository extends BaseRepository
     public function updateTraineeWorkout($id)
     {
         return $this->modeler->where('trainee_id', $id)->where('status', 'active')->update(['status' => 'archived']);
+    }
+
+    public function restoreLatestArchivedWorkout(int $traineeId, ?string $archivedAt = null): bool
+    {
+        return DB::transaction(function () use ($traineeId, $archivedAt) {
+            $query = WorkoutPlan::where('trainee_id', $traineeId)->where('status', 'archived');
+
+            if ($archivedAt) {
+                $plansToRestore = (clone $query)->where('updated_at', $archivedAt)->get();
+                if ($plansToRestore->isEmpty()) {
+                    $plansToRestore = (clone $query)->whereDate('updated_at', substr($archivedAt, 0, 10))->get();
+                }
+            } else {
+                $latestTimestamp = (clone $query)->max('updated_at');
+                if (!$latestTimestamp) {
+                    return false;
+                }
+                $plansToRestore = (clone $query)->where('updated_at', $latestTimestamp)->get();
+            }
+
+            if ($plansToRestore->isEmpty()) {
+                return false;
+            }
+
+            // 1. Swap: If trainee currently has active days, archive them first
+            $this->modeler
+                ->where('trainee_id', $traineeId)
+                ->where('status', 'active')
+                ->update(['status' => 'archived']);
+
+            // 2. Restore chosen archived days back to active
+            $this->modeler
+                ->where('trainee_id', $traineeId)
+                ->whereIn('id', $plansToRestore->pluck('id'))
+                ->update(['status' => 'active']);
+
+            return true;
+        });
     }
 
     public function getExcercisesByTrainee($traineeId)

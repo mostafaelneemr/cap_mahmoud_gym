@@ -57,6 +57,8 @@ body {
 
 .logo img {
     height: 40px;
+    max-width: 100%;
+    width: auto;
     object-fit: contain;
 }
 
@@ -179,9 +181,10 @@ body {
 /* --- Hero Section --- */
 .hero-section {
     background-image: linear-gradient(90deg, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.15) 100%), url('images/hero-man.png');
-    background-size: cover;
-    background-position: center center;
+    background-size: contain;
+    background-position: right center;
     background-repeat: no-repeat;
+    background-color: #050505;
     margin: 0 20px 25px 20px;
     border-radius: 24px;
     padding: 70px 60px;
@@ -214,7 +217,7 @@ body {
 .sub-heading {
     font-size: 12px;
     letter-spacing: 2.5px;
-    color: #888888;
+    color: #b0b0b0;
     font-weight: 700;
     display: block;
     margin-bottom: 8px;
@@ -233,7 +236,7 @@ body {
 }
 
 .hero-content p {
-    color: #888888;
+    color: #b0b0b0;
     font-size: 14px;
     margin-bottom: 30px;
     line-height: 1.6;
@@ -280,7 +283,7 @@ body {
 }
 
 .about-section .section-tag {
-    color: #777777;
+    color: #a0a0a0;
     font-size: 14px;
     margin-bottom: 8px;
     display: block;
@@ -293,7 +296,7 @@ body {
 }
 
 .about-section p.description {
-    color: #888888;
+    color: #b0b0b0;
     font-size: 13px;
     max-width: 650px;
     margin: 0 auto 40px auto;
@@ -348,12 +351,17 @@ body {
 .about-center-img {
     width: 260px;
     height: 260px;
-    border-radius: 50%;
+    border-radius: 20px;
     overflow: hidden;
     border: 2px solid #222222;
     flex-shrink: 0;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     transition: transform 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0a0a0a;
+    padding: 8px;
 }
 
 .about-center-img:hover {
@@ -361,9 +369,12 @@ body {
 }
 
 .about-center-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
 }
 
 /* --- Performance Section --- */
@@ -401,12 +412,12 @@ body {
 .perf-card-img {
     border-radius: 24px;
     height: 100%;
-    min-height: 300px;
+    min-height: 340px;
     border: 1px solid #1a1a1a;
-    background-color: #111111;
+    background-color: #0a0a0a;
     background-image: url('images/coach-portrait.png');
-    background-size: cover;
-    background-position: center;
+    background-size: contain;
+    background-position: center center;
     background-repeat: no-repeat;
     transition: transform 0.5s ease;
     margin-bottom: 35px;
@@ -527,9 +538,9 @@ body {
 
 .service-card-sub p {
     font-size: 11px;
-    color: #222222;
+    color: #111111;
     line-height: 1.4;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .services-logo-side {
@@ -540,6 +551,9 @@ body {
 
 .services-logo-side img {
     max-width: 280px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
     object-fit: contain;
     filter: drop-shadow(0 10px 20px rgba(168, 0, 0, 0.35));
 }
@@ -591,7 +605,7 @@ body {
 .why-us-rank {
     font-size: 13px;
     font-weight: 700;
-    color: #3a3a3a;
+    color: #888888;
     width: 26px;
     flex-shrink: 0;
 }
@@ -707,6 +721,8 @@ footer {
 
 .footer-logo img {
     height: 62px;
+    max-width: 100%;
+    width: auto;
     object-fit: contain;
     animation: footerLogoFloat 3s ease-in-out infinite;
 }
@@ -757,7 +773,7 @@ footer {
     text-align: center;
     padding: 16px;
     font-size: 12px;
-    color: #777777;
+    color: #a0a0a0;
 }
 
 /* --- Respect reduced motion preference --- */
@@ -780,7 +796,8 @@ footer {
         justify-content: center;
         text-align: center;
         padding: 50px 20px;
-        background-position: center 30%;
+        background-position: center bottom;
+        background-size: contain;
         min-height: 480px;
     }
     .hero-content {
@@ -825,6 +842,7 @@ footer {
     .about-center-img {
         width: 200px;
         height: 200px;
+        border-radius: 18px;
     }
     .hero-content h1 {
         font-size: 30px;
@@ -855,7 +873,8 @@ footer {
     .hero-section {
         min-height: 420px;
         padding: 40px 18px;
-        background-position: 68% center;
+        background-position: center bottom;
+        background-size: contain;
     }
     .hero-content h1 {
         font-size: 26px;
@@ -869,6 +888,7 @@ footer {
     .about-center-img {
         width: 160px;
         height: 160px;
+        border-radius: 16px;
         order: -1;
     }
     .feature-item {

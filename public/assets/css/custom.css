@@ -1,5 +1,5 @@
 .label {
-    color: var(--bs-text-gray-700) !important;
+    color: var(--gp-text-primary, #1e293b) !important;
     font-weight: 600 !important;
     font-size: 1.075rem !important;
     margin-bottom: 0.75rem !important;

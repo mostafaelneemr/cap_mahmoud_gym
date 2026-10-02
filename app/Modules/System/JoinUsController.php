@@ -2,6 +2,7 @@
 
 namespace App\Modules\System;
 
+use App\Models\JoinUsSubmission;
 use App\Services\JoinUsService;
 use Illuminate\Http\Request;
 
@@ -64,7 +65,7 @@ class JoinUsController extends SystemController
      */
     public function destroy(int $id)
     {
-        $submission = \App\Models\JoinUsSubmission::findOrFail($id);
+        $submission = JoinUsSubmission::findOrFail($id);
         $submission->delete();
 
         flash_msg('success', __('Submission deleted successfully.'));

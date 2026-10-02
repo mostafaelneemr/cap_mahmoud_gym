@@ -73,4 +73,9 @@ class PostRepository extends BaseRepository
 
         return $grouped;
     }
+
+    public function getPostWithItemsByType()
+    {
+        return $this->modeler->with('items')->get()->keyBy('type');
+    }
 }

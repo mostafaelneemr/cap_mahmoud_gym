@@ -26,6 +26,10 @@
         pointer-events: none;
     }
 
+    .nutrition-welcome-banner .banner-subtitle {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+
     /* ===== CKEditor Inner HTML Content Adaptation ===== */
     .nutrition-content {
         line-height: 1.8;
@@ -36,7 +40,7 @@
         margin-bottom: 0.85rem;
     }
     .nutrition-content h1, .nutrition-content h2, .nutrition-content h3, .nutrition-content h4, .nutrition-content h5 {
-        color: var(--bs-gray-900, #181c32);
+        color: var(--gp-text-primary, #181c32);
         font-weight: 700;
         margin-top: 1.25rem;
         margin-bottom: 0.75rem;
@@ -62,18 +66,19 @@
     }
     .nutrition-content th, .nutrition-content td {
         padding: 0.75rem 1rem;
-        border: 1px solid var(--bs-gray-300, #e4e6ef);
+        border: 1px solid var(--gp-border, #e4e6ef);
     }
     [data-bs-theme="dark"] .nutrition-content th,
     [data-bs-theme="dark"] .nutrition-content td {
-        border-color: rgba(255, 255, 255, 0.1) !important;
+        border-color: var(--gp-border, rgba(255, 255, 255, 0.1)) !important;
     }
     .nutrition-content th {
-        background: var(--bs-gray-100, #f8f9fa);
+        background: var(--gp-bg-elevated, #f8f9fa);
         font-weight: 700;
+        color: var(--gp-text-primary, #181c32);
     }
     [data-bs-theme="dark"] .nutrition-content th {
-        background: rgba(255, 255, 255, 0.05) !important;
+        background: var(--gp-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
     }
     .nutrition-content blockquote {
         border-left: 4px solid #50cd89;
@@ -117,7 +122,7 @@
                 <h1 class="text-white fw-bolder fs-1 mb-2">
                     {{ __('Welcome') }}, {{ $user->name }} 🥗
                 </h1>
-                <p class="text-gray-300 fs-6 mb-0">
+                <p class="banner-subtitle fs-6 mb-0">
                     {{ __('Here is your active customized nutrition plan.') }}
                 </p>
             </div>

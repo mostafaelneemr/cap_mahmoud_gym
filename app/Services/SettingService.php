@@ -114,4 +114,9 @@ class SettingService extends BaseService
             return false;
         }
     }
+
+    public function getValuesByName()
+    {
+        return $this->settingRepository->getValuesByName();
+    }
 }

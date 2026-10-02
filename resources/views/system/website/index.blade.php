@@ -142,11 +142,18 @@
                                             <div class="d-flex align-items-center gap-5">
                                                 <div class="image-input image-input-outline" data-kt-image-input="true">
                                                     @php $heroImg = !empty($hero?->image) ? asset($hero->image) : asset('assets/media/svg/avatars/blank.svg'); @endphp
-                                                    <div class="image-input-wrapper w-175px h-100px rounded shadow-sm border" id="hero_preview" style="background-image: url('{{ $heroImg }}'); background-size: cover; background-position: center;"></div>
+                                                    <div class="image-input-wrapper w-175px h-100px rounded shadow-sm border bg-dark" id="hero_preview" style="background-image: url('{{ $heroImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     {!! Form::file('image', ['class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .webp', 'onchange' => 'previewImage(this, "#hero_preview")']) !!}
-                                                    <div class="text-muted fs-7 mt-2">{{ __('Allowed formats: PNG, JPG, JPEG, WEBP. Recommended size: 1920x1080px.') }}</div>
+                                                    <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2">
+                                                        <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 1920 × 800 px') }}
+                                                        </span>
+                                                        <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: JPG, PNG, WebP') }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -221,11 +228,18 @@
                                             <div class="d-flex align-items-center gap-5">
                                                 <div class="image-input image-input-outline" data-kt-image-input="true">
                                                     @php $transHeroImg = !empty($transformationHero?->image) ? asset($transformationHero->image) : asset('assets/media/svg/avatars/blank.svg'); @endphp
-                                                    <div class="image-input-wrapper w-175px h-100px rounded shadow-sm border" id="trans_hero_preview" style="background-image: url('{{ $transHeroImg }}'); background-size: cover; background-position: center;"></div>
+                                                    <div class="image-input-wrapper w-175px h-100px rounded shadow-sm border bg-dark" id="trans_hero_preview" style="background-image: url('{{ $transHeroImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     {!! Form::file('image', ['class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .webp', 'onchange' => 'previewImage(this, "#trans_hero_preview")']) !!}
-                                                    <div class="text-muted fs-7 mt-2">{{ __('Allowed formats: PNG, JPG, JPEG, WEBP.') }}</div>
+                                                    <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2">
+                                                        <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 1920 × 800 px') }}
+                                                        </span>
+                                                        <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: JPG, PNG, WebP') }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -300,11 +314,18 @@
                                             <div class="d-flex align-items-center gap-5">
                                                 <div class="image-input image-input-outline" data-kt-image-input="true">
                                                     @php $joinHeroImg = !empty($joinHero?->image) ? asset($joinHero->image) : asset('assets/media/svg/avatars/blank.svg'); @endphp
-                                                    <div class="image-input-wrapper w-175px h-100px rounded shadow-sm border" id="join_hero_preview" style="background-image: url('{{ $joinHeroImg }}'); background-size: cover; background-position: center;"></div>
+                                                    <div class="image-input-wrapper w-175px h-100px rounded shadow-sm border bg-dark" id="join_hero_preview" style="background-image: url('{{ $joinHeroImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     {!! Form::file('image', ['class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .webp', 'onchange' => 'previewImage(this, "#join_hero_preview")']) !!}
-                                                    <div class="text-muted fs-7 mt-2">{{ __('Allowed formats: PNG, JPG, JPEG, WEBP.') }}</div>
+                                                    <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2">
+                                                        <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 1200 × 800 px') }}
+                                                        </span>
+                                                        <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: PNG, JPG, WebP') }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -379,11 +400,18 @@
                                             <div class="d-flex align-items-center gap-5">
                                                 <div class="image-input image-input-outline" data-kt-image-input="true">
                                                     @php $contactHeroImg = !empty($contactHero?->image) ? asset($contactHero->image) : asset('assets/media/svg/avatars/blank.svg'); @endphp
-                                                    <div class="image-input-wrapper w-175px h-100px rounded shadow-sm border" id="contact_hero_preview" style="background-image: url('{{ $contactHeroImg }}'); background-size: cover; background-position: center;"></div>
+                                                    <div class="image-input-wrapper w-175px h-100px rounded shadow-sm border bg-dark" id="contact_hero_preview" style="background-image: url('{{ $contactHeroImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     {!! Form::file('image', ['class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .webp', 'onchange' => 'previewImage(this, "#contact_hero_preview")']) !!}
-                                                    <div class="text-muted fs-7 mt-2">{{ __('Allowed formats: PNG, JPG, JPEG, WEBP.') }}</div>
+                                                    <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2">
+                                                        <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 1920 × 800 px') }}
+                                                        </span>
+                                                        <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: JPG, PNG, WebP') }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -452,11 +480,18 @@
                                     <div class="d-flex align-items-center gap-5">
                                         <div class="image-input image-input-outline" data-kt-image-input="true">
                                             @php $aboutImg = !empty($about?->image) ? asset($about->image) : asset('assets/media/svg/avatars/blank.svg'); @endphp
-                                            <div class="image-input-wrapper w-125px h-125px rounded shadow-sm border" id="about_preview" style="background-image: url('{{ $aboutImg }}'); background-size: cover; background-position: center;"></div>
+                                            <div class="image-input-wrapper w-125px h-125px rounded shadow-sm border bg-dark" id="about_preview" style="background-image: url('{{ $aboutImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
                                         </div>
                                         <div class="flex-grow-1">
                                             {!! Form::file('image', ['class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .webp', 'onchange' => 'previewImage(this, "#about_preview")']) !!}
-                                            <div class="text-muted fs-7 mt-2">{{ __('Allowed formats: PNG, JPG, JPEG, WEBP. Max size: 5MB.') }}</div>
+                                            <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2">
+                                                <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                    <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 600 × 600 px (1:1 Square)') }}
+                                                </span>
+                                                <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                    <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: PNG, JPG, WebP') }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -628,7 +663,7 @@
                                             <td>{{ $item->id }}</td>
                                             <td>
                                                 @if(!empty($item->image))
-                                                    <img src="{{ asset($item->image) }}" class="w-45px h-45px rounded object-fit-cover border" alt="Service">
+                                                    <img src="{{ asset($item->image) }}" class="w-45px h-45px rounded object-fit-contain bg-light border p-1" alt="Service">
                                                 @else
                                                     <div class="symbol symbol-40px symbol-light-primary">
                                                         <span class="symbol-label"><i class="{{ $item->link ?: 'fa-solid fa-dumbbell' }} fs-4 text-primary"></i></span>
@@ -753,14 +788,14 @@
                                             <td>{{ $item->id }}</td>
                                             <td>
                                                 @if(!empty($item->extra_image))
-                                                    <img src="{{ asset($item->extra_image) }}" class="w-55px h-55px rounded object-fit-cover border shadow-sm" alt="Before">
+                                                    <img src="{{ asset($item->extra_image) }}" class="w-55px h-55px rounded object-fit-contain bg-light border shadow-sm p-1" alt="Before">
                                                 @else
                                                     <span class="badge badge-light">{{ __('No Image') }}</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if(!empty($item->image))
-                                                    <img src="{{ asset($item->image) }}" class="w-55px h-55px rounded object-fit-cover border shadow-sm" alt="After">
+                                                    <img src="{{ asset($item->image) }}" class="w-55px h-55px rounded object-fit-contain bg-light border shadow-sm p-1" alt="After">
                                                 @else
                                                     <span class="badge badge-light">{{ __('No Image') }}</span>
                                                 @endif
@@ -893,11 +928,18 @@
                                     <div class="d-flex align-items-center gap-5">
                                         <div class="image-input image-input-outline" data-kt-image-input="true">
                                             @php $quoteImg = !empty($quote?->image) ? asset($quote->image) : asset('assets/media/svg/avatars/blank.svg'); @endphp
-                                            <div class="image-input-wrapper w-150px h-125px rounded shadow-sm border" id="quote_preview" style="background-image: url('{{ $quoteImg }}'); background-size: cover; background-position: center;"></div>
+                                            <div class="image-input-wrapper w-150px h-125px rounded shadow-sm border bg-dark" id="quote_preview" style="background-image: url('{{ $quoteImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
                                         </div>
                                         <div class="flex-grow-1">
                                             {!! Form::file('image', ['class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .webp', 'onchange' => 'previewImage(this, "#quote_preview")']) !!}
-                                            <div class="text-muted fs-7 mt-2">{{ __('Allowed formats: PNG, JPG, JPEG, WEBP.') }}</div>
+                                            <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2">
+                                                <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                    <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 1000 × 1000 px') }}
+                                                </span>
+                                                <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                    <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: JPG, PNG, WebP') }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1060,7 +1102,7 @@
                                             <td>{{ $item->id }}</td>
                                             <td>
                                                 @if(!empty($item->image))
-                                                    <img src="{{ asset($item->image) }}" class="w-45px h-45px rounded-circle object-fit-cover border" alt="Avatar">
+                                                    <img src="{{ asset($item->image) }}" class="w-45px h-45px rounded-circle object-fit-contain bg-light border p-1" alt="Avatar">
                                                 @else
                                                     <div class="symbol symbol-40px symbol-circle symbol-light-primary">
                                                         <span class="symbol-label fw-bold">{{ substr($item->title_en ?: $item->title ?: 'R', 0, 1) }}</span>
@@ -1166,11 +1208,18 @@
                                     <div class="d-flex align-items-center gap-5">
                                         <div class="image-input image-input-outline" data-kt-image-input="true">
                                             @php $logoImg = !empty($settings['logo']) ? asset($settings['logo']) : asset('assets/media/svg/avatars/blank.svg'); @endphp
-                                            <div class="image-input-wrapper w-125px h-100px rounded shadow-sm border" id="logo_preview" style="background-image: url('{{ $logoImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+                                            <div class="image-input-wrapper w-125px h-100px rounded shadow-sm border bg-dark" id="logo_preview" style="background-image: url('{{ $logoImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
                                         </div>
                                         <div class="flex-grow-1">
                                             {!! Form::file('logo', ['class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .svg, .webp', 'onchange' => 'previewImage(this, "#logo_preview")']) !!}
-                                            <div class="text-muted fs-7 mt-2">{{ __('Allowed formats: PNG, SVG, JPG, WEBP. Transparent background recommended.') }}</div>
+                                            <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2">
+                                                <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                    <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 500 × 200 px (Horizontal) or 500 × 500 px (Square)') }}
+                                                </span>
+                                                <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                    <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: PNG (transparent), SVG, WebP') }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1281,6 +1330,14 @@
                             'accept' => '.png, .jpg, .jpeg, .webp'
                         ]) !!}
                         <div class="invalid-feedback" id="extra_image-form-error"></div>
+                        <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2" id="hint-item-extra-image">
+                            <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i><span id="hint-item-extra-image-size">{{ __('Recommended size: 600 × 800 px (3:4 Portrait)') }}</span>
+                            </span>
+                            <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                <i class="fa-solid fa-file-image me-1 fs-9"></i><span id="hint-item-extra-image-format">{{ __('Format: JPG, PNG, WebP') }}</span>
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Main Image / Avatar / After Image -->
@@ -1292,6 +1349,14 @@
                             'accept' => '.png, .jpg, .jpeg, .webp'
                         ]) !!}
                         <div class="invalid-feedback" id="image-form-error"></div>
+                        <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2" id="hint-item-image">
+                            <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i><span id="hint-item-image-size">{{ __('Recommended size: 600 × 800 px') }}</span>
+                            </span>
+                            <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                <i class="fa-solid fa-file-image me-1 fs-9"></i><span id="hint-item-image-format">{{ __('Format: JPG, PNG, WebP') }}</span>
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Sort Order & Status -->
@@ -1333,7 +1398,12 @@
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                $(previewSelector).css('background-image', 'url(' + e.target.result + ')');
+                $(previewSelector).css({
+                    'background-image': 'url(' + e.target.result + ')',
+                    'background-size': 'contain',
+                    'background-repeat': 'no-repeat',
+                    'background-position': 'center'
+                });
             }
             reader.readAsDataURL(input.files[0]);
         }
@@ -1379,6 +1449,8 @@
             $('#label-item-link').text('{{ __("Icon Class (e.g. fa-solid fa-heart-pulse)") }}');
             $('#field-item-image').show();
             $('#label-item-image').text('{{ __("Service Card Image") }}');
+            $('#hint-item-image-size').text('{{ __("Recommended size: 600 × 400 px") }}');
+            $('#hint-item-image-format').text('{{ __("Format: JPG, PNG, WebP") }}');
         } else if (type === 'transformation') {
             $('#modal-post-item-title').text('{{ __("Add Transformation Card") }}');
             $('#label-item-title-en').text('{{ __("Trainee Name (English)") }}');
@@ -1390,6 +1462,10 @@
             $('#field-item-extra-image').show();
             $('#field-item-image').show();
             $('#label-item-image').text('{{ __("After Photo") }}');
+            $('#hint-item-extra-image-size').text('{{ __("Recommended size: 600 × 800 px (3:4 Portrait)") }}');
+            $('#hint-item-extra-image-format').text('{{ __("Format: JPG, PNG, WebP") }}');
+            $('#hint-item-image-size').text('{{ __("Recommended size: 600 × 800 px (3:4 Portrait)") }}');
+            $('#hint-item-image-format').text('{{ __("Format: JPG, PNG, WebP") }}');
         } else if (type === 'why_us') {
             $('#modal-post-item-title').text('{{ __("Add Why Us Feature Card") }}');
             $('#label-item-title-en').text('{{ __("Feature Title (English)") }}');
@@ -1415,6 +1491,8 @@
             $('#field-item-rating').show();
             $('#field-item-image').show();
             $('#label-item-image').text('{{ __("Reviewer Avatar Photo") }}');
+            $('#hint-item-image-size').text('{{ __("Recommended size: 400 × 400 px (1:1 Square)") }}');
+            $('#hint-item-image-format').text('{{ __("Format: JPG, PNG, WebP") }}');
         }
     }
 

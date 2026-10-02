@@ -45,7 +45,7 @@ class Dashboard extends SystemController
 
         $totalTrainees = $this->traineeRepository->count([]);
         $pendingWorkouts = $this->traineeRepository->getModelar()->whereDoesntHave('activeWorkoutPlans')->count();
-        $activeMemberships = $this->traineeRepository->count(['status' => TraineesStatusEnum::active->value]);
+        $activeMemberships = $this->traineeRepository->count(['status' => TraineesStatusEnum::Active->value]);
 
         $clicksCount = Activity::where('log_name', 'linktree_click')->count();
         if ($clicksCount == 0) {
@@ -128,12 +128,12 @@ class Dashboard extends SystemController
         $workoutPlans = [];
         $isExpired = false;
         if ($trainee) {
-            if ($trainee->membership_end && Carbon::parse($trainee->membership_end)->endOfDay()->isPast() && $trainee->status != TraineesStatusEnum::expired->value) {
-                $trainee->status = TraineesStatusEnum::expired->value;
+            if ($trainee->membership_end && Carbon::parse($trainee->membership_end)->endOfDay()->isPast() && $trainee->status != TraineesStatusEnum::Expired->value) {
+                $trainee->status = TraineesStatusEnum::Expired->value;
                 $trainee->save();
             }
 
-            if ($trainee->status == TraineesStatusEnum::expired->value || $trainee->status == TraineesStatusEnum::inactive->value) {
+            if ($trainee->status == TraineesStatusEnum::Expired->value || $trainee->status == TraineesStatusEnum::Inactive->value) {
                 $isExpired = true;
             } else {
                 $workoutPlans = $this->workoutRepository->getExcercisesByTrainee($trainee->id);

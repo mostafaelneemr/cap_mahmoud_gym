@@ -74,19 +74,38 @@
                                             </div>
                                         </div>
                                     @elseif($sValue->input_type == 'image')
-                                        <div class="form-group row">
+                                        <div class="form-group row align-items-center mb-4">
                                             {!! Form::label($sValue->name, $sValue->{'shown_name_'.\App::getLocale()}, ['class' => 'col-3 col-form-label']) !!}
                                             <div @if($sValue->value) class="col-7" @else class="col-9" @endif>
-                                                {!! Form::file($sValue->name, ['class' => 'form-control']) !!}
+                                                {!! Form::file($sValue->name, ['class' => 'form-control form-control-solid']) !!}
+                                                <div class="mt-2 d-flex flex-wrap align-items-center gap-2">
+                                                    @if($sValue->name == 'logo')
+                                                        <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 500 × 200 px (or 218 × 28 px)') }}
+                                                        </span>
+                                                        <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: PNG (transparent), SVG, WebP') }}
+                                                        </span>
+                                                    @elseif($sValue->name == 'testimonial_image')
+                                                        <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 1920 × 500 px') }}
+                                                        </span>
+                                                        <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: JPG, PNG, WebP') }}
+                                                        </span>
+                                                    @else
+                                                        <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 1200 × 630 px') }}
+                                                        </span>
+                                                        <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
+                                                            <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: JPG, PNG, WebP') }}
+                                                        </span>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            @if($sValue->name == 'logo')
-                                                <span class="text-center">{{__('Image dimensions :')}} 218 × 28</span>
-                                            @elseif($sValue->name == 'testimonial_image')
-                                                <span class="text-center">{{__('Image dimensions :')}} 1920 × 500</span>
-                                            @endif
                                             @if($sValue->value)
                                                 <div class="col-2">
-                                                    <a target="_blank" href="{{ asset($sValue->value) }}">{{ __('View') }}</a>
+                                                    <a target="_blank" class="btn btn-sm btn-light-primary" href="{{ asset($sValue->value) }}"><i class="fa-solid fa-eye me-1"></i>{{ __('View') }}</a>
                                                 </div>
                                             @endif
                                         </div>

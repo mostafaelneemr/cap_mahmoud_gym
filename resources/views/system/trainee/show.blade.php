@@ -6,11 +6,16 @@
            GYM TRENDY UI/UX - TRAINEE PROFILE & WORKOUT EDITOR
            ========================================================================== */
         :root {
-            --gym-neon-lime: #ccff00;
+            --gym-neon-lime: #D97706;
             --gym-electric-blue: #009ef7;
             --gym-purple-glow: #7239ea;
-            --gym-dark-card: #1e1e2d;
-            --gym-dark-bg: #151521;
+            --gym-dark-card: var(--gp-bg-surface);
+            --gym-dark-bg: var(--gp-bg-root);
+        }
+        [data-bs-theme="dark"] {
+            --gym-neon-lime: #FACC15;
+            --gym-dark-card: var(--gp-bg-surface);
+            --gym-dark-bg: var(--gp-bg-root);
         }
 
         /* Profile Header Card */
@@ -57,14 +62,14 @@
         .stat-box-value {
             font-size: 1.5rem;
             font-weight: 800;
-            color: #fff;
+            color: var(--gp-text-primary);
             letter-spacing: -0.5px;
         }
 
         .stat-box-label {
             font-size: 0.8rem;
             font-weight: 600;
-            color: rgba(255, 255, 255, 0.55);
+            color: var(--gp-text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -120,11 +125,11 @@
 
         /* Day Selector Pills */
         .nav-pills-custom .nav-link {
-            background: var(--gym-dark-card);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--gp-bg-elevated);
+            border: 1px solid var(--gp-border);
             border-radius: 16px !important;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            color: #fff;
+            color: var(--gp-text-secondary);
         }
 
         .nav-pills-custom .nav-link:hover {
@@ -144,8 +149,8 @@
 
         /* Exercise Form Row Card */
         .exercise-row-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: var(--gp-bg-surface);
+            border: 1px solid var(--gp-border);
             border-radius: 16px;
             padding: 1.5rem;
             margin-bottom: 1.25rem;
@@ -176,8 +181,8 @@
 
         /* Archived History Section */
         .archived-history-card {
-            background: rgba(30, 30, 45, 0.6);
-            border: 1px solid rgba(255, 168, 0, 0.15);
+            background: var(--gp-bg-surface);
+            border: 1px solid var(--gp-border);
             border-radius: 16px;
             overflow: hidden;
         }
@@ -185,7 +190,7 @@
         .archived-toggle-btn {
             background: transparent;
             border: none;
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--gp-text-primary);
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
@@ -199,7 +204,7 @@
         }
 
         .archived-toggle-btn:hover {
-            color: #ffa800;
+            color: var(--gp-accent);
         }
 
         .archived-toggle-btn .toggle-icon {
@@ -211,12 +216,11 @@
         }
 
         .archived-day-pill {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: var(--gp-bg-elevated);
+            border: 1px solid var(--gp-border);
             border-radius: 12px;
             padding: 1.25rem;
             margin-bottom: 1rem;
-            opacity: 0.85;
         }
 
         .archived-exercise-table {
@@ -230,16 +234,16 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: rgba(255, 255, 255, 0.4);
+            color: var(--gp-text-muted);
             padding: 10px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid var(--gp-border);
         }
 
         .archived-exercise-table tbody td {
             padding: 10px 12px;
-            color: rgba(255, 255, 255, 0.55);
+            color: var(--gp-text-secondary);
             font-size: 0.9rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--gp-border);
         }
 
         .archived-exercise-table tbody tr:last-child td {
@@ -248,7 +252,7 @@
 
         .archived-date-label {
             font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.35);
+            color: var(--gp-text-muted);
             font-style: italic;
         }
 
@@ -311,6 +315,21 @@
                 </button>
             </form>
         @endif
+
+        @if($result->archivedWorkoutPlans->count() > 0)
+            @php
+                $restoreTopConfirmMsg = $result->activeWorkoutPlans->count() > 0
+                    ? __('The trainee currently has an active workout plan. Restoring this archived program will archive the current active plan and replace it. Are you sure you want to proceed?')
+                    : __('Are you sure you want to restore this archived workout program?');
+            @endphp
+            <form action="{{ route('system.trainee.restore-plan', $result->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ addslashes($restoreTopConfirmMsg) }}')">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-light-warning fw-bold rounded-3 d-flex align-items-center gap-1">
+                    <i class="ki-duotone ki-arrows-loop fs-4"></i>
+                    <span>{{ __('Restore Workout Plan') }}</span>
+                </button>
+            </form>
+        @endif
     </div>
 @endsection
 
@@ -321,18 +340,26 @@
         <div class="d-flex flex-wrap flex-sm-nowrap align-items-center gap-6 mb-6">
             <!-- Avatar -->
             <div class="symbol symbol-100px symbol-fixed position-relative flex-shrink-0">
-                <img class="rounded-4" src="{{ asset('assets/media/avatars/blank.png') }}" style="border: 2px solid var(--gym-neon-lime); width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
-                <div class="position-absolute bottom-0 end-0 rounded-circle border border-dark w-20px h-20px {{ $result->status == 1 ? 'bg-success' : 'bg-danger' }}" title="{{ $result->status == 1 ? __('Active') : __('In-Active') }}"></div>
+                <img class="rounded-4" src="{{ asset('assets/media/avatars/blank.png') }}" style="border: 2px solid var(--gym-neon-lime); width: 100px; height: 100px; object-fit: contain;" alt="avatar" />
+
+                <div class="position-absolute bottom-0 end-0 rounded-circle border border-dark w-20px h-20px
+                 {{ $result->status == 'active' ? 'bg-success' : ($result->status == 'inactive' ? 'bg-danger' : 'bg-warning') }}"
+                     title="{{ ucfirst($result->status) }}">
+                </div>
+
             </div>
 
             <!-- Details -->
             <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
                     <div class="d-flex align-items-center gap-3">
-                        <span class="text-white fs-1 fw-bold">{{ $result->user->name ?? '' }}</span>
-                        <span class="badge {{ $result->status == 1 ? 'badge-gym-neon' : 'badge-light-danger' }}">
-                            {{ $result->status == 1 ? __('Active Trainee') : __('In-Active') }}
-                        </span>
+                        <span class="fs-1 fw-bold" style="color: var(--gp-text-primary);">{{ optional($result->user)->name ?? '' }}</span>
+                        <span class="badge
+                            {{ $result->status == 'active' ? 'badge-gym-neon' :
+                                ($result->status == 'inactive' ? 'badge-light-danger' : 'badge-light-warning')
+                            }}">
+                            {{ $result->status == 'active' ? __('Active Trainee'):
+                                ($result->status == 'inactive' ? __('In-Active') : __('Expired')) }}</span>
                     </div>
                 </div>
 
@@ -362,9 +389,9 @@
                     </div>
                     <!-- Weight -->
                     <div class="col-6 col-sm-4 col-lg-2">
-                        <div class="trainee-stat-box text-center" style="border-color: rgba(204, 255, 0, 0.3);">
+                        <div class="trainee-stat-box text-center">
                             <div class="stat-box-label mb-1">{{ __('Weight') }}</div>
-                            <div class="stat-box-value" style="color: var(--gym-neon-lime);">{{ $result->weight ?? '-' }} <span class="fs-8 text-gray-500">KG</span></div>
+                            <div class="stat-box-value text-primary">{{ $result->weight ?? '-' }} <span class="fs-8 text-muted">KG</span></div>
                         </div>
                     </div>
                     <!-- Height -->
@@ -385,7 +412,7 @@
                     <div class="col-6 col-sm-4 col-lg-2">
                         <div class="trainee-stat-box text-center">
                             <div class="stat-box-label mb-1">{{ __('Member Since') }}</div>
-                            <div class="stat-box-value fs-5 text-gray-300">{{ $result->membership_start ?? '-' }}</div>
+                            <div class="stat-box-value fs-5 text-gray-800">{{ $result->membership_start ?? '-' }}</div>
                         </div>
                     </div>
                     <!-- Ends -->
@@ -437,13 +464,13 @@
         <div class="tab-pane fade show active" id="kt_staff_programs_tab" role="tabpanel">
             {{-- ===== ACTIVE WORKOUT PLANS ===== --}}
             @if($result->activeWorkoutPlans->count() > 0)
-                <div class="card mb-8 rounded-4 shadow-sm" style="background: var(--gym-dark-card); border: 1px solid rgba(255,255,255,0.08);">
-                    <div class="card-header border-bottom border-gray-800 pt-6 pb-5">
+                <div class="card mb-8 rounded-4 shadow-sm border">
+                    <div class="card-header border-bottom border-gray-200 pt-6 pb-5">
                         <div class="card-title">
-                            <h2 class="text-white fw-bold m-0 d-flex align-items-center gap-2">
-                                <i class="fas fa-dumbbell" style="color: var(--gym-neon-lime);"></i>
+                            <h2 class="text-gray-900 fw-bold m-0 d-flex align-items-center gap-2">
+                                <i class="fas fa-dumbbell text-primary"></i>
                                 <span>{{ __('Current Workout Program') }}</span>
-                                <span class="badge badge-gym-neon fs-8 ms-2">{{ __('Active') }}</span>
+                                <span class="badge badge-light-success fs-8 ms-2">{{ __('Active') }}</span>
                             </h2>
                         </div>
                     </div>
@@ -474,10 +501,10 @@
 
                                     {!! Form::open(['url' => route('system.workout.updateDay', $plan->id), 'method' => 'POST', 'class' => 'workout-day-form']) !!}
 
-                                    <div class="p-6 rounded-4" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.06);">
-                                        <div class="d-flex justify-content-between align-items-center mb-6 pb-4 border-bottom border-gray-800">
-                                            <h3 class="fw-bolder text-white m-0 d-flex align-items-center gap-2">
-                                                <span class="badge badge-gym-neon">{{ $plan->day_name }}</span>
+                                    <div class="p-6 rounded-4 border">
+                                        <div class="d-flex justify-content-between align-items-center mb-6 pb-4 border-bottom border-gray-200">
+                                            <h3 class="fw-bolder text-gray-900 m-0 d-flex align-items-center gap-2">
+                                                <span class="badge badge-light-primary">{{ $plan->day_name }}</span>
                                                 <span>@lang('Exercises List')</span>
                                             </h3>
                                         </div>
@@ -492,31 +519,31 @@
 
                                                         <div class="row g-4 align-items-end">
                                                             <div class="col-12 col-md-3">
-                                                                <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Exercise')</label>
+                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Exercise')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][name]" value="{{ $exercise->name }}" class="form-control form-control-solid" required>
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Sets')</label>
+                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Sets')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][sets]" value="{{ $exercise->sets }}" class="form-control form-control-solid text-center">
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Reps')</label>
+                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Reps')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][reps]" value="{{ $exercise->reps }}" class="form-control form-control-solid text-center">
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Rest')</label>
+                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Rest')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][rest]" value="{{ $exercise->rest }}" class="form-control form-control-solid text-center">
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Weight')</label>
+                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Weight')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][weight]" value="{{ $exercise->internal_weight }}" class="form-control form-control-solid text-center">
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Tempo')</label>
+                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Tempo')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][tempo]" value="{{ $exercise->tempo }}" class="form-control form-control-solid text-center">
                                                             </div>
                                                             <div class="col-12 col-md-3">
-                                                                <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Video Tutorial Link')</label>
+                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Video Tutorial Link')</label>
                                                                 <input type="url" name="exercises[ex_{{ $currentExIdx }}][link]" value="{{ $exercise->link }}" class="form-control form-control-solid" placeholder="https://youtube.com/...">
                                                             </div>
                                                             <div class="col-12 col-md-1 d-flex justify-content-end">
@@ -531,31 +558,31 @@
                                                 <div class="exercise-row exercise-row-card align-items-end">
                                                     <div class="row g-4 align-items-end">
                                                         <div class="col-12 col-md-3">
-                                                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Exercise')</label>
+                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Exercise')</label>
                                                             <input type="text" name="exercises[ex_1][name]" class="form-control form-control-solid" required>
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Sets')</label>
+                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Sets')</label>
                                                             <input type="text" name="exercises[ex_1][sets]" class="form-control form-control-solid text-center">
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Reps')</label>
+                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Reps')</label>
                                                             <input type="text" name="exercises[ex_1][reps]" class="form-control form-control-solid text-center">
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Rest')</label>
+                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Rest')</label>
                                                             <input type="text" name="exercises[ex_1][rest]" class="form-control form-control-solid text-center">
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Weight')</label>
+                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Weight')</label>
                                                             <input type="text" name="exercises[ex_1][weight]" class="form-control form-control-solid text-center">
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Tempo')</label>
+                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Tempo')</label>
                                                             <input type="text" name="exercises[ex_1][tempo]" class="form-control form-control-solid text-center">
                                                         </div>
                                                         <div class="col-12 col-md-3">
-                                                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Video Tutorial Link')</label>
+                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Video Tutorial Link')</label>
                                                             <input type="url" name="exercises[ex_1][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
                                                         </div>
                                                         <div class="col-12 col-md-1 d-flex justify-content-end">
@@ -589,15 +616,15 @@
                     </div>
                 </div>
             @else
-                <div class="card rounded-4 shadow-sm mb-8" style="background: var(--gym-dark-card); border: 1px solid rgba(255,255,255,0.08);">
+                <div class="card rounded-4 shadow-sm mb-8 border">
                     <div class="card-body text-center py-12">
                         <div class="symbol symbol-100px bg-light-primary rounded-circle mb-6 d-inline-flex flex-center">
                             <i class="fas fa-dumbbell fs-1x text-primary"></i>
                         </div>
-                        <h3 class="text-white fw-bolder mb-3 fs-2">@lang('No Workout Program Assigned')</h3>
-                        <p class="text-gray-400 fs-5 mb-8 max-w-500px mx-auto">@lang('This trainee does not currently have an active workout plan.')</p>
-                        <a href="{{ route('system.workout.create', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-gym-neon px-6 py-3">
-                            <i class="ki-duotone ki-plus fs-2 text-dark me-1"></i> @lang('Assign Program')
+                        <h3 class="text-gray-900 fw-bolder mb-3 fs-2">@lang('No Workout Program Assigned')</h3>
+                        <p class="text-gray-600 fs-5 mb-8 max-w-500px mx-auto">@lang('This trainee does not currently have an active workout plan.')</p>
+                        <a href="{{ route('system.workout.create', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-primary px-6 py-3">
+                            <i class="ki-duotone ki-plus fs-2 me-1"></i> @lang('Assign Program')
                         </a>
                     </div>
                 </div>
@@ -624,32 +651,51 @@
                                     });
                                 @endphp
 
+                                @php
+                                    $restoreHistoryConfirmMsg = $result->activeWorkoutPlans->count() > 0
+                                        ? __('The trainee currently has an active workout plan. Restoring this archived program will archive the current active plan and replace it. Are you sure you want to proceed?')
+                                        : __('Are you sure you want to restore this archived workout program?');
+                                @endphp
+
                                 @foreach($archivedGrouped as $archivedDate => $archivedPlans)
                                     <div class="mb-6">
-                                        <div class="d-flex align-items-center gap-2 mb-4">
-                                            <i class="fas fa-clock" style="color: rgba(255,168,0,0.5);"></i>
-                                            <span class="archived-date-label">
-                                                {{ __('Archived on') }}: {{ $archivedDate !== 'unknown' ? \Carbon\Carbon::parse($archivedDate)->format('M d, Y') : __('Unknown date') }}
-                                            </span>
+                                        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="fas fa-clock" style="color: rgba(255,168,0,0.5);"></i>
+                                                <span class="archived-date-label">
+                                                    {{ __('Archived on') }}: {{ $archivedDate !== 'unknown' ? \Carbon\Carbon::parse($archivedDate)->format('M d, Y') : __('Unknown date') }}
+                                                </span>
+                                            </div>
+                                            @if(userCan('system.trainee.restore-plan'))
+
+                                            <form action="{{ route('system.trainee.restore-plan', $result->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ addslashes($restoreHistoryConfirmMsg) }}')">
+                                                @csrf
+                                                <input type="hidden" name="archived_at" value="{{ $archivedPlans->first()->updated_at }}">
+                                                <button type="submit" class="btn btn-sm btn-light-warning fw-bold rounded-3 d-flex align-items-center gap-1 py-1 px-3">
+                                                    <i class="ki-duotone ki-arrows-loop fs-5"></i>
+                                                    <span>{{ __('Restore Program') }}</span>
+                                                </button>
+                                            </form>
+                                            @endif
                                         </div>
 
                                         @foreach($archivedPlans as $archivedPlan)
                                             <div class="archived-day-pill">
                                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <i class="fas fa-calendar-day" style="color: rgba(255,255,255,0.3);"></i>
-                                                        <span class="fw-bold" style="color: rgba(255,255,255,0.7);">{{ $archivedPlan->day_name }}</span>
+                                                        <i class="fas fa-calendar-day text-primary"></i>
+                                                        <span class="fw-bold text-gray-900">{{ $archivedPlan->day_name }}</span>
                                                         <span class="badge badge-archived">{{ __('Archived') }}</span>
                                                     </div>
                                                     @if($archivedPlan->exercises->count() > 0)
-                                                        <span style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">{{ $archivedPlan->exercises->count() }} {{ __('exercises') }}</span>
+                                                        <span class="text-muted fs-8">{{ $archivedPlan->exercises->count() }} {{ __('exercises') }}</span>
                                                     @endif
                                                 </div>
 
                                                 @if($archivedPlan->warmup)
                                                     <div class="mb-3 px-3 py-2 rounded-3" style="background: rgba(255,193,7,0.06); border-left: 3px solid rgba(255,193,7,0.3);">
-                                                        <small class="fw-bold" style="color: rgba(255,193,7,0.6);"><i class="fas fa-fire me-1"></i>{{ __('Warm Up') }}:</small>
-                                                        <span style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">{{ $archivedPlan->warmup }}</span>
+                                                        <small class="fw-bold text-warning"><i class="fas fa-fire me-1"></i>{{ __('Warm Up') }}:</small>
+                                                        <span class="text-gray-800 fs-7">{{ $archivedPlan->warmup }}</span>
                                                     </div>
                                                 @endif
 
@@ -670,7 +716,7 @@
                                                             @foreach($archivedPlan->exercises as $exIdx => $exercise)
                                                                 <tr>
                                                                     <td>{{ $exIdx + 1 }}</td>
-                                                                    <td style="color: rgba(255,255,255,0.7); font-weight: 600;">{{ $exercise->name }}</td>
+                                                                    <td class="text-gray-900 fw-semibold">{{ $exercise->name }}</td>
                                                                     <td>{{ $exercise->sets ?? '—' }}</td>
                                                                     <td>{{ $exercise->reps ?? '—' }}</td>
                                                                     <td>{{ $exercise->rest ?? '—' }}</td>
@@ -681,13 +727,13 @@
                                                         </tbody>
                                                     </table>
                                                 @else
-                                                    <p class="mb-0" style="color: rgba(255,255,255,0.3); font-size: 0.85rem;"><em>{{ __('No exercises recorded for this day.') }}</em></p>
+                                                    <p class="mb-0 text-muted fs-7"><em>{{ __('No exercises recorded for this day.') }}</em></p>
                                                 @endif
 
                                                 @if($archivedPlan->post_workout)
                                                     <div class="mt-3 px-3 py-2 rounded-3" style="background: rgba(114,57,234,0.06); border-left: 3px solid rgba(114,57,234,0.3);">
-                                                        <small class="fw-bold" style="color: rgba(114,57,234,0.6);"><i class="fas fa-flag-checkered me-1"></i>{{ __('Post Workout') }}:</small>
-                                                        <span style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">{{ $archivedPlan->post_workout }}</span>
+                                                        <small class="fw-bold text-info"><i class="fas fa-flag-checkered me-1"></i>{{ __('Post Workout') }}:</small>
+                                                        <span class="text-gray-800 fs-7">{{ $archivedPlan->post_workout }}</span>
                                                     </div>
                                                 @endif
                                             </div>
@@ -759,10 +805,10 @@
 
         <!-- HISTORY / LOGS TAB -->
         <div class="tab-pane fade" id="kt_staff_logs_tab" role="tabpanel">
-            <div class="card rounded-4 shadow-sm mb-8" style="background: var(--gym-dark-card); border: 1px solid rgba(255,255,255,0.08);">
-                <div class="card-header border-bottom border-gray-800 pt-6 pb-5">
+            <div class="card rounded-4 shadow-sm mb-8 border">
+                <div class="card-header border-bottom border-gray-200 pt-6 pb-5">
                     <div class="card-title">
-                        <h2 class="text-white fw-bold m-0">{{ __('History (Audit Log)') }}</h2>
+                        <h2 class="text-gray-900 fw-bold m-0">{{ __('History (Audit Log)') }}</h2>
                     </div>
                 </div>
                 <div class="card-body p-6">
@@ -773,10 +819,10 @@
 
         <!-- AUTH SESSIONS TAB -->
         <div class="tab-pane fade" id="kt_staff_auth_sessions_tab" role="tabpanel">
-            <div class="card rounded-4 shadow-sm mb-8" style="background: var(--gym-dark-card); border: 1px solid rgba(255,255,255,0.08);">
-                <div class="card-header border-bottom border-gray-800 pt-6 pb-5">
+            <div class="card rounded-4 shadow-sm mb-8 border">
+                <div class="card-header border-bottom border-gray-200 pt-6 pb-5">
                     <div class="card-title">
-                        <h2 class="text-white fw-bold m-0">{{ __('Auth Sessions') }}</h2>
+                        <h2 class="text-gray-900 fw-bold m-0">{{ __('Auth Sessions') }}</h2>
                     </div>
                 </div>
                 <div class="card-body p-6">
