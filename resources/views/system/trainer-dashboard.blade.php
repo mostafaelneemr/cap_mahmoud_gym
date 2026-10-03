@@ -372,8 +372,7 @@
             color: #f56c6c;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+         @media (max-width: 768px) {
             .trainee-welcome-card {
                 padding: 1.5rem;
             }
@@ -476,15 +475,15 @@
                     <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="day-content-{{ $plan->id }}"
                          role="tabpanel">
 
-                         {{-- Warmup --}}
-                         @if($plan->warmup || $plan->warmup_ar)
-                             <div class="warmup-section mb-5">
-                                 <div class="section-label text-warning">
-                                     <i class="fas fa-fire me-1"></i> {{ __('Warm Up') }}
-                                 </div>
-                                 <div class="text-gray-800 fw-semibold">{{ $plan->display_warmup }}</div>
-                             </div>
-                         @endif
+                        {{-- Warmup --}}
+                        @if($plan->warmup || $plan->warmup_ar)
+                            <div class="warmup-section mb-5">
+                                <div class="section-label text-warning">
+                                    <i class="fas fa-fire me-1"></i> {{ __('Warm Up') }}
+                                </div>
+                                <div class="text-gray-800 fw-semibold">{{ $plan->display_warmup }}</div>
+                            </div>
+                        @endif
 
                         {{-- Exercises Table --}}
                         @if($plan->exercises && count($plan->exercises) > 0)

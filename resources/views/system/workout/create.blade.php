@@ -179,7 +179,9 @@
                                             <div class="row g-3 mb-3">
                                                 <div class="col-md-6">
                                                     <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
-                                                    <input type="text" name="program[day_${i}][exercises][ex_1][name]" class="form-control form-control-solid" placeholder="e.g. Incline Bench Press">
+                                                    <input type="text" name="program[day_${i}][exercises][ex_1][name]"
+                                                    class="form-control form-control-solid"
+                                                    placeholder="e.g. Incline Bench Press">
                                                     <div class="invalid-feedback"></div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -216,7 +218,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-5">
                                                     <label class="form-label fs-7 fw-bold">@lang('Link')</label>
-                                                    <input type="url" name="program[day_${i}][exercises][ex_1][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
+                                                    <input type="url" name="program[day_${i}][exercises][ex_1][link]" class="form-control form-control-solid" placeholder="https://link video/...">
                                                     <div class="invalid-feedback"></div>
                                                 </div>
                                                 <div class="col-12 col-md-2 d-flex justify-content-end">
@@ -307,7 +309,7 @@
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-12 col-md-5">
-                            <input type="url" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
+                            <input type="url" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][link]" class="form-control form-control-solid" placeholder="https://link video/...">
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-12 col-md-2 d-flex justify-content-end">
