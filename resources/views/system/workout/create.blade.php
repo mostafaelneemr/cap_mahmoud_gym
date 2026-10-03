@@ -140,64 +140,110 @@
                         <div class="card-body dynamic-step" data-kt-stepper-element="content">
                             <div class="w-100">
                                 <div class="pb-5 mb-5 border-bottom border-gray-200">
-                                    <h2 class="fw-bolder text-gray-900">@lang('Title Program') (${i})</h2>
-                                    <input type="text" name="program[day_${i}][title]" class="form-control form-control-solid mt-2" placeholder="@lang('Push / Pull')" required/>
+                                    <h2 class="fw-bolder text-gray-900 mb-4">@lang('Title Program') (${i})</h2>
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-gray-700">@lang('Day Name (English)')</label>
+                                            <input type="text" name="program[day_${i}][day_name]" class="form-control form-control-solid" placeholder="e.g. Day ${i}: Chest & Triceps"/>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-gray-700">اسم اليوم التدريبي (عربي)</label>
+                                            <input type="text" name="program[day_${i}][day_name_ar]" class="form-control form-control-solid" dir="rtl" placeholder="مثال: اليوم ${i}: صدر وترايسبس"/>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- المقطع الأول: الإحماء -->
                                 <div class="mb-5">
-                                    <label class="form-label fw-bold text-warning">@lang('Warm Up')</label>
-                                    <textarea name="program[day_${i}][warmup]" class="form-control form-control-solid" rows="2"></textarea>
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-warning">@lang('Warmup (English)')</label>
+                                            <textarea name="program[day_${i}][warmup]" class="form-control form-control-solid" rows="2" placeholder="Warm up instructions in English..."></textarea>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-warning">الإحماء (عربي)</label>
+                                            <textarea name="program[day_${i}][warmup_ar]" class="form-control form-control-solid" dir="rtl" rows="2" placeholder="تعليمات الإحماء بالعربي..."></textarea>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="mb-5 border p-5 rounded bg-light">
                                     <label class="form-label fw-bold text-success fs-5 mb-3">@lang('Exercises')</label>
 
                                     <div id="exercises-container-day-${i}" data-exercise-index="1">
-                                        <!-- تم إضافة border-bottom و pb-4 لعمل الخط الفاصل بين التمارين بشكل جمالي -->
-                                        <div class="row g-2 pb-4 mb-4 align-items-end exercise-row border-bottom border-gray-300">
-                                            <div class="col-md-3">
-                                                <label class="form-label fs-7 fw-bold">@lang('Resistance training exercise')</label>
-                                                <input type="text" name="program[day_${i}][exercises][ex_1][name]" class="form-control form-control-solid" required>
+                                        <div class="p-4 mb-4 rounded border border-gray-300 bg-white exercise-row">
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
+                                                    <input type="text" name="program[day_${i}][exercises][ex_1][name]" class="form-control form-control-solid" placeholder="e.g. Incline Bench Press">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fs-7 fw-bold text-gray-700">اسم التمرين (عربي)</label>
+                                                    <input type="text" name="program[day_${i}][exercises][ex_1][name_ar]" class="form-control form-control-solid" dir="rtl" placeholder="مثال: بنش مائل بالبار">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-1">
-                                                <label class="form-label fs-7 fw-bold">@lang('Sets')</label>
-                                                <input type="text" name="program[day_${i}][exercises][ex_1][sets]" class="form-control form-control-solid" placeholder="4">
-                                            </div>
-                                            <div class="col-md-1">
-                                                <label class="form-label fs-7 fw-bold">@lang('Reps')</label>
-                                                <input type="text" name="program[day_${i}][exercises][ex_1][reps]" class="form-control form-control-solid" placeholder="10">
-                                            </div>
-                                            <div class="col-md-1">
-                                                <label class="form-label fs-7 fw-bold">@lang('Rest')</label>
-                                                <input type="text" name="program[day_${i}][exercises][ex_1][rest]" class="form-control form-control-solid" placeholder="90s">
-                                            </div>
-                                            <div class="col-md-1">
-                                                <label class="form-label fs-7 fw-bold">@lang('Weight')</label>
-                                                <input type="text" name="program[day_${i}][exercises][ex_1][weight]" class="form-control form-control-solid" placeholder="20kg">
-                                            </div>
-                                            <div class="col-md-1">
-                                                <label class="form-label fs-7 fw-bold">@lang('Tempo')</label>
-                                                <input type="text" name="program[day_${i}][exercises][ex_1][tempo]" class="form-control form-control-solid" placeholder="3-0-1">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label fs-7 fw-bold">@lang('Link')</label>
-                                                <input type="url" name="program[day_${i}][exercises][ex_1][link]" class="form-control form-control-solid" placeholder="YouTube Link">
-                                            </div>
-                                            <div class="col-md-1">
-                                                <button type="button" class="btn btn-icon btn-light-danger btn-sm delete-exercise-btn w-100"><i class="fas fa-trash fs-6"></i></button>
+                                            <div class="row g-2 align-items-end">
+                                                <div class="col-6 col-md-1">
+                                                    <label class="form-label fs-7 fw-bold">@lang('Sets')</label>
+                                                    <input type="text" name="program[day_${i}][exercises][ex_1][sets]" class="form-control form-control-solid text-center" placeholder="4">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                                <div class="col-6 col-md-1">
+                                                    <label class="form-label fs-7 fw-bold">@lang('Reps')</label>
+                                                    <input type="text" name="program[day_${i}][exercises][ex_1][reps]" class="form-control form-control-solid text-center" placeholder="10">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                                <div class="col-6 col-md-1">
+                                                    <label class="form-label fs-7 fw-bold">@lang('Rest')</label>
+                                                    <input type="text" name="program[day_${i}][exercises][ex_1][rest]" class="form-control form-control-solid text-center" placeholder="90s">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                                <div class="col-6 col-md-1">
+                                                    <label class="form-label fs-7 fw-bold">@lang('Weight')</label>
+                                                    <input type="text" name="program[day_${i}][exercises][ex_1][weight]" class="form-control form-control-solid text-center" placeholder="20kg">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                                <div class="col-6 col-md-1">
+                                                    <label class="form-label fs-7 fw-bold">@lang('Tempo')</label>
+                                                    <input type="text" name="program[day_${i}][exercises][ex_1][tempo]" class="form-control form-control-solid text-center" placeholder="3-0-1">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                                <div class="col-12 col-md-5">
+                                                    <label class="form-label fs-7 fw-bold">@lang('Link')</label>
+                                                    <input type="url" name="program[day_${i}][exercises][ex_1][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                                <div class="col-12 col-md-2 d-flex justify-content-end">
+                                                    <button type="button" class="btn btn-icon btn-light-danger btn-sm delete-exercise-btn w-100"><i class="fas fa-trash fs-6"></i></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <button type="button" class="btn btn-sm btn-light-success mt-2 add-exercise-btn" data-day-id="${i}">
                                         <i class="fas fa-plus me-1"></i>@lang('Add Exercise')
-                        </button>
-                    </div>
+                                    </button>
+                                </div>
 
-                    <div class="mb-5">
-                        <label class="form-label fw-bold text-primary">@lang('Post Workout')</label>
-                                    <input type="text" name="program[day_${i}][post_workout]" class="form-control form-control-solid"/>
+                                <div class="mb-5">
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-primary">@lang('Post-Workout (English)')</label>
+                                            <textarea name="program[day_${i}][post_workout]" class="form-control form-control-solid" rows="2" placeholder="Cool down instructions in English..."></textarea>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-primary">التهدئة / ما بعد التمرين (عربي)</label>
+                                            <textarea name="program[day_${i}][post_workout_ar]" class="form-control form-control-solid" dir="rtl" rows="2" placeholder="تعليمات التهدئة والاستشفاء بالعربي..."></textarea>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>`;
@@ -226,30 +272,47 @@
                 container.attr('data-exercise-index', currentExerciseIdx);
 
                 var newExerciseRow = `
-                <div class="row g-2 pb-4 mb-4 align-items-end exercise-row border-bottom border-gray-300" style="display:none;">
-                    <div class="col-md-3">
-                        <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][name]" class="form-control form-control-solid" required>
+                <div class="p-4 mb-4 rounded border border-gray-300 bg-white exercise-row" style="display:none;">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
+                            <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][name]" class="form-control form-control-solid" placeholder="e.g. Dumbbell Lateral Raise">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fs-7 fw-bold text-gray-700">اسم التمرين (عربي)</label>
+                            <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][name_ar]" class="form-control form-control-solid" dir="rtl" placeholder="مثال: رفرفة جانبي بالدمبل">
+                            <div class="invalid-feedback"></div>
+                        </div>
                     </div>
-                    <div class="col-md-1">
-                        <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][sets]" class="form-control form-control-solid" placeholder="4">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][reps]" class="form-control form-control-solid" placeholder="10">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][rest]" class="form-control form-control-solid" placeholder="90s">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][weight]" class="form-control form-control-solid" placeholder="20kg">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][tempo]" class="form-control form-control-solid" placeholder="3-0-1">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="url" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][link]" class="form-control form-control-solid" placeholder="YouTube Link">
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-icon btn-light-danger btn-sm delete-exercise-btn w-100"><i class="fas fa-trash fs-6"></i></button>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-6 col-md-1">
+                            <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][sets]" class="form-control form-control-solid text-center" placeholder="4">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-6 col-md-1">
+                            <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][reps]" class="form-control form-control-solid text-center" placeholder="10">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-6 col-md-1">
+                            <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][rest]" class="form-control form-control-solid text-center" placeholder="90s">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-6 col-md-1">
+                            <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][weight]" class="form-control form-control-solid text-center" placeholder="20kg">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-6 col-md-1">
+                            <input type="text" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][tempo]" class="form-control form-control-solid text-center" placeholder="3-0-1">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <input type="url" name="program[day_${dayId}][exercises][ex_${currentExerciseIdx}][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-12 col-md-2 d-flex justify-content-end">
+                            <button type="button" class="btn btn-icon btn-light-danger btn-sm delete-exercise-btn w-100"><i class="fas fa-trash fs-6"></i></button>
+                        </div>
                     </div>
                 </div>`;
 

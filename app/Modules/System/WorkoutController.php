@@ -59,7 +59,15 @@ class WorkoutController extends SystemController
 
     public function storeDayExercises(StoreExercisFormRequest $request, $dayId, WorkoutRepository $workoutRepository)
     {
-        $workoutRepository->syncDayExercises($dayId, $request->input('exercises', []));
+        $dayData = array_filter($request->only([
+            'day_name', 'day_name_ar', 'warmup', 'warmup_ar', 'post_workout', 'post_workout_ar'
+        ]), fn($v) => !is_null($v));
+
+        $workoutRepository->syncDayExercises($dayId, $request->input('exercises', []), $dayData);
+
+        if ($request->ajax()) {
+            return $this->success(__('Exercises updated successfully'));
+        }
 
         flash_msg('success', __('Exercises updated successfully'));
         return redirect()->back();

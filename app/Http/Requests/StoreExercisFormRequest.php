@@ -24,15 +24,24 @@ class StoreExercisFormRequest extends FormRequest
             case 'PATCH':
             {
                 return [
+                    'day_name' => 'nullable|string|max:100',
+                    'day_name_ar' => 'nullable|string|max:100',
+                    'warmup' => 'nullable|string',
+                    'warmup_ar' => 'nullable|string',
+                    'post_workout' => 'nullable|string',
+                    'post_workout_ar' => 'nullable|string',
                     'exercises' => 'nullable|array',
                     'exercises.*.exercise_id' => 'nullable|integer',
-                    'exercises.*.name' => 'required|string',
-                    'exercises.*.sets' => 'nullable|string',
-                    'exercises.*.reps' => 'nullable|string',
-                    'exercises.*.rest' => 'nullable|string',
-                    'exercises.*.weight' => 'nullable|string',
-                    'exercises.*.tempo' => 'nullable|string',
-                    'exercises.*.link' => 'nullable|url',
+                    'exercises.*.name' => 'required_without:exercises.*.name_ar|nullable|string|max:150',
+                    'exercises.*.name_ar' => 'nullable|string|max:150',
+                    'exercises.*.sets' => 'nullable|string|max:50',
+                    'exercises.*.reps' => 'nullable|string|max:50',
+                    'exercises.*.rest' => 'nullable|string|max:50',
+                    'exercises.*.weight' => 'nullable|string|max:100',
+                    'exercises.*.tempo' => 'nullable|string|max:50',
+                    'exercises.*.link' => 'nullable|url|max:255',
+                    'exercises.*.notes_en' => 'nullable|string',
+                    'exercises.*.notes_ar' => 'nullable|string',
                 ];
 
             }

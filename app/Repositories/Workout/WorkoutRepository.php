@@ -14,15 +14,33 @@ class WorkoutRepository extends BaseRepository
     public function getDataTableQuery()
     {
         return $this->modeler->active()->with('trainee.user')
-            ->select(['id', 'trainee_id', 'day_name', 'created_at']);
+            ->select(['id', 'trainee_id', 'day_name', 'day_name_ar', 'created_at']);
     }
 
-    public function syncDayExercises(int $dayId, array $exercisesData)
+    public function syncDayExercises(int $dayId, array $exercisesData, array $dayData = [])
     {
         $day = $this->modeler::find($dayId);
+        if (!$day) {
+            return null;
+        }
+
+        if (!empty($dayData)) {
+            if (empty($dayData['day_name']) && !empty($dayData['day_name_ar'])) {
+                $dayData['day_name'] = $dayData['day_name_ar'];
+            }
+            $day->update($dayData);
+        }
 
         $keptExerciseIds = [];
         foreach ($exercisesData as $exData) {
+            if (empty($exData['name']) && !empty($exData['name_ar'])) {
+                $exData['name'] = $exData['name_ar'];
+            }
+
+            if (empty($exData['name']) && empty($exData['name_ar'])) {
+                continue;
+            }
+
             if (!empty($exData['exercise_id'])) {
                 // Update
                 $exercise = Exercise::find($exData['exercise_id']);

@@ -464,7 +464,7 @@
                                 role="tab"
                                 aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
                             <span class="day-number">{{ $index + 1 }}</span>
-                            {{ $plan->day_name }}
+                            {{ $plan->display_day_name }}
                         </button>
                     </li>
                 @endforeach
@@ -476,15 +476,15 @@
                     <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="day-content-{{ $plan->id }}"
                          role="tabpanel">
 
-                        {{-- Warmup --}}
-                        @if($plan->warmup)
-                            <div class="warmup-section mb-5">
-                                <div class="section-label text-warning">
-                                    <i class="fas fa-fire me-1"></i> {{ __('Warm Up') }}
-                                </div>
-                                <div class="text-gray-800 fw-semibold">{{ $plan->warmup }}</div>
-                            </div>
-                        @endif
+                         {{-- Warmup --}}
+                         @if($plan->warmup || $plan->warmup_ar)
+                             <div class="warmup-section mb-5">
+                                 <div class="section-label text-warning">
+                                     <i class="fas fa-fire me-1"></i> {{ __('Warm Up') }}
+                                 </div>
+                                 <div class="text-gray-800 fw-semibold">{{ $plan->display_warmup }}</div>
+                             </div>
+                         @endif
 
                         {{-- Exercises Table --}}
                         @if($plan->exercises && count($plan->exercises) > 0)
@@ -509,7 +509,7 @@
                                                 <span class="exercise-index">{{ $exIndex + 1 }}</span>
                                             </td>
                                             <td>
-                                                <span class="exercise-name">{{ $exercise->name }}</span>
+                                                <span class="exercise-name">{{ $exercise->display_name }}</span>
                                             </td>
                                             <td>
                                                 @if($exercise->sets)
@@ -565,7 +565,7 @@
                                                 @if($exercise->link)
                                                     <button type="button" class="video-link open-video-btn"
                                                             data-video-url="{{ $exercise->link }}"
-                                                            data-exercise-name="{{ $exercise->name }}">
+                                                            data-exercise-name="{{ $exercise->display_name }}">
                                                         <i class="fab fa-youtube"></i>
                                                         {{ __('Watch') }}
                                                     </button>
@@ -586,12 +586,12 @@
                         @endif
 
                         {{-- Post Workout --}}
-                        @if($plan->post_workout)
+                        @if($plan->post_workout || $plan->post_workout_ar)
                             <div class="post-workout-section">
                                 <div class="section-label text-primary">
                                     <i class="fas fa-flag-checkered me-1"></i> {{ __('Post Workout') }}
                                 </div>
-                                <div class="text-gray-800 fw-semibold">{{ $plan->post_workout }}</div>
+                                <div class="text-gray-800 fw-semibold">{{ $plan->display_post_workout }}</div>
                             </div>
                         @endif
 

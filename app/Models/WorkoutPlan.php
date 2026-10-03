@@ -13,12 +13,41 @@ class WorkoutPlan extends GlobalModel
     protected $table = 'workout_plans';
     public $timestamps = true;
     public $primaryKey = 'id';
+
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
-    protected $fillable = ['trainee_id', 'day_name', 'warmup', 'post_workout', 'status'];
+
+    protected $fillable = ['trainee_id', 'day_name', 'day_name_ar', 'warmup', 'warmup_ar', 'post_workout', 'post_workout_ar', 'status'];
+
+    public function getDisplayDayNameAttribute(): ?string
+    {
+        $locale = request()->get('lang', app()->getLocale());
+        if ($locale === 'ar' && filled($this->day_name_ar)) {
+            return $this->day_name_ar;
+        }
+        return $this->day_name;
+    }
+
+    public function getDisplayWarmupAttribute(): ?string
+    {
+        $locale = request()->get('lang', app()->getLocale());
+        if ($locale === 'ar' && filled($this->warmup_ar)) {
+            return $this->warmup_ar;
+        }
+        return $this->warmup;
+    }
+
+    public function getDisplayPostWorkoutAttribute(): ?string
+    {
+        $locale = request()->get('lang', app()->getLocale());
+        if ($locale === 'ar' && filled($this->post_workout_ar)) {
+            return $this->post_workout_ar;
+        }
+        return $this->post_workout;
+    }
 
     public function scopeActive($query)
     {

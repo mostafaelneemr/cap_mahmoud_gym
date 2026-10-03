@@ -487,7 +487,7 @@
                                             <i class="fas fa-calendar-day fs-2x text-info"></i>
                                         </div>
                                         <div>
-                                            <span class="day-title-text fw-bold fs-5 d-block">{{ $plan->day_name }}</span>
+                                            <span class="day-title-text fw-bold fs-5 d-block">{{ $plan->display_day_name }}</span>
                                         </div>
                                     </a>
                                 </li>
@@ -504,9 +504,43 @@
                                     <div class="p-6 rounded-4 border">
                                         <div class="d-flex justify-content-between align-items-center mb-6 pb-4 border-bottom border-gray-200">
                                             <h3 class="fw-bolder text-gray-900 m-0 d-flex align-items-center gap-2">
-                                                <span class="badge badge-light-primary">{{ $plan->day_name }}</span>
+                                                <span class="badge badge-light-primary">{{ $plan->display_day_name }}</span>
                                                 <span>@lang('Exercises List')</span>
                                             </h3>
+                                        </div>
+
+                                        <!-- Day Details (Bilingual) -->
+                                        <div class="row g-4 mb-6 pb-6 border-bottom border-gray-200">
+                                            <div class="col-md-6">
+                                                <label class="form-label fs-7 fw-bold text-gray-700">@lang('Day Name (English)')</label>
+                                                <input type="text" name="day_name" value="{{ $plan->day_name }}" class="form-control form-control-solid" placeholder="e.g. Day {{ $index + 1 }}: Chest & Triceps">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fs-7 fw-bold text-gray-700">اسم اليوم التدريبي (عربي)</label>
+                                                <input type="text" name="day_name_ar" value="{{ $plan->day_name_ar }}" class="form-control form-control-solid" dir="rtl" placeholder="مثال: اليوم {{ $index + 1 }}: صدر وترايسبس">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fs-7 fw-bold text-warning">@lang('Warmup (English)')</label>
+                                                <textarea name="warmup" class="form-control form-control-solid" rows="2" placeholder="Warm up instructions in English...">{{ $plan->warmup }}</textarea>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fs-7 fw-bold text-warning">الإحماء (عربي)</label>
+                                                <textarea name="warmup_ar" class="form-control form-control-solid" dir="rtl" rows="2" placeholder="تعليمات الإحماء بالعربي...">{{ $plan->warmup_ar }}</textarea>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fs-7 fw-bold text-primary">@lang('Post-Workout (English)')</label>
+                                                <textarea name="post_workout" class="form-control form-control-solid" rows="2" placeholder="Cool down instructions in English...">{{ $plan->post_workout }}</textarea>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fs-7 fw-bold text-primary">التهدئة / ما بعد التمرين (عربي)</label>
+                                                <textarea name="post_workout_ar" class="form-control form-control-solid" dir="rtl" rows="2" placeholder="تعليمات التهدئة والاستشفاء بالعربي...">{{ $plan->post_workout_ar }}</textarea>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
                                         </div>
 
                                         <div id="exercises-container-day-{{ $plan->id }}" data-exercise-index="{{ $plan->exercises->count() > 0 ? $plan->exercises->count() : 1 }}">
@@ -514,39 +548,54 @@
                                             @if($plan->exercises->count() > 0)
                                                 @foreach($plan->exercises as $exIndex => $exercise)
                                                     @php $currentExIdx = $exIndex + 1; @endphp
-                                                    <div class="exercise-row exercise-row-card align-items-end">
+                                                    <div class="p-4 mb-4 rounded border border-gray-300 bg-white exercise-row">
                                                         <input type="hidden" name="exercises[ex_{{ $currentExIdx }}][exercise_id]" value="{{ $exercise->id }}">
 
-                                                        <div class="row g-4 align-items-end">
-                                                            <div class="col-12 col-md-3">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Exercise')</label>
-                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][name]" value="{{ $exercise->name }}" class="form-control form-control-solid" required>
+                                                        <div class="row g-3 mb-3">
+                                                            <div class="col-md-6">
+                                                                <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
+                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][name]" value="{{ $exercise->name }}" class="form-control form-control-solid" placeholder="e.g. Incline Bench Press">
+                                                                <div class="invalid-feedback"></div>
                                                             </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label fs-7 fw-bold text-gray-700">اسم التمرين (عربي)</label>
+                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][name_ar]" value="{{ $exercise->name_ar }}" class="form-control form-control-solid" dir="rtl" placeholder="مثال: بنش مائل بالبار">
+                                                                <div class="invalid-feedback"></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row g-2 align-items-end">
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Sets')</label>
+                                                                <label class="form-label fs-7 fw-bold">@lang('Sets')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][sets]" value="{{ $exercise->sets }}" class="form-control form-control-solid text-center">
+                                                                <div class="invalid-feedback"></div>
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Reps')</label>
+                                                                <label class="form-label fs-7 fw-bold">@lang('Reps')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][reps]" value="{{ $exercise->reps }}" class="form-control form-control-solid text-center">
+                                                                <div class="invalid-feedback"></div>
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Rest')</label>
+                                                                <label class="form-label fs-7 fw-bold">@lang('Rest')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][rest]" value="{{ $exercise->rest }}" class="form-control form-control-solid text-center">
+                                                                <div class="invalid-feedback"></div>
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Weight')</label>
+                                                                <label class="form-label fs-7 fw-bold">@lang('Weight')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][weight]" value="{{ $exercise->internal_weight }}" class="form-control form-control-solid text-center">
+                                                                <div class="invalid-feedback"></div>
                                                             </div>
                                                             <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Tempo')</label>
+                                                                <label class="form-label fs-7 fw-bold">@lang('Tempo')</label>
                                                                 <input type="text" name="exercises[ex_{{ $currentExIdx }}][tempo]" value="{{ $exercise->tempo }}" class="form-control form-control-solid text-center">
+                                                                <div class="invalid-feedback"></div>
                                                             </div>
-                                                            <div class="col-12 col-md-3">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Video Tutorial Link')</label>
+                                                            <div class="col-12 col-md-5">
+                                                                <label class="form-label fs-7 fw-bold">@lang('Video Tutorial Link')</label>
                                                                 <input type="url" name="exercises[ex_{{ $currentExIdx }}][link]" value="{{ $exercise->link }}" class="form-control form-control-solid" placeholder="https://youtube.com/...">
+                                                                <div class="invalid-feedback"></div>
                                                             </div>
-                                                            <div class="col-12 col-md-1 d-flex justify-content-end">
+                                                            <div class="col-12 col-md-2 d-flex justify-content-end">
                                                                 <button type="button" class="btn btn-icon btn-light-danger delete-exercise-btn w-100 rounded-3" title="@lang('Delete Exercise')">
                                                                     <i class="fas fa-trash fs-5"></i>
                                                                 </button>
@@ -555,37 +604,51 @@
                                                     </div>
                                                 @endforeach
                                             @else
-                                                <div class="exercise-row exercise-row-card align-items-end">
-                                                    <div class="row g-4 align-items-end">
-                                                        <div class="col-12 col-md-3">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Exercise')</label>
-                                                            <input type="text" name="exercises[ex_1][name]" class="form-control form-control-solid" required>
+                                                <div class="p-4 mb-4 rounded border border-gray-300 bg-white exercise-row">
+                                                    <div class="row g-3 mb-3">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
+                                                            <input type="text" name="exercises[ex_1][name]" class="form-control form-control-solid" placeholder="e.g. Incline Bench Press">
+                                                            <div class="invalid-feedback"></div>
                                                         </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fs-7 fw-bold text-gray-700">اسم التمرين (عربي)</label>
+                                                            <input type="text" name="exercises[ex_1][name_ar]" class="form-control form-control-solid" dir="rtl" placeholder="مثال: بنش مائل بالبار">
+                                                            <div class="invalid-feedback"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row g-2 align-items-end">
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Sets')</label>
+                                                            <label class="form-label fs-7 fw-bold">@lang('Sets')</label>
                                                             <input type="text" name="exercises[ex_1][sets]" class="form-control form-control-solid text-center">
+                                                            <div class="invalid-feedback"></div>
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Reps')</label>
+                                                            <label class="form-label fs-7 fw-bold">@lang('Reps')</label>
                                                             <input type="text" name="exercises[ex_1][reps]" class="form-control form-control-solid text-center">
+                                                            <div class="invalid-feedback"></div>
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Rest')</label>
+                                                            <label class="form-label fs-7 fw-bold">@lang('Rest')</label>
                                                             <input type="text" name="exercises[ex_1][rest]" class="form-control form-control-solid text-center">
+                                                            <div class="invalid-feedback"></div>
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Weight')</label>
+                                                            <label class="form-label fs-7 fw-bold">@lang('Weight')</label>
                                                             <input type="text" name="exercises[ex_1][weight]" class="form-control form-control-solid text-center">
+                                                            <div class="invalid-feedback"></div>
                                                         </div>
                                                         <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Tempo')</label>
+                                                            <label class="form-label fs-7 fw-bold">@lang('Tempo')</label>
                                                             <input type="text" name="exercises[ex_1][tempo]" class="form-control form-control-solid text-center">
+                                                            <div class="invalid-feedback"></div>
                                                         </div>
-                                                        <div class="col-12 col-md-3">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700 mb-2">@lang('Video Tutorial Link')</label>
+                                                        <div class="col-12 col-md-5">
+                                                            <label class="form-label fs-7 fw-bold">@lang('Video Tutorial Link')</label>
                                                             <input type="url" name="exercises[ex_1][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
+                                                            <div class="invalid-feedback"></div>
                                                         </div>
-                                                        <div class="col-12 col-md-1 d-flex justify-content-end">
+                                                        <div class="col-12 col-md-2 d-flex justify-content-end">
                                                             <button type="button" class="btn btn-icon btn-light-danger delete-exercise-btn w-100 rounded-3" title="@lang('Delete Exercise')">
                                                                 <i class="fas fa-trash fs-5"></i>
                                                             </button>
@@ -684,7 +747,7 @@
                                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                                     <div class="d-flex align-items-center gap-2">
                                                         <i class="fas fa-calendar-day text-primary"></i>
-                                                        <span class="fw-bold text-gray-900">{{ $archivedPlan->day_name }}</span>
+                                                        <span class="fw-bold text-gray-900">{{ $archivedPlan->display_day_name }}</span>
                                                         <span class="badge badge-archived">{{ __('Archived') }}</span>
                                                     </div>
                                                     @if($archivedPlan->exercises->count() > 0)
@@ -692,10 +755,10 @@
                                                     @endif
                                                 </div>
 
-                                                @if($archivedPlan->warmup)
+                                                @if($archivedPlan->warmup || $archivedPlan->warmup_ar)
                                                     <div class="mb-3 px-3 py-2 rounded-3" style="background: rgba(255,193,7,0.06); border-left: 3px solid rgba(255,193,7,0.3);">
                                                         <small class="fw-bold text-warning"><i class="fas fa-fire me-1"></i>{{ __('Warm Up') }}:</small>
-                                                        <span class="text-gray-800 fs-7">{{ $archivedPlan->warmup }}</span>
+                                                        <span class="text-gray-800 fs-7">{{ $archivedPlan->display_warmup }}</span>
                                                     </div>
                                                 @endif
 
@@ -716,7 +779,7 @@
                                                             @foreach($archivedPlan->exercises as $exIdx => $exercise)
                                                                 <tr>
                                                                     <td>{{ $exIdx + 1 }}</td>
-                                                                    <td class="text-gray-900 fw-semibold">{{ $exercise->name }}</td>
+                                                                    <td class="text-gray-900 fw-semibold">{{ $exercise->display_name }}</td>
                                                                     <td>{{ $exercise->sets ?? '—' }}</td>
                                                                     <td>{{ $exercise->reps ?? '—' }}</td>
                                                                     <td>{{ $exercise->rest ?? '—' }}</td>
@@ -730,10 +793,10 @@
                                                     <p class="mb-0 text-muted fs-7"><em>{{ __('No exercises recorded for this day.') }}</em></p>
                                                 @endif
 
-                                                @if($archivedPlan->post_workout)
+                                                @if($archivedPlan->post_workout || $archivedPlan->post_workout_ar)
                                                     <div class="mt-3 px-3 py-2 rounded-3" style="background: rgba(114,57,234,0.06); border-left: 3px solid rgba(114,57,234,0.3);">
                                                         <small class="fw-bold text-info"><i class="fas fa-flag-checkered me-1"></i>{{ __('Post Workout') }}:</small>
-                                                        <span class="text-gray-800 fs-7">{{ $archivedPlan->post_workout }}</span>
+                                                        <span class="text-gray-800 fs-7">{{ $archivedPlan->display_post_workout }}</span>
                                                     </div>
                                                 @endif
                                             </div>
@@ -847,37 +910,52 @@
                 container.attr('data-exercise-index', currentExerciseIdx);
 
                 var newExerciseRow = `
-                <div class="exercise-row exercise-row-card align-items-end" style="display:none;">
-                    <div class="row g-4 align-items-end">
-                        <div class="col-12 col-md-3">
-                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Exercise')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][name]" class="form-control form-control-solid" required>
+                <div class="p-4 mb-4 rounded border border-gray-300 bg-white exercise-row" style="display:none;">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
+                            <input type="text" name="exercises[ex_${currentExerciseIdx}][name]" class="form-control form-control-solid" placeholder="e.g. Incline Bench Press">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fs-7 fw-bold text-gray-700">اسم التمرين (عربي)</label>
+                            <input type="text" name="exercises[ex_${currentExerciseIdx}][name_ar]" class="form-control form-control-solid" dir="rtl" placeholder="مثال: بنش مائل بالبار">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 align-items-end">
+                        <div class="col-6 col-md-1">
+                            <label class="form-label fs-7 fw-bold">@lang('Sets')</label>
+                            <input type="text" name="exercises[ex_${currentExerciseIdx}][sets]" class="form-control form-control-solid text-center" placeholder="4">
+                            <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Sets')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][sets]" class="form-control form-control-solid text-center">
+                            <label class="form-label fs-7 fw-bold">@lang('Reps')</label>
+                            <input type="text" name="exercises[ex_${currentExerciseIdx}][reps]" class="form-control form-control-solid text-center" placeholder="10">
+                            <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Reps')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][reps]" class="form-control form-control-solid text-center">
+                            <label class="form-label fs-7 fw-bold">@lang('Rest')</label>
+                            <input type="text" name="exercises[ex_${currentExerciseIdx}][rest]" class="form-control form-control-solid text-center" placeholder="90s">
+                            <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Rest')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][rest]" class="form-control form-control-solid text-center">
+                            <label class="form-label fs-7 fw-bold">@lang('Weight')</label>
+                            <input type="text" name="exercises[ex_${currentExerciseIdx}][weight]" class="form-control form-control-solid text-center" placeholder="20kg">
+                            <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Weight')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][weight]" class="form-control form-control-solid text-center">
+                            <label class="form-label fs-7 fw-bold">@lang('Tempo')</label>
+                            <input type="text" name="exercises[ex_${currentExerciseIdx}][tempo]" class="form-control form-control-solid text-center" placeholder="3-0-1">
+                            <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Tempo')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][tempo]" class="form-control form-control-solid text-center">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label fs-7 fw-bold text-gray-300 mb-2">@lang('Video Tutorial Link')</label>
+                        <div class="col-12 col-md-5">
+                            <label class="form-label fs-7 fw-bold">@lang('Video Tutorial Link')</label>
                             <input type="url" name="exercises[ex_${currentExerciseIdx}][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
+                            <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col-12 col-md-1 d-flex justify-content-end">
+                        <div class="col-12 col-md-2 d-flex justify-content-end">
                             <button type="button" class="btn btn-icon btn-light-danger delete-exercise-btn w-100 rounded-3" title="@lang('Delete Exercise')">
                                 <i class="fas fa-trash fs-5"></i>
                             </button>

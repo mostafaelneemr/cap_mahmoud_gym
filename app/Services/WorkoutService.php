@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Repositories\Exercise\ExerciseRepository;
 use App\Repositories\Trainee\TraineeRepository;
 use App\Repositories\Workout\WorkoutRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 
 
@@ -56,7 +55,9 @@ class WorkoutService extends BaseService
             ->addColumn('trainee_name', function ($data) {
                 return $data->trainee ? ($data->trainee->user ? $data->trainee->user->name : '') : '';
             })
-            ->addColumn('day_name', '{{$day_name}}')
+            ->addColumn('day_name', function ($data) {
+                return $data->display_day_name;
+            })
             ->editColumn('action', function ($data) {
                 return $this->actionButtonsRender($this->workoutRepository->modelPath(), $data->id);
             })->escapeColumns([])
@@ -72,7 +73,9 @@ class WorkoutService extends BaseService
             ->addColumn('trainee_name', function ($data) {
                 return $data->trainee ? ($data->trainee->user ? $data->trainee->user->name : '') : '';
             })
-            ->addColumn('day_name', '{{$day_name}}')
+            ->addColumn('day_name', function ($data) {
+                return $data->display_day_name;
+            })
             ->editColumn('action', function ($data) {
                 return $this->actionButtonsRender($this->workoutRepository->modelPath(), $data->id);
             })->escapeColumns([])
@@ -111,25 +114,41 @@ class WorkoutService extends BaseService
         \DB::beginTransaction();
         try {
             foreach ($programs as $dayKey => $dayData) {
+                $dayName = !empty($dayData['day_name']) ? $dayData['day_name'] : (!empty($dayData['title']) ? $dayData['title'] : ($dayData['day_name_ar'] ?? $dayKey));
+                $dayNameAr = !empty($dayData['day_name_ar']) ? $dayData['day_name_ar'] : null;
+                $warmup = $dayData['warmup'] ?? null;
+                $warmupAr = $dayData['warmup_ar'] ?? null;
+                $postWorkout = $dayData['post_workout'] ?? null;
+                $postWorkoutAr = $dayData['post_workout_ar'] ?? null;
+
                 $workoutPlan = $this->workoutRepository->store([
                     'trainee_id' => $trainee_id,
-                    'day_name' => $dayData['title'] ?? $dayKey,
-                    'warmup' => $dayData['warmup'] ?? null,
-                    'post_workout' => $dayData['post_workout'] ?? null,
+                    'day_name' => $dayName,
+                    'day_name_ar' => $dayNameAr,
+                    'warmup' => $warmup,
+                    'warmup_ar' => $warmupAr,
+                    'post_workout' => $postWorkout,
+                    'post_workout_ar' => $postWorkoutAr,
                 ]);
 
                 if (isset($dayData['exercises']) && is_array($dayData['exercises'])) {
                     foreach ($dayData['exercises'] as $exData) {
-                        if (!empty($exData['name'])) {
+                        $exName = !empty($exData['name']) ? $exData['name'] : ($exData['name_ar'] ?? null);
+                        $exNameAr = !empty($exData['name_ar']) ? $exData['name_ar'] : null;
+
+                        if (!empty($exName) || !empty($exNameAr)) {
                             $this->exerciseRepository->store([
                                 'workout_plan_id' => $workoutPlan->id,
-                                'name' => $exData['name'],
+                                'name' => $exName ?: $exNameAr,
+                                'name_ar' => $exNameAr,
                                 'sets' => $exData['sets'] ?? null,
                                 'reps' => $exData['reps'] ?? null,
                                 'rest' => $exData['rest'] ?? null,
                                 'internal_weight' => $exData['weight'] ?? null,
                                 'tempo' => $exData['tempo'] ?? null,
                                 'link' => $exData['link'] ?? null,
+                                'notes_en' => $exData['notes_en'] ?? null,
+                                'notes_ar' => $exData['notes_ar'] ?? null,
                             ]);
                         }
                     }

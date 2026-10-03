@@ -15,7 +15,30 @@ class Exercise extends GlobalModel
     public $timestamps = true;
     public $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $fillable = ['workout_plan_id', 'name', 'sets', 'reps', 'rest', 'internal_weight', 'tempo', 'link'];
+
+    protected $fillable = [
+        'workout_plan_id',
+        'name',
+        'name_ar',
+        'sets',
+        'reps',
+        'rest',
+        'internal_weight',
+        'tempo',
+        'link',
+        'notes_en',
+        'notes_ar',
+        'status'
+    ];
+
+    public function getDisplayNameAttribute(): ?string
+    {
+        $locale = request()->get('lang', app()->getLocale());
+        if ($locale === 'ar' && filled($this->name_ar)) {
+            return $this->name_ar;
+        }
+        return $this->name;
+    }
 
     public function workoutPlan()
     {
