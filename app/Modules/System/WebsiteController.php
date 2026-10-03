@@ -9,6 +9,7 @@ use App\Services\PostService;
 use App\Services\SettingService;
 use App\Services\WebsiteService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WebsiteController extends SystemController
 {
@@ -98,6 +99,10 @@ class WebsiteController extends SystemController
      */
     public function storePostItem(Request $request)
     {
+        $request->validate([
+            'sort' => 'required|integer|min:0',
+        ]);
+        try {
         $postId = $request->input('post_id');
 
         if (!$postId) {
@@ -117,6 +122,7 @@ class WebsiteController extends SystemController
 
         $data = $request->except(['_token', 'image', 'extra_image', 'post_type', 'type']);
         $data['post_id'] = $postId;
+
 
         if ($request->filled('rate') && !$request->filled('rating')) {
             $data['rating'] = $request->input('rate');
@@ -146,6 +152,14 @@ class WebsiteController extends SystemController
         flash_msg('success', __('Section updated successfully'));
 
         return $this->success(__('Item added successfully'), ['url' => route('system.website.index')]);
+        } catch (\Exception $e) {
+            Log::error('Error storing PostItem: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return $this->fail(__('Something went wrong while adding the item: ') . $e->getMessage());
+        }
     }
 
     /**
@@ -153,38 +167,52 @@ class WebsiteController extends SystemController
      */
     public function updatePostItem(Request $request, int|string $id)
     {
-        $item = PostItem::findOrFail($id);
+        $request->validate([
+            'sort' => 'required|integer|min:0',
+        ]);
+        try {
 
-        $data = $request->except(['_token', 'image', 'extra_image', 'post_type', 'type']);
 
-        if ($request->filled('rate') && !$request->filled('rating')) {
-            $data['rating'] = $request->input('rate');
+            $item = PostItem::findOrFail($id);
+
+            $data = $request->except(['_token', 'image', 'extra_image', 'post_type', 'type']);
+
+            if ($request->filled('rate') && !$request->filled('rating')) {
+                $data['rating'] = $request->input('rate');
+            }
+
+            $uploadDir = public_path('upload/posts');
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                $imageFile = $request->file('image');
+                $nameGen = hexdec(uniqid()) . '.' . $imageFile->getClientOriginalExtension();
+                $imageFile->move($uploadDir, $nameGen);
+                $data['image'] = 'upload/posts/' . $nameGen;
+            }
+
+            if ($request->hasFile('extra_image') && $request->file('extra_image')->isValid()) {
+                $extraFile = $request->file('extra_image');
+                $nameGen = hexdec(uniqid()) . '.' . $extraFile->getClientOriginalExtension();
+                $extraFile->move($uploadDir, $nameGen);
+                $data['extra_image'] = 'upload/posts/' . $nameGen;
+            }
+
+            $item->update($data);
+
+            flash_msg('success', __('Section updated successfully'));
+
+            return $this->success(__('Item updated successfully'), ['url' => route('system.website.index')]);
+        }catch (\Exception $e)
+        {
+            Log::error('Error updating PostItem: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return $this->fail(__('Something went wrong while updating the item: ') . $e->getMessage());
         }
-
-        $uploadDir = public_path('upload/posts');
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $imageFile = $request->file('image');
-            $nameGen = hexdec(uniqid()) . '.' . $imageFile->getClientOriginalExtension();
-            $imageFile->move($uploadDir, $nameGen);
-            $data['image'] = 'upload/posts/' . $nameGen;
-        }
-
-        if ($request->hasFile('extra_image') && $request->file('extra_image')->isValid()) {
-            $extraFile = $request->file('extra_image');
-            $nameGen = hexdec(uniqid()) . '.' . $extraFile->getClientOriginalExtension();
-            $extraFile->move($uploadDir, $nameGen);
-            $data['extra_image'] = 'upload/posts/' . $nameGen;
-        }
-
-        $item->update($data);
-
-        flash_msg('success', __('Section updated successfully'));
-
-        return $this->success(__('Item updated successfully'), ['url' => route('system.website.index')]);
     }
 
     /**
