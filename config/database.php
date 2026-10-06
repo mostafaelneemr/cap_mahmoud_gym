@@ -1,10 +1,8 @@
 <?php
 
 use Illuminate\Support\Str;
-use App\Libs\AwsDBCredential;
 
-//$aws_db_credential = AwsDBCredential::get();
-//dd($aws_db_credential);
+
 return [
 
     /*
