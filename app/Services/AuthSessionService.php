@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\AuthSession\AuthSessionRepository;
 use Datatables;
-use Illuminate\Pipeline\Pipeline;
 use Jenssegers\Agent\Agent;
 
 class AuthSessionService extends BaseService

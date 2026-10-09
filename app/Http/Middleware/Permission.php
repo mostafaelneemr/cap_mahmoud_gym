@@ -27,7 +27,19 @@ class Permission
             }
 
             if ($authUser->user_type == 2) {
-                $whitelist = ['system.dashboard.trainer', 'system.nutrition.my-plan', 'logout', 'auth.google', 'auth.google.callback'];
+                $whitelist = [
+                    'system.dashboard.trainer',
+                    'system.nutrition.my-plan',
+                    'system.trainee-progress.index',
+                    'system.trainee-progress.store',
+                    'system.trainee-progress.update-notes',
+                    'system.trainee-progress.destroy',
+                    'system.trainee-progress.destroy-photo',
+                    'system.trainee-progress.compare',
+                    'logout',
+                    'auth.google',
+                    'auth.google.callback'
+                ];
                 if (in_array(Route::currentRouteName(), $whitelist)) {
                     return $next($request);
                 }

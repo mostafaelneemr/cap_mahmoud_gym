@@ -443,6 +443,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#kt_progress_photos_tab">
+                    <span>📸</span>
+                    <span>{{ __('Progress & Photos') }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#kt_staff_logs_tab">
                     <span>📊</span>
                     <span>{{ __('History (Audit Log)') }}</span>
@@ -864,6 +870,128 @@
                     </div>
                 </div>
             @endif
+        </div>
+
+        <!-- PROGRESS & PHOTOS TAB -->
+        <div class="tab-pane fade" id="kt_progress_photos_tab" role="tabpanel">
+            <div class="card rounded-4 shadow-sm mb-8 border">
+                <div class="card-header border-bottom border-gray-200 pt-6 pb-5 d-flex align-items-center justify-content-between">
+                    <div class="card-title">
+                        <h2 class="text-gray-900 dark:text-white fw-bold m-0 d-flex align-items-center gap-2">
+                            <span>📸</span> {{ __('Trainee Progress Check-ins & Photos') }}
+                        </h2>
+                    </div>
+                    <div>
+                        <a href="{{ route('system.trainee-progress.index', ['trainee_id' => $result->id]) }}" class="btn btn-sm btn-primary fw-bold" target="_blank">
+                            <i class="fa fa-external-link-alt me-1"></i> {{ __('Open Full Progress Gallery') }}
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-6">
+                    @php
+                        $traineeCheckins = \App\Models\TraineeProgressCheckin::with(['photos', 'coach'])
+                            ->where('trainee_id', $result->id)
+                            ->orderBy('checkin_date', 'desc')
+                            ->get();
+                    @endphp
+
+                    <!-- Coach Add Check-in Form -->
+                    <div class="bg-light-primary rounded-4 p-5 mb-6 border border-primary border-opacity-25">
+                        <h4 class="fw-bold text-primary mb-3">
+                            <i class="fa fa-plus-circle me-1"></i> {{ __('Upload Check-in / Photos on Behalf of Trainee') }}
+                        </h4>
+                        <form action="{{ route('system.trainee-progress.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="trainee_id" value="{{ $result->id }}">
+
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">{{ __('Check-in Date') }}</label>
+                                    <input type="date" name="checkin_date" class="form-control form-control-solid" value="{{ date('Y-m-d') }}" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">{{ __('Weight (KG)') }}</label>
+                                    <input type="number" step="0.1" name="weight" class="form-control form-control-solid" placeholder="e.g. 78.5">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">{{ __('Upload Photos') }}</label>
+                                    <input type="file" name="photos[]" class="form-control form-control-solid" multiple accept="image/jpeg,image/png,image/jpg,image/webp">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">{{ __('Notes / Observations') }}</label>
+                                    <textarea name="notes" class="form-control form-control-solid" rows="2" placeholder="{{ __('Trainee comments...') }}"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-info">{{ __('Coach Feedback') }}</label>
+                                    <textarea name="coach_notes" class="form-control form-control-solid border-info" rows="2" placeholder="{{ __('Your coach notes...') }}"></textarea>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-primary fw-bold">
+                                        <i class="fa fa-cloud-upload-alt me-1"></i> {{ __('Save Check-in') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- List of Check-ins -->
+                    @if($traineeCheckins->isEmpty())
+                        <div class="text-center py-8 text-muted">
+                            <i class="fa fa-camera-retro fs-2x mb-2 opacity-50"></i>
+                            <p class="mb-0">{{ __('No progress check-ins uploaded for this trainee yet.') }}</p>
+                        </div>
+                    @else
+                        <div class="row g-4">
+                            @foreach($traineeCheckins as $ck)
+                                <div class="col-12">
+                                    <div class="border rounded-4 p-4 bg-surface shadow-xs">
+                                        <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-primary fs-7 fw-bold">{{ $ck->checkin_date->format('Y-m-d') }}</span>
+                                                @if($ck->weight)
+                                                    <span class="badge bg-light-warning text-warning fs-7 fw-bold">⚖️ {{ $ck->weight }} KG</span>
+                                                @endif
+                                            </div>
+                                            <form action="{{ route('system.trainee-progress.destroy', $ck->id) }}" method="POST" onsubmit="return confirm('{{ __('Delete this check-in session?') }}')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-icon btn-light-danger btn-sm rounded-circle">
+                                                    <i class="fa fa-trash fs-7"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        @if($ck->notes)
+                                            <div class="mb-2 fs-7"><strong>{{ __('Notes') }}:</strong> {{ $ck->notes }}</div>
+                                        @endif
+
+                                        <div class="bg-light-info rounded p-3 mb-3 border border-info border-opacity-25">
+                                            <form action="{{ route('system.trainee-progress.update-notes', $ck->id) }}" method="POST" class="d-flex gap-2 align-items-center">
+                                                @csrf
+                                                <input type="text" name="coach_notes" value="{{ $ck->coach_notes }}" class="form-control form-control-solid form-control-sm" placeholder="{{ __('Write coach feedback...') }}">
+                                                <button type="submit" class="btn btn-sm btn-info fw-bold text-nowrap">{{ __('Update Feedback') }}</button>
+                                            </form>
+                                        </div>
+
+                                        @if($ck->photos->count() > 0)
+                                            <div class="row g-2">
+                                                @foreach($ck->photos as $pt)
+                                                    <div class="col-4 col-sm-3 col-md-2">
+                                                        <a href="{{ $pt->photo_url }}" target="_blank" class="d-block overflow-hidden rounded border border-gray-300" style="aspect-ratio:1/1;">
+                                                            <img src="{{ $pt->photo_url }}" class="w-100 h-100" style="object-fit:cover;">
+                                                        </a>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                </div>
+            </div>
         </div>
 
         <!-- HISTORY / LOGS TAB -->

@@ -4,10 +4,6 @@ namespace App\Modules\System;
 
 use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Spatie\Activitylog\Models\Activity;
-use Auth;
-use Jenssegers\Agent\Agent;
 
 class ActivityController extends SystemController
 {

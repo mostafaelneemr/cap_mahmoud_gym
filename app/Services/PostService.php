@@ -23,4 +23,14 @@ class PostService extends BaseService
         return $this->postRepository->getPostWithItemsByType();
     }
 
+    public function getPostsActive($type)
+    {
+        return $this->postRepository->getPostsActive($type);
+    }
+
+    public function getPostsWithItemsActive($type)
+    {
+        return $this->postRepository->getPostsWithItemsActive($type);
+    }
+
 }

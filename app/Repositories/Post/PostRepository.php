@@ -4,6 +4,7 @@ namespace App\Repositories\Post;
 
 use App\Enums\DefaultStatus;
 use App\Enums\PostTypeEnum;
+use App\Enums\StatusEnum;
 use App\Models\Post;
 use App\Repositories\BaseRepository;
 
@@ -77,5 +78,26 @@ class PostRepository extends BaseRepository
     public function getPostWithItemsByType()
     {
         return $this->modeler->with('items')->get()->keyBy('type');
+    }
+
+    public function getPostsActive($type)
+    {
+        return $this->modeler->where('type', $type)
+            ->where(function ($q) {
+                $q->where('status', DefaultStatus::Active->value)->orWhereNull('status');
+            })->first();
+    }
+
+    public function getPostsWithItemsActive($type)
+    {
+        return $this->modeler->with(['items' => function ($query) {
+            $query->where(function ($q) {
+                $q->where('status', DefaultStatus::Active->value)->orWhereNull('status');
+            })->orderBy('sort', 'asc');
+        }])
+            ->where('type', $type)
+            ->where(function ($q) {
+                $q->where('status', DefaultStatus::Active->value)->orWhereNull('status');
+            })->first();
     }
 }

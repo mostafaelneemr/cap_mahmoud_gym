@@ -152,6 +152,12 @@ function ignoredRoutes()
         'system.reset-password',
         'system.workout.create',
         'system.nutrition.my-plan',
+        'system.trainee-progress.index',
+        'system.trainee-progress.store',
+        'system.trainee-progress.update-notes',
+        'system.trainee-progress.destroy',
+        'system.trainee-progress.destroy-photo',
+        'system.trainee-progress.compare',
     ];
 }
 
@@ -164,7 +170,19 @@ function userCan($routename, $userId = null)
     $userObj = $userId ? User::where('id', $userId)->first() : auth('user')->user();
 
     if ($userObj && $userObj->user_type == 2) {
-        $traineeRoutes = ['system.dashboard.trainer', 'system.nutrition.my-plan', 'logout', 'auth.google', 'auth.google.callback'];
+        $traineeRoutes = [
+            'system.dashboard.trainer',
+            'system.nutrition.my-plan',
+            'system.trainee-progress.index',
+            'system.trainee-progress.store',
+            'system.trainee-progress.update-notes',
+            'system.trainee-progress.destroy',
+            'system.trainee-progress.destroy-photo',
+            'system.trainee-progress.compare',
+            'logout',
+            'auth.google',
+            'auth.google.callback'
+        ];
         if (is_array($routename)) {
             $arr = array_diff($routename, $traineeRoutes);
             return (!$arr) ? true : ((count($arr) == count($routename)) ? false : true);
@@ -409,7 +427,7 @@ function BooleanStyle($boolean)
 }
 function errorLog($message)
 {
-    Bugsnag::notifyException(new RuntimeException($message));
+//    Bugsnag::notifyException(new RuntimeException($message));
     Log::error($message);
 }
 

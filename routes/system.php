@@ -51,6 +51,16 @@ Route::controller('TraineeController')->prefix('trainee')->group(function () {
     Route::post('/{id}/restore-plan', 'restorePlan')->name('system.trainee.restore-plan');
 });
 Route::resource('/trainee', 'TraineeController', ['as' => 'system']); //
+
+Route::controller('TraineeProgressController')->prefix('trainee-progress')->group(function () {
+    Route::get('/', 'index')->name('system.trainee-progress.index');
+    Route::post('/', 'store')->name('system.trainee-progress.store');
+    Route::post('/{id}/notes', 'updateCoachNotes')->name('system.trainee-progress.update-notes');
+    Route::delete('/{id}', 'destroy')->name('system.trainee-progress.destroy');
+    Route::delete('/photo/{photoId}', 'destroyPhoto')->name('system.trainee-progress.destroy-photo');
+    Route::get('/compare', 'compare')->name('system.trainee-progress.compare');
+});
+
 Route::post('/workout/day/{dayId}/update', 'WorkoutController@storeDayExercises')->name('system.workout.updateDay');
 Route::resource('/workout', 'WorkoutController', ['as' => 'system']); //
 

@@ -6,7 +6,6 @@ use App\Models\PermissionGroup;
 use App\Services\PermissionGroupService;
 use App\Http\Requests\PermissionGroupFormRequest;
 use Illuminate\Http\Request;
-use Auth;
 
 
 class PermissionGroupsController extends SystemController

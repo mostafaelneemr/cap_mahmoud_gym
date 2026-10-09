@@ -8,6 +8,8 @@ use App\Services\NutritionService;
 use App\Services\TraineeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class NutritionController extends SystemController
 {
@@ -99,9 +101,10 @@ class NutritionController extends SystemController
 
         if ($request->filled('trainee')) {
             try {
-                $decryptedId = \Illuminate\Support\Facades\Crypt::decrypt($request->trainee);
+                $decryptedId = Crypt::decrypt($request->trainee);
                 $trainee = Trainee::find($decryptedId) ?? Trainee::where('user_id', $decryptedId)->first();
             } catch (\Exception $e) {
+                Log::error('Failed to decrypt trainee ID: ' . $e->getMessage());
                 $trainee = null;
             }
         } elseif ($request->filled('trainee_id')) {
@@ -111,6 +114,7 @@ class NutritionController extends SystemController
         if (!$trainee) {
             $trainee = $this->traineeService->getTraineeFirst($user->id);
             if (!$trainee && ($user->user_type == 1 || $user->user_type === null)) {
+
                 $trainee = Trainee::first();
             }
         }

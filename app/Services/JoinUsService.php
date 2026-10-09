@@ -140,4 +140,18 @@ class JoinUsService extends BaseService
             'rejected' => $this->joinUsRepository->countByStatus('rejected'),
         ];
     }
+
+    public function destroy($id)
+    {
+        try {
+            DB::beginTransaction();
+            $this->joinUsRepository->destroy($id);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            errorLog($e->getMessage());
+            return false;
+        }
+    }
 }

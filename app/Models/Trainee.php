@@ -48,6 +48,11 @@ class Trainee extends GlobalModel
         return $this->hasMany(NutritionPlan::class, 'trainee_id', 'id')->where('status', 'active');
     }
 
+    public function progressCheckins()
+    {
+        return $this->hasMany(TraineeProgressCheckin::class, 'trainee_id', 'id')->orderBy('checkin_date', 'desc');
+    }
+
     protected static function boot()
     {
         parent::boot();

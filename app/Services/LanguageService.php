@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Language;
 use App\Repositories\Language\LanguageRepository;
 use Datatables;
 use Illuminate\Support\Facades\DB;
@@ -60,11 +59,7 @@ class LanguageService extends BaseService
                 return $data->code;
             })
             ->addColumn('image', function ($data) {
-                return $data->image;
-//                if ($data->image) {
-//                    return datatableImageFullPath($data->image);
-//                }
-//                return '--';
+                return $data->image ?? '';
             })
 
             ->addColumn('status', function ($data) {

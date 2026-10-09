@@ -2,7 +2,6 @@
 
 namespace App\Modules\System;
 
-use App\Models\JoinUsSubmission;
 use App\Services\JoinUsService;
 use Illuminate\Http\Request;
 
@@ -65,10 +64,13 @@ class JoinUsController extends SystemController
      */
     public function destroy(int $id)
     {
-        $submission = JoinUsSubmission::findOrFail($id);
-        $submission->delete();
+        $deleted = $this->joinUsService->destroy($id);
 
-        flash_msg('success', __('Submission deleted successfully.'));
-        return $this->success(__('Deleted.'), ['url' => route('system.join-us.index')]);
+        if ($deleted) {
+            flash_msg('success', __('Submission deleted successfully.'));
+            return $this->success(__('Submission deleted successfully.'), ['url' => route('system.join-us.index')]);
+        }
+
+        return $this->fail(__('Sorry, we could not update the status.'));
     }
 }

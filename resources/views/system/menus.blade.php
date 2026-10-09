@@ -5,6 +5,7 @@
 @if($authUser && $authUser->user_type == 2)
     {{-- ===== Trainee Menu ===== --}}
     @php
+        $menu = [];
         $menu['MyProgram'] = [
             'permission' => ['system.dashboard.trainer'],
             'url' => route('system.dashboard.trainer'),
@@ -17,6 +18,13 @@
             'url' => route('system.nutrition.my-plan'),
             'icon' => '<i class="fa fa-utensils"></i>',
             'text' => __('My Nutrition Plan'),
+        ];
+
+        $menu['MyProgress'] = [
+            'permission' => ['system.trainee-progress.index'],
+            'url' => route('system.trainee-progress.index'),
+            'icon' => '<i class="fa fa-camera-retro"></i>',
+            'text' => __('Progress & Photos'),
         ];
     @endphp
 

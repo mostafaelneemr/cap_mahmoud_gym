@@ -5163,13 +5163,13 @@ CREATE TABLE `address_country` (
 --
 
 INSERT INTO `address_country` (`id`, `name_en`, `name_ar`, `iso_code_2`, `iso_code_3`, `status`, `sort_order`, `currency_id`, `thumb`) VALUES
-(1, 'Saudi Arabia', ' المملكة العربية السعودية', 'SA', 'SAU', 1, 0, 6, 'https://niceonesa-prd-s3-files.s3-eu-west-1.amazonaws.com/assets/images/iconfinder_Saudi-Arabia_298512_1.png'),
-(2, 'Kuwait', 'الكويت', 'KW', 'KWT', 1, 2, 7, 'https://s3-eu-west-1.amazonaws.com/niceonesa-prd-s3-files/assets/images/iconfinder_Kuwait_298391.png'),
-(3, 'United Arab Emirates', 'الإمارات العربية المتحدة', 'AE', 'ARE', 1, 3, 8, 'https://s3-eu-west-1.amazonaws.com/niceonesa-prd-s3-files/assets/images/iconfinder_United-Arab-Emirates_298414.png'),
-(4, 'Bahrain', 'البحرين', 'BH', 'BAH', 1, 0, 9, 'https://niceonesa-prd-s3-files.s3-eu-west-1.amazonaws.com/assets/images/iconfinder_Bahrain_298382.png'),
-(5, 'Oman', 'عمان', 'OM', 'OMN', 1, 5, 10, 'https://niceonesa-prd-s3-files.s3-eu-west-1.amazonaws.com/assets/images/iconfinder_Oman_298460.png'),
-(7, 'Qatar', 'قطر', 'QA', 'QAT', 1, 0, 11, 'https://niceonesa-prd-s3-files.s3.eu-west-1.amazonaws.com/assets/images/iconfinder_qatar.png'),
-(8, 'Egypt', 'مصر', 'EG', 'EGY', 1, 0, 6, 'https://d3e7ardzpaj3y4.cloudfront.net/assets/images/1695641404_2bcba5380eae6bb15ded786e31171b9c.svg');
+(1, 'Saudi Arabia', ' المملكة العربية السعودية', 'SA', 'SAU', 1, 0, 6, ''),
+(2, 'Kuwait', 'الكويت', 'KW', 'KWT', 1, 2, 7, ''),
+(3, 'United Arab Emirates', 'الإمارات العربية المتحدة', 'AE', 'ARE', 1, 3, 8, ''),
+(4, 'Bahrain', 'البحرين', 'BH', 'BAH', 1, 0, 9, ''),
+(5, 'Oman', 'عمان', 'OM', 'OMN', 1, 5, 10, ''),
+(7, 'Qatar', 'قطر', 'QA', 'QAT', 1, 0, 11, ''),
+(8, 'Egypt', 'مصر', 'EG', 'EGY', 1, 0, 6, '');
 
 -- --------------------------------------------------------
 
@@ -7549,10 +7549,10 @@ CREATE TABLE `permission_groups` (
 --
 
 INSERT INTO `permission_groups` (`id`, `name`, `default_route`, `new_admin_default_route`, `system`, `is_supervisor`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(119, 'super admin (new admin)', 'system.activity-log.index', NULL, 'niceone_admin', 'no', '2023-06-04 14:02:22', '2024-03-11 13:30:45', NULL),
-(124, 'gym', NULL, NULL, 'niceone_admin', 'no', '2024-09-07 11:25:24', '2024-09-07 11:25:24', NULL),
-(125, 'trainer', NULL, NULL, 'niceone_admin', 'no', '2025-04-05 15:34:55', '2025-04-05 15:34:55', NULL),
-(126, 'captain', NULL, 'system.dashboard', 'gym', 'no', '2026-09-20 22:26:37', '2026-09-20 22:26:37', NULL);
+(119, 'super admin (new admin)', 'system.activity-log.index', NULL, 'shaltout', 'no', '2023-06-04 14:02:22', '2024-03-11 13:30:45', NULL),
+(124, 'gym', NULL, NULL, 'shaltout', 'no', '2024-09-07 11:25:24', '2024-09-07 11:25:24', NULL),
+(125, 'trainer', NULL, NULL, 'shaltout', 'no', '2025-04-05 15:34:55', '2025-04-05 15:34:55', NULL),
+(126, 'captain', NULL, 'system.dashboard', 'shaltout', 'no', '2026-09-20 22:26:37', '2026-09-20 22:26:37', NULL);
 
 -- --------------------------------------------------------
 

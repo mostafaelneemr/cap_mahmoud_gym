@@ -3,14 +3,12 @@
 namespace App\Services;
 
 
-use App\Imports\DataImport;
 use App\Repositories\ActivityLog\ActivityLogRepository;
 
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Excel;
-use Illuminate\Support\Facades\DB;
 
 abstract class BaseService extends Service
 {

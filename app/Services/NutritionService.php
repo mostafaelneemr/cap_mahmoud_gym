@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\NutritionPlan;
 use App\Models\Trainee;
-use App\Models\User;
 use App\Repositories\Nutrition\NutritionRepository;
 use App\Repositories\Trainee\TraineeRepository;
 use App\Repositories\User\UserRepository;
@@ -81,7 +79,7 @@ class NutritionService extends BaseService
     private function resolveTraineeId($id)
     {
         if (!$id) {
-            return null;
+            abort('404', 'Trainee not found');
         }
 
         $traineeById = Trainee::find($id);

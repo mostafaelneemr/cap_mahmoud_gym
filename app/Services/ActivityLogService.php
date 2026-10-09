@@ -6,14 +6,9 @@ use App\Filters\CreatedAtFrom;
 use App\Filters\CreatedAtTo;
 use App\Filters\Event;
 use App\Filters\Id;
-use App\Filters\SubjectId;
-use App\Filters\SubjectType;
 use App\Repositories\ActivityLog\ActivityLogRepository;
-use App\Repositories\AuthSession\AuthSessionRepository;
-use Datatables;
 use Illuminate\Pipeline\Pipeline;
 use Jenssegers\Agent\Agent;
-use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogService extends BaseService
 {
@@ -63,9 +58,10 @@ class ActivityLogService extends BaseService
             if ($result === '.' or $result === '..') continue;
             $filename = $model_path . '/' . $result;
             if (is_dir($filename)) {
-                $out = array_merge($out, getModels($filename));
+                // $out = array_merge($out, $this->models($filename));
+                continue;
             } else {
-                $out[] = str_replace("/", "\\\\", ucfirst(strstr(substr($filename, 0, -4), 'app/Models')));
+                $out[] = str_replace("/", "\\", ucfirst(strstr(substr($filename, 0, -4), 'app/Models')));
             }
         }
         return $out;
@@ -84,8 +80,6 @@ class ActivityLogService extends BaseService
             ->through([
                 Id::class,
                 Event::class,
-                //                SubjectId::class,
-                //                SubjectType::class,
                 CreatedAtFrom::class,
                 CreatedAtTo::class
             ])->thenReturn();
@@ -121,7 +115,6 @@ class ActivityLogService extends BaseService
      */
     public function findById($id)
     {
-
         $result =  $this->activity_log_repository->find($id);
 
         $agent = new Agent();
