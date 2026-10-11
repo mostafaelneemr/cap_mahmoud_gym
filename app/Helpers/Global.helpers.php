@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\{Active_section, Setting, User};
+
 use App\Enums\{DefaultStatus,
     EventEnum,
     ReadMessageEnum,
@@ -11,7 +12,9 @@ use App\Enums\{DefaultStatus,
 
 
 use Illuminate\Support\Facades\Log;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\ImageManager;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
 
@@ -767,3 +770,64 @@ function parseMobileNumber(?string $mobile): array
         'code' => 'eg',
     ];
 }
+
+/**
+ * Universal Image Compression Service across the entire system:
+ * Converts any uploaded photo/image (file or base64 data URI) into WebP format at 75% quality scaling.
+ */
+function saveCompressedWebpImage($fileInput, string $destinationFolder = 'upload/images', int $quality = 75): ?string
+{
+    try {
+        if (empty($fileInput)) {
+            return null;
+        }
+
+        $manager = new ImageManager(new Driver());
+        $img = null;
+
+        if ($fileInput instanceof \Illuminate\Http\UploadedFile) {
+            if (!$fileInput->isValid()) {
+                return null;
+            }
+            $img = $manager->decodePath($fileInput->getRealPath());
+        } elseif (is_string($fileInput)) {
+            $data = trim($fileInput);
+            if (str_starts_with($data, 'data:image')) {
+                $img = $manager->decodeDataUri($data);
+            } elseif (file_exists($fileInput)) {
+                $img = $manager->decodePath($fileInput);
+            } else {
+                $img = $manager->decodeBase64($data);
+            }
+        }
+
+        if (!$img) {
+            return null;
+        }
+
+        // WebP 75% scaling compression
+        $encodedWebp = $img->encode(new WebpEncoder($quality));
+        $filename = hexdec(uniqid()) . '_' . Str::random(8) . '.webp';
+
+        // Check if destination path is storage vs public
+        if (str_starts_with($destinationFolder, 'storage/')) {
+            $relativePath = str_replace('storage/', '', $destinationFolder) . '/' . $filename;
+            Storage::disk('public')->put($relativePath, (string) $encodedWebp);
+            return 'storage/' . $relativePath;
+        }
+
+        $targetDir = public_path($destinationFolder);
+        if (!file_exists($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
+
+        $fullPath = $targetDir . '/' . $filename;
+        file_put_contents($fullPath, (string) $encodedWebp);
+
+        return trim($destinationFolder, '/') . '/' . $filename;
+    } catch (\Exception $e) {
+        errorLog('Universal WebP 75% Compression Exception: ' . $e->getMessage());
+        return null;
+    }
+}
+

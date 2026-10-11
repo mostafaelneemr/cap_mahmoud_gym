@@ -1,5 +1,9 @@
 @extends('system.layout')
 
+@section('header')
+<link href="{{ asset('assets/plugins/custom/cropper/cropper.bundle.css') }}" rel="stylesheet" type="text/css" />
+@endsection
+
 @section('content')
 <div class="row">
     <div class="col-12">
@@ -928,17 +932,21 @@
                                     <div class="d-flex align-items-center gap-5">
                                         <div class="image-input image-input-outline" data-kt-image-input="true">
                                             @php $quoteImg = !empty($quote?->image) ? asset($quote->image) : asset('assets/media/svg/avatars/blank.svg'); @endphp
-                                            <div class="image-input-wrapper w-150px h-125px rounded shadow-sm border bg-dark" id="quote_preview" style="background-image: url('{{ $quoteImg }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+                                            <div class="image-input-wrapper w-200px h-80px rounded shadow-sm border bg-dark" id="quote_preview" style="background-image: url('{{ $quoteImg }}'); background-size: cover; background-repeat: no-repeat; background-position: center;"></div>
                                         </div>
                                         <div class="flex-grow-1">
-                                            {!! Form::file('image', ['class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .webp', 'onchange' => 'previewImage(this, "#quote_preview")']) !!}
+                                            {!! Form::file('image', ['id' => 'quote_image_file', 'class' => 'form-control form-control-solid', 'accept' => '.png, .jpg, .jpeg, .webp']) !!}
+                                            {!! Form::hidden('image_cropped', null, ['id' => 'quote_image_cropped']) !!}
                                             <div class="text-muted fs-7 mt-2 d-flex flex-wrap align-items-center gap-2">
                                                 <span class="badge badge-light-primary fw-semibold fs-8 py-1 px-2">
-                                                    <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Recommended size: 1000 × 1000 px') }}
+                                                    <i class="fa-solid fa-ruler-combined text-primary me-1 fs-9"></i>{{ __('Cover Aspect Ratio: 16:6 (Recommended: 1200 × 450 px)') }}
                                                 </span>
                                                 <span class="badge badge-light-secondary fw-semibold fs-8 py-1 px-2">
                                                     <i class="fa-solid fa-file-image me-1 fs-9"></i>{{ __('Format: JPG, PNG, WebP') }}
                                                 </span>
+                                                <button type="button" class="btn btn-sm btn-light-primary py-1 px-3 d-none" id="btn_recrop_quote_image">
+                                                    <i class="fa-solid fa-crop-simple me-1 fs-8"></i>{{ __('Recrop / Adjust') }}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -1389,6 +1397,72 @@
     </div>
 </div>
 
+<!-- Bootstrap 5 Image Cropper Modal for Quote Cover Image -->
+<div class="modal fade" id="quoteCoverCropModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="quoteCoverCropModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-dark text-white py-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="symbol symbol-35px symbol-circle bg-light-primary p-2">
+                        <i class="fa-solid fa-crop-simple text-primary fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title text-white fw-bold" id="quoteCoverCropModalLabel">{{ __('Reposition & Crop Cover Image') }}</h5>
+                        <p class="text-muted fs-8 mb-0">{{ __('Drag to reposition visible area, zoom, and select your framing (Facebook cover style).') }}</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <div class="cropper-wrapper w-100 position-relative rounded overflow-hidden" style="height: 480px; background-color: #121212;">
+                    <img id="quote_crop_image" src="" alt="Source" style="max-width: 100%; display: block;" />
+                </div>
+
+                <!-- Cropper Toolbar Controls -->
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-4 p-3 bg-white rounded border">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-light-primary" id="btn_crop_drag_move" title="{{ __('Drag/Move Image') }}">
+                            <i class="fa-solid fa-arrows-up-down-left-right me-1"></i> {{ __('Reposition') }}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light-primary" id="btn_crop_zoom_in" title="{{ __('Zoom In') }}">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light-primary" id="btn_crop_zoom_out" title="{{ __('Zoom Out') }}">
+                            <i class="fa-solid fa-magnifying-glass-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light-primary" id="btn_crop_rotate_left" title="{{ __('Rotate Left') }}">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light-primary" id="btn_crop_rotate_right" title="{{ __('Rotate Right') }}">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light-secondary" id="btn_crop_reset" title="{{ __('Reset') }}">
+                            <i class="fa-solid fa-arrow-rotate-left me-1"></i> {{ __('Reset') }}
+                        </button>
+                    </div>
+
+                    <!-- Aspect Ratio Lock Selector -->
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-7 fw-bold text-gray-700">{{ __('Aspect Ratio:') }}</span>
+                        <div class="btn-group btn-group-sm" role="group" id="ratio_toggle_group">
+                            <button type="button" class="btn btn-primary active ratio-btn" data-ratio="2.666666">16:6 (Cover)</button>
+                            <button type="button" class="btn btn-light-primary ratio-btn" data-ratio="2.333333">21:9</button>
+                            <button type="button" class="btn btn-light-primary ratio-btn" data-ratio="1.777777">16:9</button>
+                            <button type="button" class="btn btn-light-primary ratio-btn" data-ratio="NaN">{{ __('Free') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-white border-top py-3">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                <button type="button" class="btn btn-primary" id="btn_apply_crop">
+                    <i class="fa-solid fa-check me-1"></i> {{ __('Apply Crop') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('footer')
@@ -1569,5 +1643,131 @@
             window.location.hash = e.target.getAttribute('href');
         });
     });
+</script>
+
+<script src="{{ asset('assets/plugins/custom/cropper/cropper.bundle.js') }}"></script>
+<script>
+    (function() {
+        let quoteCropper = null;
+        let lastLoadedImageData = null;
+        let currentAspectRatio = 16 / 6;
+        const cropModalEl = document.getElementById('quoteCoverCropModal');
+        const cropImageEl = document.getElementById('quote_crop_image');
+
+        if (!cropModalEl || !cropImageEl) return;
+
+        const cropModal = new bootstrap.Modal(cropModalEl);
+
+        // File selection triggering modal
+        $('#quote_image_file').on('change', function(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                const file = files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    lastLoadedImageData = event.target.result;
+                    cropImageEl.src = lastLoadedImageData;
+                    $('#btn_recrop_quote_image').removeClass('d-none');
+                    cropModal.show();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Recrop button
+        $('#btn_recrop_quote_image').on('click', function() {
+            if (lastLoadedImageData) {
+                cropImageEl.src = lastLoadedImageData;
+                cropModal.show();
+            }
+        });
+
+        // Initialize Cropper on modal open
+        cropModalEl.addEventListener('shown.bs.modal', function() {
+            if (quoteCropper) {
+                quoteCropper.destroy();
+            }
+            quoteCropper = new Cropper(cropImageEl, {
+                aspectRatio: currentAspectRatio,
+                viewMode: 1,
+                dragMode: 'move', // Reposition image like Facebook cover
+                autoCropArea: 0.95,
+                responsive: true,
+                restore: false,
+                guides: true,
+                center: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: false,
+            });
+        });
+
+        // Destroy Cropper on modal close to prevent memory leaks
+        cropModalEl.addEventListener('hidden.bs.modal', function() {
+            if (quoteCropper) {
+                quoteCropper.destroy();
+                quoteCropper = null;
+            }
+        });
+
+        // Toolbar Buttons
+        $('#btn_crop_drag_move').on('click', function() {
+            if (quoteCropper) quoteCropper.setDragMode('move');
+        });
+        $('#btn_crop_zoom_in').on('click', function() {
+            if (quoteCropper) quoteCropper.zoom(0.1);
+        });
+        $('#btn_crop_zoom_out').on('click', function() {
+            if (quoteCropper) quoteCropper.zoom(-0.1);
+        });
+        $('#btn_crop_rotate_left').on('click', function() {
+            if (quoteCropper) quoteCropper.rotate(-90);
+        });
+        $('#btn_crop_rotate_right').on('click', function() {
+            if (quoteCropper) quoteCropper.rotate(90);
+        });
+        $('#btn_crop_reset').on('click', function() {
+            if (quoteCropper) quoteCropper.reset();
+        });
+
+        // Aspect Ratio Selector
+        $('.ratio-btn').on('click', function() {
+            $('.ratio-btn').removeClass('btn-primary active').addClass('btn-light-primary');
+            $(this).removeClass('btn-light-primary').addClass('btn-primary active');
+            currentAspectRatio = parseFloat($(this).data('ratio'));
+            if (quoteCropper) {
+                quoteCropper.setAspectRatio(currentAspectRatio);
+            }
+        });
+
+        // Apply Crop
+        $('#btn_apply_crop').on('click', function() {
+            if (!quoteCropper) return;
+
+            const canvas = quoteCropper.getCroppedCanvas({
+                width: 1200,
+                height: 450,
+                imageSmoothingQuality: 'high'
+            });
+
+            if (canvas) {
+                const croppedDataUrl = canvas.toDataURL('image/webp', 0.9);
+
+                // Update live admin preview
+                $('#quote_preview').css({
+                    'background-image': 'url(' + croppedDataUrl + ')',
+                    'background-size': 'cover',
+                    'background-position': 'center'
+                });
+
+                // Store in hidden field for FormSubmit / POST
+                $('#quote_image_cropped').val(croppedDataUrl);
+
+                // Hide modal
+                cropModal.hide();
+            }
+        });
+    })();
 </script>
 @endsection

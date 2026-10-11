@@ -213,23 +213,34 @@ abstract class BaseService extends Service
 //        return $compressed_jpg_content;
     }
 
-    public function uploadFileS3($file, $folderName, $driver = 's3', $content = null)
+    public function uploadFileS3($file, $folderName, $driver = 'public', $content = null)
     {
-        if(!$content && $file){
+        if (!$content && $file) {
+            // Check if file is an image payload
+            if (is_object($file) && method_exists($file, 'getMimeType') && str_starts_with($file->getMimeType(), 'image/')) {
+                $compressedPath = saveCompressedWebpImage($file, 'upload/' . trim($folderName, '/'));
+                if ($compressedPath) {
+                    return $compressedPath;
+                }
+            }
+
             $file_name = '';
             $name_only = time() . "_" . md5(time());
             $name = $name_only . '.' . $file->getClientOriginalExtension();
             $success_upload = Storage::disk($driver)->put($folderName . '/' . $name, fopen($file, 'r+'));
             $file_name = $success_upload ? $folderName . '/' . $name_only . '.' . $file->getClientOriginalExtension() : $file_name;
             return $file_name;
-        }elseif($content){
+        } elseif ($content) {
             return Storage::disk('s3')->put($folderName, $content);
         }
     }
 
-
     public function uploadImage($image, $folderName)
     {
+        $compressedPath = saveCompressedWebpImage($image, 'upload/' . trim($folderName, '/'));
+        if ($compressedPath) {
+            return $compressedPath;
+        }
         return $image->store($folderName . '/' . date('y') . '/' . date('m'));
     }
 

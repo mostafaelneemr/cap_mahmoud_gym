@@ -174,7 +174,7 @@
 
                     <div class="col-md-4">
                         <label class="form-label fw-bold">{{ __('Upload Photos') }} (jpeg, png, jpg, webp, max 5MB)</label>
-                        <input type="file" name="photos[]" id="photosInput" class="form-control form-control-solid" multiple accept="image/jpeg,image/png,image/jpg,image/webp">
+                        <input type="file" name="photos[]" id="photosInput" class="form-control form-control-solid" required multiple accept="image/jpeg,image/png,image/jpg,image/webp">
                     </div>
 
                     <div class="col-12">
@@ -272,145 +272,165 @@
         </h3>
     </div>
 
-    @if($checkins->isEmpty())
-        <div class="progress-card p-8 text-center">
-            <div class="mb-4">
-                <i class="fa fa-camera-retro fs-3x text-muted opacity-50"></i>
-            </div>
-            <h4 class="text-white fw-bold">{{ __('No progress check-ins recorded yet') }}</h4>
-            <p class="text-gray-400 max-w-500px mx-auto mb-4">
-                {{ __('Upload weekly check-in photos and track body measurements over time.') }}
-            </p>
-            <button class="btn btn-primary fw-bold" data-bs-toggle="collapse" data-bs-target="#newCheckinCollapse">
-                <i class="fa fa-plus me-1"></i> {{ __('Create First Check-in') }}
-            </button>
-        </div>
-    @else
-        <div class="row g-4">
-            @foreach($checkins as $checkin)
-                <div class="col-12">
-                    <div class="progress-card p-5">
-                        <div class="d-flex flex-wrap align-items-center justify-content-between border-bottom pb-4 mb-4 gap-2">
-                            <div class="d-flex align-items-center gap-3">
+    <div class="row g-4">
+        @forelse($checkins as $checkin)
+            <div class="col-12">
+                <div class="progress-card p-5">
+                    <div
+                        class="d-flex flex-wrap align-items-center justify-content-between border-bottom pb-4 mb-4 gap-2">
+                        <div class="d-flex align-items-center gap-3">
                                 <span class="badge bg-primary fs-6 px-3 py-2 fw-bold rounded-pill">
                                     <i class="fa fa-calendar-alt me-1 text-white"></i> {{ $checkin->checkin_date->format('Y-m-d') }}
                                 </span>
 
-                                @if($checkin->weight)
-                                    <span class="badge bg-light-warning text-warning fs-6 px-3 py-2 fw-bold border border-warning border-opacity-25 rounded-pill">
+                            @if($checkin->weight)
+                                <span
+                                    class="badge bg-light-warning text-warning fs-6 px-3 py-2 fw-bold border border-warning border-opacity-25 rounded-pill">
                                         ⚖️ {{ $checkin->weight }} KG
                                     </span>
-                                @endif
+                            @endif
 
-                                <span class="text-muted fs-7">
+                            <span class="text-muted fs-7">
                                     {{ __('Logged') }}: {{ $checkin->created_at->diffForHumans() }}
                                 </span>
-                            </div>
-
-                            <div class="d-flex align-items-center gap-2">
-                                @if($authUser->user_type != 2)
-                                    <button class="btn btn-sm btn-light-info fw-bold d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#coachNotesModal_{{ $checkin->id }}">
-                                        <i class="fa fa-edit"></i>
-                                        <span>{{ __('Edit Feedback') }}</span>
-                                    </button>
-                                @endif
-
-                                <form action="{{ route('system.trainee-progress.destroy', $checkin->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this check-in session and all its photos?') }}')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-light-danger fw-bold">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
                         </div>
 
-                        <!-- Notes & Feedback Area -->
-                        <div class="row g-3 mb-4">
-                            @if($checkin->notes)
-                                <div class="col-md-6">
-                                    <div class="bg-dark bg-opacity-30 rounded p-3 border border-white border-opacity-10">
-                                        <div class="fw-bold text-gray-300 fs-7 mb-1">
-                                            <i class="fa fa-comment-dots me-1 text-primary"></i> {{ __('Trainee Notes') }}:
-                                        </div>
-                                        <div class="text-white fs-6">{{ $checkin->notes }}</div>
-                                    </div>
-                                </div>
+                        <div class="d-flex align-items-center gap-2">
+                            @if($authUser->user_type != 2)
+                                <button class="btn btn-sm btn-light-info fw-bold d-flex align-items-center gap-1"
+                                        data-bs-toggle="modal" data-bs-target="#coachNotesModal_{{ $checkin->id }}">
+                                    <i class="fa fa-edit"></i>
+                                    <span>{{ __('Edit Feedback') }}</span>
+                                </button>
                             @endif
 
-                            @if($checkin->coach_notes)
-                                <div class="{{ $checkin->notes ? 'col-md-6' : 'col-12' }}">
-                                    <div class="coach-feedback-box">
-                                        <div class="fw-bold text-info fs-7 mb-1 d-flex align-items-center justify-content-between">
-                                            <span><i class="fa fa-user-ninja me-1 text-info"></i> {{ __('Coach Feedback') }}:</span>
-                                            @if($checkin->coach)
-                                                <small class="text-muted">({{ $checkin->coach->name }})</small>
-                                            @endif
-                                        </div>
-                                        <div class="text-white fs-6 fw-semibold">{{ $checkin->coach_notes }}</div>
-                                    </div>
-                                </div>
-                            @endif
+                            {{--                            <form action="{{ route('system.trainee-progress.destroy', $checkin->id) }}" method="POST"--}}
+                            {{--                                  class="d-inline"--}}
+                            {{--                                  onsubmit="return confirm('{{ __('Are you sure you want to delete this check-in session and all its photos?') }}')">--}}
+                            {{--                                @csrf--}}
+                            {{--                                @method('DELETE')--}}
+                            {{--                                <button type="submit" class="btn btn-sm btn-light-danger fw-bold">--}}
+                            {{--                                    <i class="fa fa-trash"></i>--}}
+                            {{--                                </button>--}}
+                            {{--                            </form>--}}
                         </div>
+                    </div>
 
-                        <!-- Photos Grid -->
-                        @if($checkin->photos->count() > 0)
-                            <div class="row g-3">
-                                @foreach($checkin->photos as $photo)
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                        <div class="photo-thumb-wrapper">
-                                            <img src="{{ $photo->photo_url }}" class="photo-thumb-img" alt="Progress Photo" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-img-src="{{ $photo->photo_url }}" data-date="{{ $checkin->checkin_date->format('Y-m-d') }}">
-
-                                            <div class="photo-overlay-actions">
-                                                <form action="{{ route('system.trainee-progress.destroy-photo', $photo->id) }}" method="POST" onsubmit="return confirm('{{ __('Delete this photo?') }}')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-icon btn-sm rounded-circle p-0" style="width:26px; height:26px;">
-                                                        <i class="fa fa-times fs-8"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
+                    <!-- Notes & Feedback Area -->
+                    <div class="row g-3 mb-4">
+                        @if($checkin->notes)
+                            <div class="col-md-6">
+                                <div class="bg-dark bg-opacity-30 rounded p-3 border border-white border-opacity-10">
+                                    <div class="fw-bold text-gray-300 fs-7 mb-1">
+                                        <i class="fa fa-comment-dots me-1 text-primary"></i> {{ __('Trainee Notes') }}:
                                     </div>
-                                @endforeach
+                                    <div class="text-white fs-6">{{ $checkin->notes }}</div>
+                                </div>
                             </div>
-                        @else
-                            <div class="text-muted fs-7 italic">{{ __('No photos uploaded for this check-in session.') }}</div>
+                        @endif
+
+                        @if($checkin->coach_notes)
+                            <div class="{{ $checkin->notes ? 'col-md-6' : 'col-12' }}">
+                                <div class="coach-feedback-box">
+                                    <div
+                                        class="fw-bold text-info fs-7 mb-1 d-flex align-items-center justify-content-between">
+                                        <span><i class="fa fa-user-ninja me-1 text-info"></i> {{ __('Coach Feedback') }}:</span>
+                                        @if($checkin->coach)
+                                            <small class="text-muted">({{ $checkin->coach->name }})</small>
+                                        @endif
+                                    </div>
+                                    <div class="text-white fs-6 fw-semibold">{{ $checkin->coach_notes }}</div>
+                                </div>
+                            </div>
                         @endif
                     </div>
-                </div>
 
-                <!-- Modal for Editing Coach Notes -->
-                @if($authUser->user_type != 2)
-                    <div class="modal fade" id="coachNotesModal_{{ $checkin->id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content bg-dark text-white border border-secondary">
-                                <div class="modal-header border-secondary">
-                                    <h5 class="modal-header-title text-info fw-bold">
-                                        <i class="fa fa-user-ninja me-2"></i>{{ __('Coach Feedback for Check-in') }} ({{ $checkin->checkin_date->format('Y-m-d') }})
-                                    </h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!-- Photos Grid -->
+                    @if($checkin->photos->count() > 0)
+                        <div class="row g-3">
+                            @foreach($checkin->photos as $photo)
+                                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                    <div class="photo-thumb-wrapper">
+                                        <img src="{{ $photo->photo_url }}" class="photo-thumb-img" alt="Progress Photo"
+                                             data-bs-toggle="modal" data-bs-target="#lightboxModal"
+                                             data-img-src="{{ $photo->photo_url }}"
+                                             data-date="{{ $checkin->checkin_date->format('Y-m-d') }}">
+
+                                        {{--                                        <div class="photo-overlay-actions">--}}
+                                        {{--                                            <form--}}
+                                        {{--                                                action="{{ route('system.trainee-progress.destroy-photo', $photo->id) }}"--}}
+                                        {{--                                                method="POST"--}}
+                                        {{--                                                onsubmit="return confirm('{{ __('Delete this photo?') }}')">--}}
+                                        {{--                                                @csrf--}}
+                                        {{--                                                @method('DELETE')--}}
+                                        {{--                                                <button type="submit"--}}
+                                        {{--                                                        class="btn btn-danger btn-icon btn-sm rounded-circle p-0"--}}
+                                        {{--                                                        style="width:26px; height:26px;">--}}
+                                        {{--                                                    <i class="fa fa-times fs-8"></i>--}}
+                                        {{--                                                </button>--}}
+                                        {{--                                            </form>--}}
+                                        {{--                                        </div>--}}
+                                    </div>
                                 </div>
-                                <form action="{{ route('system.trainee-progress.update-notes', $checkin->id) }}" method="POST">
-                                    @csrf
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">{{ __('Coach Feedback / Notes') }}</label>
-                                            <textarea name="coach_notes" class="form-control form-control-solid" rows="4" placeholder="{{ __('Provide guidelines or critique on trainee form/progress...') }}">{{ $checkin->coach_notes }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer border-secondary">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                                        <button type="submit" class="btn btn-info fw-bold">{{ __('Save Feedback') }}</button>
-                                    </div>
-                                </form>
+                            @endforeach
+                        </div>
+                    @else
+                        <div
+                            class="text-muted fs-7 italic">{{ __('No photos uploaded for this check-in session.') }}</div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Modal for Editing Coach Notes -->
+            @if($authUser->user_type != 2)
+                <div class="modal fade" id="coachNotesModal_{{ $checkin->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-dark text-white border border-secondary">
+                            <div class="modal-header border-secondary">
+                                <h5 class="modal-header-title text-info fw-bold">
+                                    <i class="fa fa-user-ninja me-2"></i>{{ __('Coach Feedback for Check-in') }}
+                                    ({{ $checkin->checkin_date->format('Y-m-d') }})
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                             </div>
+                            <form action="{{ route('system.trainee-progress.update-notes', $checkin->id) }}"
+                                  method="POST">
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">{{ __('Coach Feedback / Notes') }}</label>
+                                        <textarea name="coach_notes" class="form-control form-control-solid" rows="4"
+                                                  placeholder="{{ __('Provide guidelines or critique on trainee form/progress...') }}">{{ $checkin->coach_notes }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-secondary">
+                                    <button type="button" class="btn btn-light"
+                                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                                    <button type="submit"
+                                            class="btn btn-info fw-bold">{{ __('Save Feedback') }}</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                @endif
-            @endforeach
-        </div>
-    @endif
+                </div>
+            @endif
+        @empty
+            <div class="progress-card p-8 text-center">
+                <div class="mb-4">
+                    <i class="fa fa-camera-retro fs-3x text-muted opacity-50"></i>
+                </div>
+                <h4 class="text-white fw-bold">{{ __('No progress check-ins recorded yet') }}</h4>
+                <p class="text-gray-400 max-w-500px mx-auto mb-4">
+                    {{ __('Upload weekly check-in photos and track body measurements over time.') }}
+                </p>
+                <button class="btn btn-primary fw-bold" data-bs-toggle="collapse" data-bs-target="#newCheckinCollapse">
+                    <i class="fa fa-plus me-1"></i> {{ __('Create First Check-in') }}
+                </button>
+            </div>
+        @endforelse
+    </div>
+
 
 </div>
 
@@ -550,7 +570,7 @@
                 });
                 html += '</div>';
             } else {
-                html += '<div class="text-muted fs-7">{{ __("No photos recorded.") }}</div>';
+                html += '<div class="text-muted fs-7">{{ __("No  photos recorded.") }}</div>';
             }
 
             contentEl.innerHTML = html;

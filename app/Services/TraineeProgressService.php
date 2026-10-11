@@ -6,7 +6,13 @@ use App\Models\Trainee;
 use App\Models\TraineeProgressCheckin;
 use App\Models\TraineeProgressPhoto;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
 
 class TraineeProgressService extends BaseService
 {
@@ -40,7 +46,51 @@ class TraineeProgressService extends BaseService
     }
 
     /**
-     * Store a new check-in with optional photo uploads.
+     * Process image payload (UploadedFile or base64 data string) into WebP format with 75% quality scaling.
+     * Prevents raw base64 storage without passing through the compression service.
+     */
+    public function processAndCompressToWebp($imageInput): ?string
+    {
+        try {
+            $manager = new ImageManager(new Driver());
+            $img = null;
+
+            if ($imageInput instanceof UploadedFile) {
+                if (!$imageInput->isValid()) {
+                    return null;
+                }
+                $img = $manager->decodePath($imageInput->getRealPath());
+            } elseif (is_string($imageInput)) {
+                $data = trim($imageInput);
+                if (str_starts_with($data, 'data:image')) {
+                    $img = $manager->decodeDataUri($data);
+                } else {
+                    $img = $manager->decodeBase64($data);
+                }
+            } else {
+                return null;
+            }
+
+            if (!$img) {
+                return null;
+            }
+
+            // WebP 75% scaling compression
+            $encodedWebp = $img->encode(new WebpEncoder(75));
+            $filename = 'progress_' . Str::random(16) . '.webp';
+            $relativePath = 'progress_photos/' . $filename;
+
+            Storage::disk('public')->put($relativePath, (string) $encodedWebp);
+
+            return $relativePath;
+        } catch (\Exception $e) {
+            Log::error('WebP 75% Compression Service Exception: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Store a new check-in with photos (handles multipart files & base64 payloads).
      */
     public function storeCheckin(array $data, User $authUser, $photoFiles = [])
     {
@@ -71,17 +121,29 @@ class TraineeProgressService extends BaseService
             'coach_notes'  => !empty($data['coach_notes']) ? $data['coach_notes'] : null,
         ]);
 
-        // Upload photos if provided
+        // Process multipart file uploads through WebP 75% scaling compression service
         if (!empty($photoFiles) && is_array($photoFiles)) {
             foreach ($photoFiles as $index => $file) {
-                if ($file && $file->isValid()) {
-                    $filename = 'progress_' . $checkin->id . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-                    $path = $file->storeAs('progress_photos', $filename, 'public');
-
+                $relativePath = $this->processAndCompressToWebp($file);
+                if ($relativePath) {
                     TraineeProgressPhoto::create([
                         'checkin_id' => $checkin->id,
-                        'photo_path' => $path,
+                        'photo_path' => $relativePath,
                         'caption'    => !empty($data['captions'][$index]) ? $data['captions'][$index] : null,
+                    ]);
+                }
+            }
+        }
+
+        // Process base64 payload array if passed (e.g. camera capture)
+        if (!empty($data['photos_base64']) && is_array($data['photos_base64'])) {
+            foreach ($data['photos_base64'] as $index => $b64String) {
+                $relativePath = $this->processAndCompressToWebp($b64String);
+                if ($relativePath) {
+                    TraineeProgressPhoto::create([
+                        'checkin_id' => $checkin->id,
+                        'photo_path' => $relativePath,
+                        'caption'    => !empty($data['captions_base64'][$index]) ? $data['captions_base64'][$index] : null,
                     ]);
                 }
             }

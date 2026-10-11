@@ -159,6 +159,33 @@
       class="app-default" @if(lang()=='ar' ) lang="ar" direction="rtl" style="direction: rtl;" @else lang="en"
       direction="ltr" @endif>
 
+@if(session()->has('impersonator_coach_id'))
+    <div class="alert alert-warning d-flex align-items-center justify-content-between p-3 m-0 rounded-0 border-0 shadow-sm"
+         style="position: sticky; top: 0; z-index: 99999; background: linear-gradient(90deg, #ffc700 0%, #f1bc00 100%); color: #181c32;">
+        <div class="d-flex align-items-center gap-3 ps-4">
+            <span class="svg-icon svg-icon-2x svg-icon-dark">
+                <i class="ki-duotone ki-eye fs-1 text-dark">
+                    <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                </i>
+            </span>
+            <div class="d-flex flex-column">
+                <span class="fw-bolder fs-6 text-dark">
+                    {{ __('Viewing Portal as Trainee:') }}
+                    <span class="badge badge-dark fs-7 px-2 py-1 ms-1">{{ session('impersonated_trainee_name', optional(Auth::guard('user')->user())->name) }}</span>
+                </span>
+                <span class="fs-8 text-dark opacity-75">{{ __('You are viewing the exact UI, workout plan, and nutrition from this trainee\'s perspective.') }}</span>
+            </div>
+        </div>
+        <div class="pe-4">
+            <a href="{{ route('system.impersonate.leave') }}" class="btn btn-sm btn-dark fw-bold rounded-pill shadow-sm d-flex align-items-center gap-2">
+                <i class="ki-duotone ki-exit-right fs-4">
+                    <span class="path1"></span><span class="path2"></span>
+                </i>
+                <span>{{ __('Return to Coach Account') }}</span>
+            </a>
+        </div>
+    </div>
+@endif
 
 <!--begin::App-->
 <div class="d-flex flex-column flex-root app-root" id="kt_app_root">

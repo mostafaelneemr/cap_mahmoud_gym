@@ -43,7 +43,7 @@
                 <div class="d-flex flex-row-fluid flex-column justify-content-between">
                     <!--begin: Aside header-->
                     <a href="#" class="flex-column-auto mt-5">
-                        <img src="assets/media/logos/logo-letter-1.png" class="max-h-70px" alt="" />
+                        <img src="assets/media/logos/logo_shaltout.png" class="max-h-70px" alt="" />
                     </a>
                     <!--end: Aside header-->
                     <!--begin: Aside content-->

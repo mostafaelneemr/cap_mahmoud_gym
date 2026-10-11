@@ -49,7 +49,9 @@ Route::controller('TraineeController')->prefix('trainee')->group(function () {
     Route::get('/get-workout/{id}', 'getWorkout')->name('system.trainee.get-workout');
     Route::post('/{id}/reset-plan', 'resetPlan')->name('system.trainee.reset-plan');
     Route::post('/{id}/restore-plan', 'restorePlan')->name('system.trainee.restore-plan');
+    Route::get('/{id}/impersonate', 'impersonate')->name('system.trainee.impersonate');
 });
+Route::get('/impersonate/leave', 'TraineeController@leaveImpersonate')->name('system.impersonate.leave');
 Route::resource('/trainee', 'TraineeController', ['as' => 'system']); //
 
 Route::controller('TraineeProgressController')->prefix('trainee-progress')->group(function () {

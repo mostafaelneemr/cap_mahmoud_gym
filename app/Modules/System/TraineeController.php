@@ -129,4 +129,52 @@ class TraineeController extends SystemController
 
         return redirect()->back();
     }
+
+    /**
+     * Start impersonating a trainee to view the portal from their perspective.
+     */
+    public function impersonate($id)
+    {
+        $currentAuthUser = Auth::guard('user')->user();
+
+        if ($currentAuthUser->user_type != 1 && $currentAuthUser->user_type !== null) {
+            flash_msg('danger', __('You do not have permission to view as trainee.'));
+            return redirect()->back();
+        }
+
+        $trainee = Trainee::with('user')->find($id);
+        if (!$trainee || !$trainee->user) {
+            flash_msg('danger', __('Trainee user account not found.'));
+            return redirect()->back();
+        }
+
+        session([
+            'impersonator_coach_id'     => $currentAuthUser->id,
+            'impersonator_return_url'   => route('system.trainee.show', $trainee->id),
+            'impersonated_trainee_name' => $trainee->user->name ?? __('Trainee'),
+        ]);
+
+        Auth::guard('user')->loginUsingId($trainee->user_id);
+
+        flash_msg('info', __('Now viewing as :name', ['name' => $trainee->user->name]));
+        return redirect()->route('system.dashboard.trainer');
+    }
+
+    /**
+     * Exit trainee impersonation and restore original Coach session.
+     */
+    public function leaveImpersonate()
+    {
+        $coachId = session()->pull('impersonator_coach_id');
+        $returnUrl = session()->pull('impersonator_return_url', route('system.trainee.index'));
+        session()->forget('impersonated_trainee_name');
+
+        if ($coachId) {
+            Auth::guard('user')->loginUsingId($coachId);
+            flash_msg('success', __('Returned to coach account successfully.'));
+            return redirect($returnUrl);
+        }
+
+        return redirect()->route('system.dashboard');
+    }
 }

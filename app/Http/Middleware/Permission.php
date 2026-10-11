@@ -38,7 +38,8 @@ class Permission
                     'system.trainee-progress.compare',
                     'logout',
                     'auth.google',
-                    'auth.google.callback'
+                    'auth.google.callback',
+                    'system.impersonate.leave'
                 ];
                 if (in_array(Route::currentRouteName(), $whitelist)) {
                     return $next($request);

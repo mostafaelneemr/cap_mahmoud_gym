@@ -73,18 +73,12 @@ class WebsiteController extends SystemController
             return $this->fail(__('Invalid section type specified.'));
         }
 
-        $data = $request->except(['_token', 'image']);
+        $data = $request->except(['_token', 'image', 'image_cropped']);
 
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $uploadDir = public_path('upload/posts');
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
-            $imageFile = $request->file('image');
-            $nameGen = hexdec(uniqid()) . '.' . $imageFile->getClientOriginalExtension();
-            $imageFile->move($uploadDir, $nameGen);
-            $data['image'] = 'upload/posts/' . $nameGen;
+        if ($request->filled('image_cropped')) {
+            $data['image'] = saveCompressedWebpImage($request->input('image_cropped'), 'upload/posts');
+        } elseif ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $data['image'] = saveCompressedWebpImage($request->file('image'), 'upload/posts');
         }
 
         Post::updateOrCreate(['type' => $type], $data);
@@ -128,23 +122,12 @@ class WebsiteController extends SystemController
             $data['rating'] = $request->input('rate');
         }
 
-        $uploadDir = public_path('upload/posts');
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $imageFile = $request->file('image');
-            $nameGen = hexdec(uniqid()) . '.' . $imageFile->getClientOriginalExtension();
-            $imageFile->move($uploadDir, $nameGen);
-            $data['image'] = 'upload/posts/' . $nameGen;
+            $data['image'] = saveCompressedWebpImage($request->file('image'), 'upload/posts');
         }
 
         if ($request->hasFile('extra_image') && $request->file('extra_image')->isValid()) {
-            $extraFile = $request->file('extra_image');
-            $nameGen = hexdec(uniqid()) . '.' . $extraFile->getClientOriginalExtension();
-            $extraFile->move($uploadDir, $nameGen);
-            $data['extra_image'] = 'upload/posts/' . $nameGen;
+            $data['extra_image'] = saveCompressedWebpImage($request->file('extra_image'), 'upload/posts');
         }
 
         PostItem::create($data);
@@ -181,23 +164,12 @@ class WebsiteController extends SystemController
                 $data['rating'] = $request->input('rate');
             }
 
-            $uploadDir = public_path('upload/posts');
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                $imageFile = $request->file('image');
-                $nameGen = hexdec(uniqid()) . '.' . $imageFile->getClientOriginalExtension();
-                $imageFile->move($uploadDir, $nameGen);
-                $data['image'] = 'upload/posts/' . $nameGen;
+                $data['image'] = saveCompressedWebpImage($request->file('image'), 'upload/posts');
             }
 
             if ($request->hasFile('extra_image') && $request->file('extra_image')->isValid()) {
-                $extraFile = $request->file('extra_image');
-                $nameGen = hexdec(uniqid()) . '.' . $extraFile->getClientOriginalExtension();
-                $extraFile->move($uploadDir, $nameGen);
-                $data['extra_image'] = 'upload/posts/' . $nameGen;
+                $data['extra_image'] = saveCompressedWebpImage($request->file('extra_image'), 'upload/posts');
             }
 
             $item->update($data);

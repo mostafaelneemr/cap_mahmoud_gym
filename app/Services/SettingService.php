@@ -69,20 +69,15 @@ class SettingService extends BaseService
                                 }
                             }
 
-                            // 📤 2. تجهيز ورفع الصورة الجديدة
+                            // 📤 2. تجهيز ورفع الصورة الجديدة المضغوطة WebP 75%
                             $file = $request->file($value->name);
-                            $name_gen = hexdec(uniqid()) . '.' . $file->getClientOriginalExtension();
-                            $save_url = 'upload/setting/' . $name_gen;
-                            $destinationPath = public_path($save_url);
+                            $save_url = saveCompressedWebpImage($file, 'upload/setting');
 
-                            // معالجة الصورة بـ Spatie Image
-                            $image = Image::load($file->getRealPath());
-
-                            if ($value->name === 'site_logo') {
-                                $image->width(230)->height(70);
+                            if (!$save_url) {
+                                $name_gen = hexdec(uniqid()) . '.' . $file->getClientOriginalExtension();
+                                $save_url = 'upload/setting/' . $name_gen;
+                                $file->move(public_path('upload/setting'), $name_gen);
                             }
-
-                            $image->save($destinationPath);
 
                             // 💾 3. تحديث قايمة البيانات بالمسار الجديد
                             Setting::where('name', $value->name)

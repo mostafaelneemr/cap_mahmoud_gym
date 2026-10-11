@@ -1,8 +1,8 @@
 <!--begin::Header-->
 <div id="kt_app_header" class="app-header d-flex flex-column flex-stack">
     <!--begin::Header main-->
-    <div class="d-flex flex-stack flex-grow-1"
-        style="padding: 10px 0;  @if(env('APP_ENV') == 'local') background-color: #FACC15; @elseif(env('APP_ENV') == 'test') background-color: #FACC15; @endif ">
+    <div class="d-flex flex-stack flex-grow-1" style="padding: 10px 0;
+        @if(env('APP_ENV') == 'local') background-color: #FACC15; @elseif(env('APP_ENV') == 'test') background-color: #FACC15; @endif ">
         <div class="app-header-logo d-flex align-items-center ps-lg-12" id="kt_app_header_logo">
             <!--begin::Sidebar toggle-->
             <div id="kt_app_sidebar_toggle"
@@ -21,7 +21,8 @@
             <!--begin::Logo-->
 
             <a href="{{route('system.dashboard')}}" class="brand-logo">
-                <img alt="Logo" src="{{ setting('logo') ?? '' }}" style="width:100%;height: 40px" />
+                <img alt="Logo" src="{{asset('logo/logo-white.jpeg')}}" class="theme-light-show" style="width:auto;height: 40px" />
+                <img alt="Logo" src="{{asset('logo/logo-dark.jpg')}}" class="theme-dark-show" style="width:auto;height: 40px" />
             </a>
             <!--end::Logo-->
         </div>
@@ -249,13 +250,11 @@
                     <!--begin::Menu item-->
                     @if(auth()->user()->user_type == 1 || auth()->user()->user_type == null)
                     <div class="menu-item px-5 my-1">
-
                         <a href="{{route('system.user.show-profile')}}" class="menu-link px-5">{{__('Profile')}}</a>
                     </div>
 
                     <div class="menu-item px-5 my-1">
-                        <a href="{{route('system.user.user-sessions')}}" class="menu-link px-5">{{__('Auth
-                            Sessions')}}</a>
+                        <a href="{{route('system.user.user-sessions')}}" class="menu-link px-5">{{__('Auth Sessions')}}</a>
                     </div>
                     @endif
                     <!--end::Menu item-->
