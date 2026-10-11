@@ -24,7 +24,7 @@
 
         .hero-section {
             background-image: linear-gradient(90deg, rgba(13, 13, 13, 0.95) 0%, rgba(13, 13, 13, 0.4) 60%, rgba(13, 13, 13, 0.1) 100%), url('images/hero-man.png');
-            background-position: center center;
+            background-position: right center;
             background-repeat: no-repeat;
             background-size: cover;
             margin: 0 20px 30px 20px;
