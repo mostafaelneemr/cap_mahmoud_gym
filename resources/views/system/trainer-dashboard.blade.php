@@ -463,7 +463,7 @@
                                 role="tab"
                                 aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
                             <span class="day-number">{{ $index + 1 }}</span>
-                            {{ $plan->display_day_name }}
+                            {{ $plan->day_name }}
                         </button>
                     </li>
                 @endforeach
@@ -476,7 +476,7 @@
                          role="tabpanel">
 
                         {{-- Warmup --}}
-                        @if($plan->warmup || $plan->warmup_ar)
+                        @if($plan->warmup)
                             <div class="warmup-section mb-5">
                                 <div class="section-label text-warning">
                                     <i class="fas fa-fire me-1"></i> {{ __('Warm Up') }}
@@ -508,7 +508,7 @@
                                                 <span class="exercise-index">{{ $exIndex + 1 }}</span>
                                             </td>
                                             <td>
-                                                <span class="exercise-name">{{ $exercise->display_name }}</span>
+                                                <span class="exercise-name">{{ $exercise->name }}</span>
                                             </td>
                                             <td>
                                                 @if($exercise->sets)
@@ -544,7 +544,7 @@
                                                 @if($exercise->internal_weight)
                                                     <span class="badge-metric badge-weight">
                                     <i class="fas fa-weight-hanging"></i>
-                                    {{ $exercise->internal_weight }}
+                                    {{ $exercise->internal_weight_display }}
                                 </span>
                                                 @else
                                                     <span class="text-muted">—</span>
@@ -564,7 +564,7 @@
                                                 @if($exercise->link)
                                                     <button type="button" class="video-link open-video-btn"
                                                             data-video-url="{{ $exercise->link }}"
-                                                            data-exercise-name="{{ $exercise->display_name }}">
+                                                            data-exercise-name="{{ $exercise->name }}">
                                                         <i class="fab fa-youtube"></i>
                                                         {{ __('Watch') }}
                                                     </button>
@@ -585,7 +585,7 @@
                         @endif
 
                         {{-- Post Workout --}}
-                        @if($plan->post_workout || $plan->post_workout_ar)
+                        @if($plan->post_workout)
                             <div class="post-workout-section">
                                 <div class="section-label text-primary">
                                     <i class="fas fa-flag-checkered me-1"></i> {{ __('Post Workout') }}

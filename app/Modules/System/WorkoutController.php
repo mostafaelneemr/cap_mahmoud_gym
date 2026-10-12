@@ -3,6 +3,7 @@
 namespace App\Modules\System;
 
 use App\Http\Requests\StoreExercisFormRequest;
+use App\Http\Requests\WorkoutFormRequest;
 use App\Repositories\Workout\WorkoutRepository;
 use App\Services\WorkoutService;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class WorkoutController extends SystemController
         return $this->view('workout.create', $this->workoutService->create($request));
     }
 
-    public function store(Request $request)
+    public function store(WorkoutFormRequest $request)
     {
         $workout = $this->workoutService->store($request);
         if ($workout) {
@@ -60,7 +61,7 @@ class WorkoutController extends SystemController
     public function storeDayExercises(StoreExercisFormRequest $request, $dayId, WorkoutRepository $workoutRepository)
     {
         $dayData = array_filter($request->only([
-            'day_name', 'day_name_ar', 'warmup', 'warmup_ar', 'post_workout', 'post_workout_ar'
+            'day_name', 'warmup', 'post_workout'
         ]), fn($v) => !is_null($v));
 
         $workoutRepository->syncDayExercises($dayId, $request->input('exercises', []), $dayData);

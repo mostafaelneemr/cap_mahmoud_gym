@@ -1,6 +1,7 @@
 @extends('system.layout')
 
 @section('header')
+    @include('system.workout.partials.exercise-table-styles')
     <style>
         /* ==========================================================================
            GYM TRENDY UI/UX - TRAINEE PROFILE & WORKOUT EDITOR
@@ -383,14 +384,14 @@
                             {{ $result->status == 'active' ? __('Active Trainee'):
                                 ($result->status == 'inactive' ? __('In-Active') : __('Expired')) }}</span>
 
-                        <a href="{{ route('system.trainee.impersonate', $result->id) }}" class="btn btn-sm btn-outline btn-outline-info btn-active-light-info fw-bold rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1" title="{{ __('View portal from trainee perspective') }}">
-                            <i class="ki-duotone ki-eye fs-6 text-info">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                            </i>
-                            <span class="fs-8">{{ __('View as Trainee') }}</span>
-                        </a>
+{{--                        <a href="{{ route('system.trainee.impersonate', $result->id) }}" class="btn btn-sm btn-outline btn-outline-info btn-active-light-info fw-bold rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1" title="{{ __('View portal from trainee perspective') }}">--}}
+{{--                            <i class="ki-duotone ki-eye fs-6 text-info">--}}
+{{--                                <span class="path1"></span>--}}
+{{--                                <span class="path2"></span>--}}
+{{--                                <span class="path3"></span>--}}
+{{--                            </i>--}}
+{{--                            <span class="fs-8">{{ __('View as Trainee') }}</span>--}}
+{{--                        </a>--}}
                     </div>
                 </div>
 
@@ -498,20 +499,20 @@
     <div class="tab-content" id="myTabContent">
 
         <!-- WORKOUT PROGRAM TAB -->
-        <div class="tab-pane fade show active" id="kt_staff_programs_tab" role="tabpanel">
+        <div class="tab-pane fade show active wb-scope" id="kt_staff_programs_tab" role="tabpanel">
             {{-- ===== ACTIVE WORKOUT PLANS ===== --}}
             @if($result->activeWorkoutPlans->count() > 0)
-                <div class="card mb-8 rounded-4 shadow-sm border">
-                    <div class="card-header border-bottom border-gray-200 pt-6 pb-5">
+                <div class="card mb-8 rounded-4 shadow-sm border" style="background: var(--wb-surface-solid); border-color: var(--wb-row-border) !important;">
+                    <div class="card-header border-bottom pt-6 pb-5" style="border-color: var(--wb-row-border) !important; background: var(--wb-head-bg);">
                         <div class="card-title">
-                            <h2 class="text-gray-900 fw-bold m-0 d-flex align-items-center gap-2">
-                                <i class="fas fa-dumbbell text-primary"></i>
+                            <h2 class="fw-bold m-0 d-flex align-items-center gap-2" style="color: var(--wb-text);">
+                                <i class="fas fa-dumbbell" style="color: var(--wb-accent);"></i>
                                 <span>{{ __('Current Workout Program') }}</span>
                                 <span class="badge badge-light-success fs-8 ms-2">{{ __('Active') }}</span>
                             </h2>
                         </div>
                     </div>
-                    <div class="card-body p-6 p-lg-8">
+                    <div class="card-body p-6 p-lg-8" style="background: transparent;">
                         <!-- Days Nav Tabs -->
                         <ul class="nav nav-pills nav-pills-custom mb-8 d-flex flex-wrap gap-4" id="pills-tab" role="tablist">
                             @foreach($result->activeWorkoutPlans as $index => $plan)
@@ -521,10 +522,10 @@
                                        href="#plan_day_{{ $plan->id }}"
                                        style="min-width: 140px; min-height: 110px;">
                                         <div class="nav-icon mb-3">
-                                            <i class="fas fa-calendar-day fs-2x text-info"></i>
+                                            <i class="fas fa-calendar-day fs-2x" style="color: var(--wb-accent);"></i>
                                         </div>
                                         <div>
-                                            <span class="day-title-text fw-bold fs-5 d-block">{{ $plan->display_day_name }}</span>
+                                            <span class="day-title-text fw-bold fs-5 d-block">{{ $plan->day_name ?? '' }}</span>
                                         </div>
                                     </a>
                                 </li>
@@ -538,172 +539,197 @@
 
                                     {!! Form::open(['url' => route('system.workout.updateDay', $plan->id), 'method' => 'POST', 'class' => 'workout-day-form']) !!}
 
-                                    <div class="p-6 rounded-4 border">
-                                        <div class="d-flex justify-content-between align-items-center mb-6 pb-4 border-bottom border-gray-200">
-                                            <h3 class="fw-bolder text-gray-900 m-0 d-flex align-items-center gap-2">
-                                                <span class="badge badge-light-primary">{{ $plan->display_day_name }}</span>
-                                                <span>@lang('Exercises List')</span>
-                                            </h3>
-                                        </div>
-
-                                        <!-- Day Details (Bilingual) -->
-                                        <div class="row g-4 mb-6 pb-6 border-bottom border-gray-200">
-                                            <div class="col-md-6">
-                                                <label class="form-label fs-7 fw-bold text-gray-700">@lang('Day Name (English)')</label>
-                                                <input type="text" name="day_name" value="{{ $plan->day_name }}" class="form-control form-control-solid" placeholder="e.g. Day {{ $index + 1 }}: Chest & Triceps">
-                                                <div class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fs-7 fw-bold text-gray-700">اسم اليوم التدريبي (عربي)</label>
-                                                <input type="text" name="day_name_ar" value="{{ $plan->day_name_ar }}" class="form-control form-control-solid" dir="rtl" placeholder="مثال: اليوم {{ $index + 1 }}: صدر وترايسبس">
-                                                <div class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fs-7 fw-bold text-warning">@lang('Warmup (English)')</label>
-                                                <textarea name="warmup" class="form-control form-control-solid" rows="2" placeholder="Warm up instructions in English...">{{ $plan->warmup }}</textarea>
-                                                <div class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fs-7 fw-bold text-warning">الإحماء (عربي)</label>
-                                                <textarea name="warmup_ar" class="form-control form-control-solid" dir="rtl" rows="2" placeholder="تعليمات الإحماء بالعربي...">{{ $plan->warmup_ar }}</textarea>
-                                                <div class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fs-7 fw-bold text-primary">@lang('Post-Workout (English)')</label>
-                                                <textarea name="post_workout" class="form-control form-control-solid" rows="2" placeholder="Cool down instructions in English...">{{ $plan->post_workout }}</textarea>
-                                                <div class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fs-7 fw-bold text-primary">التهدئة / ما بعد التمرين (عربي)</label>
-                                                <textarea name="post_workout_ar" class="form-control form-control-solid" dir="rtl" rows="2" placeholder="تعليمات التهدئة والاستشفاء بالعربي...">{{ $plan->post_workout_ar }}</textarea>
-                                                <div class="invalid-feedback"></div>
+                                    <div class="wb-day">
+                                        <div class="wb-day__header">
+                                            <span class="wb-day__badge">D{{ $index + 1 }}</span>
+                                            <div>
+                                                <h2 class="wb-day__title">{{ $plan->day_name ?? '' }}</h2>
+                                                <p class="wb-day__subtitle">@lang('Exercises list and training instructions')</p>
                                             </div>
                                         </div>
 
-                                        <div id="exercises-container-day-{{ $plan->id }}" data-exercise-index="{{ $plan->exercises->count() > 0 ? $plan->exercises->count() : 1 }}">
+                                        <div class="mb-6">
+                                            <label class="form-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;">@lang('Day Name')</label>
+                                            <input type="text" name="day_name" value="{{ $plan->day_name }}" class="form-control form-control-solid" maxlength="100"
+                                                   placeholder="e.g. Day {{ $index + 1 }}: Chest & Triceps"/>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
 
-                                            @if($plan->exercises->count() > 0)
-                                                @foreach($plan->exercises as $exIndex => $exercise)
-                                                    @php $currentExIdx = $exIndex + 1; @endphp
-                                                    <div class="p-4 mb-4 rounded border border-gray-300 bg-white exercise-row">
-                                                        <input type="hidden" name="exercises[ex_{{ $currentExIdx }}][exercise_id]" value="{{ $exercise->id }}">
+                                        <div class="mb-2">
+                                            <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-fire text-warning"></i>@lang('Warmup')</label>
+                                            <textarea name="warmup" class="form-control form-control-solid" rows="2"
+                                                      placeholder="@lang('Warm up instructions...')">{{ $plan->warmup }}</textarea>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
 
-                                                        <div class="row g-3 mb-3">
-                                                            <div class="col-md-6">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
-                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][name]" value="{{ $exercise->name }}" class="form-control form-control-solid" placeholder="e.g. Incline Bench Press">
-                                                                <div class="invalid-feedback"></div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <label class="form-label fs-7 fw-bold text-gray-700">اسم التمرين (عربي)</label>
-                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][name_ar]" value="{{ $exercise->name_ar }}" class="form-control form-control-solid" dir="rtl" placeholder="مثال: بنش مائل بالبار">
-                                                                <div class="invalid-feedback"></div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row g-2 align-items-end">
-                                                            <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold">@lang('Sets')</label>
-                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][sets]" value="{{ $exercise->sets }}" class="form-control form-control-solid text-center">
-                                                                <div class="invalid-feedback"></div>
-                                                            </div>
-                                                            <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold">@lang('Reps')</label>
-                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][reps]" value="{{ $exercise->reps }}" class="form-control form-control-solid text-center">
-                                                                <div class="invalid-feedback"></div>
-                                                            </div>
-                                                            <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold">@lang('Rest')</label>
-                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][rest]" value="{{ $exercise->rest }}" class="form-control form-control-solid text-center">
-                                                                <div class="invalid-feedback"></div>
-                                                            </div>
-                                                            <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold">@lang('Weight')</label>
-                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][weight]" value="{{ $exercise->internal_weight }}" class="form-control form-control-solid text-center">
-                                                                <div class="invalid-feedback"></div>
-                                                            </div>
-                                                            <div class="col-6 col-md-1">
-                                                                <label class="form-label fs-7 fw-bold">@lang('Tempo')</label>
-                                                                <input type="text" name="exercises[ex_{{ $currentExIdx }}][tempo]" value="{{ $exercise->tempo }}" class="form-control form-control-solid text-center">
-                                                                <div class="invalid-feedback"></div>
-                                                            </div>
-                                                            <div class="col-12 col-md-5">
-                                                                <label class="form-label fs-7 fw-bold">@lang('Video Tutorial Link')</label>
-                                                                <input type="url" name="exercises[ex_{{ $currentExIdx }}][link]" value="{{ $exercise->link }}" class="form-control form-control-solid" placeholder="https://youtube.com/...">
-                                                                <div class="invalid-feedback"></div>
-                                                            </div>
-                                                            <div class="col-12 col-md-2 d-flex justify-content-end">
-                                                                <button type="button" class="btn btn-icon btn-light-danger delete-exercise-btn w-100 rounded-3" title="@lang('Delete Exercise')">
-                                                                    <i class="fas fa-trash fs-5"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            @else
-                                                <div class="p-4 mb-4 rounded border border-gray-300 bg-white exercise-row">
-                                                    <div class="row g-3 mb-3">
-                                                        <div class="col-md-6">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
-                                                            <input type="text" name="exercises[ex_1][name]" class="form-control form-control-solid" placeholder="e.g. Incline Bench Press">
-                                                            <div class="invalid-feedback"></div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label fs-7 fw-bold text-gray-700">اسم التمرين (عربي)</label>
-                                                            <input type="text" name="exercises[ex_1][name_ar]" class="form-control form-control-solid" dir="rtl" placeholder="مثال: بنش مائل بالبار">
-                                                            <div class="invalid-feedback"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row g-2 align-items-end">
-                                                        <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold">@lang('Sets')</label>
-                                                            <input type="text" name="exercises[ex_1][sets]" class="form-control form-control-solid text-center">
-                                                            <div class="invalid-feedback"></div>
-                                                        </div>
-                                                        <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold">@lang('Reps')</label>
-                                                            <input type="text" name="exercises[ex_1][reps]" class="form-control form-control-solid text-center">
-                                                            <div class="invalid-feedback"></div>
-                                                        </div>
-                                                        <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold">@lang('Rest')</label>
-                                                            <input type="text" name="exercises[ex_1][rest]" class="form-control form-control-solid text-center">
-                                                            <div class="invalid-feedback"></div>
-                                                        </div>
-                                                        <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold">@lang('Weight')</label>
-                                                            <input type="text" name="exercises[ex_1][weight]" class="form-control form-control-solid text-center">
-                                                            <div class="invalid-feedback"></div>
-                                                        </div>
-                                                        <div class="col-6 col-md-1">
-                                                            <label class="form-label fs-7 fw-bold">@lang('Tempo')</label>
-                                                            <input type="text" name="exercises[ex_1][tempo]" class="form-control form-control-solid text-center">
-                                                            <div class="invalid-feedback"></div>
-                                                        </div>
-                                                        <div class="col-12 col-md-5">
-                                                            <label class="form-label fs-7 fw-bold">@lang('Video Tutorial Link')</label>
-                                                            <input type="url" name="exercises[ex_1][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
-                                                            <div class="invalid-feedback"></div>
-                                                        </div>
-                                                        <div class="col-12 col-md-2 d-flex justify-content-end">
-                                                            <button type="button" class="btn btn-icon btn-light-danger delete-exercise-btn w-100 rounded-3" title="@lang('Delete Exercise')">
-                                                                <i class="fas fa-trash fs-5"></i>
-                                                            </button>
-                                                        </div>
+                                        <section class="wb-exercises" aria-label="@lang('Exercises')">
+                                            <header class="wb-exercises__header">
+                                                <div class="wb-exercises__title">
+                                                    <span class="wb-exercises__icon"><i class="fas fa-dumbbell"></i></span>
+                                                    <div>
+                                                        <h3>@lang('Exercises')</h3>
+                                                        <p>@lang('Sets, reps, rest, tempo and up to 4 target weights')</p>
                                                     </div>
                                                 </div>
-                                            @endif
+                                                <span class="wb-count"><span class="wb-count__num" id="exercise-count-day-{{ $plan->id }}">{{ $plan->exercises->count() > 0 ? $plan->exercises->count() : 1 }}</span> @lang('Exercises')</span>
+                                            </header>
+
+                                            <div class="wb-table-wrap">
+                                                <table class="wb-table" id="exercises-container-day-{{ $plan->id }}" data-exercise-index="{{ $plan->exercises->count() > 0 ? $plan->exercises->count() : 1 }}">
+                                                    <colgroup>
+                                                        <col class="wb-col-idx">
+                                                        <col class="wb-col-name">
+                                                        <col class="wb-col-num">
+                                                        <col class="wb-col-num">
+                                                        <col class="wb-col-num">
+                                                        <col class="wb-col-tempo">
+                                                        <col class="wb-col-weights">
+                                                        <col class="wb-col-action">
+                                                    </colgroup>
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">@lang('Exercise')</th>
+                                                            <th scope="col" class="text-center">@lang('Sets')</th>
+                                                            <th scope="col" class="text-center">@lang('Reps')</th>
+                                                            <th scope="col" class="text-center">@lang('Rest')</th>
+                                                            <th scope="col" class="text-center">@lang('Tempo')</th>
+                                                            <th scope="col">@lang('Weights')<span class="wb-th-hint">max 4</span></th>
+                                                            <th scope="col"><span class="visually-hidden">@lang('Actions')</span></th>
+                                                        </tr>
+                                                    </thead>
+                                                    @if($plan->exercises->count() > 0)
+                                                        @foreach($plan->exercises as $exIndex => $exercise)
+                                                            @php $currentExIdx = $exIndex + 1; @endphp
+                                                            <tbody class="exercise-row wb-row-enter">
+                                                                <input type="hidden" name="exercises[ex_{{ $currentExIdx }}][exercise_id]" value="{{ $exercise->id }}">
+                                                                <tr class="wb-row-main">
+                                                                    <td class="wb-cell-idx" rowspan="2"><span class="wb-idx" aria-hidden="true"></span></td>
+                                                                    <td class="wb-cell-name" data-label="@lang('Exercise')">
+                                                                        <input type="text" name="exercises[ex_{{ $currentExIdx }}][name]" value="{{ $exercise->name }}" class="form-control wb-name" maxlength="150" autocomplete="off"
+                                                                               placeholder="@lang('e.g. Incline Bench Press')" aria-label="@lang('Exercise Name')">
+                                                                        <div class="invalid-feedback"></div>
+                                                                    </td>
+                                                                    <td data-label="@lang('Sets')">
+                                                                        <input type="text" name="exercises[ex_{{ $currentExIdx }}][sets]" value="{{ $exercise->sets }}" class="form-control wb-num" maxlength="50" inputmode="numeric"
+                                                                               placeholder="4" aria-label="@lang('Sets')">
+                                                                    </td>
+                                                                    <td data-label="@lang('Reps')">
+                                                                        <input type="text" name="exercises[ex_{{ $currentExIdx }}][reps]" value="{{ $exercise->reps }}" class="form-control wb-num" maxlength="50"
+                                                                               placeholder="8-12" aria-label="@lang('Reps')">
+                                                                    </td>
+                                                                    <td data-label="@lang('Rest')">
+                                                                        <input type="text" name="exercises[ex_{{ $currentExIdx }}][rest]" value="{{ $exercise->rest }}" class="form-control wb-num" maxlength="50"
+                                                                               placeholder="90s" aria-label="@lang('Rest')">
+                                                                    </td>
+                                                                    <td data-label="@lang('Tempo')">
+                                                                        <input type="text" name="exercises[ex_{{ $currentExIdx }}][tempo]" value="{{ $exercise->tempo }}" class="form-control wb-num" maxlength="50"
+                                                                               placeholder="3-0-1" aria-label="@lang('Tempo')">
+                                                                    </td>
+                                                                    <td class="wb-cell-weights" data-label="@lang('Weights') (max 4)">
+                                                                        @include('system.workout.partials.weight-inputs', [
+                                                                            'name' => "exercises[ex_{$currentExIdx}][internal_weight]",
+                                                                            'weights' => $exercise->internal_weight
+                                                                        ])
+                                                                    </td>
+                                                                    <td class="wb-cell-action" rowspan="2">
+                                                                        <button type="button" class="wb-delete delete-exercise-btn" title="@lang('Delete Exercise')" aria-label="@lang('Delete Exercise')">
+                                                                            <i class="fas fa-trash-alt"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="wb-row-detail">
+                                                                    <td data-label="@lang('Video Link')">
+                                                                        <span class="wb-mini-label">@lang('Video Link')</span>
+                                                                        <div class="wb-input-icon">
+                                                                            <i class="fab fa-youtube"></i>
+                                                                            <input type="url" name="exercises[ex_{{ $currentExIdx }}][link]" value="{{ $exercise->link }}" class="form-control" maxlength="255"
+                                                                                   placeholder="https://youtube.com/..." aria-label="@lang('Video Link')">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td colspan="5" data-label="@lang('Coach Notes')">
+                                                                        <span class="wb-mini-label">@lang('Coach Notes')</span>
+                                                                        <textarea name="exercises[ex_{{ $currentExIdx }}][notes_en]" rows="1" class="form-control wb-notes"
+                                                                                  placeholder="@lang('Form cues, progression, tips...')" aria-label="@lang('Coach Notes')">{{ $exercise->notes_en }}</textarea>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        @endforeach
+                                                    @else
+                                                        <tbody class="exercise-row wb-row-enter">
+                                                            <tr class="wb-row-main">
+                                                                <td class="wb-cell-idx" rowspan="2"><span class="wb-idx" aria-hidden="true"></span></td>
+                                                                <td class="wb-cell-name" data-label="@lang('Exercise')">
+                                                                    <input type="text" name="exercises[ex_1][name]" class="form-control wb-name" maxlength="150" autocomplete="off"
+                                                                           placeholder="@lang('e.g. Incline Bench Press')" aria-label="@lang('Exercise Name')">
+                                                                    <div class="invalid-feedback"></div>
+                                                                </td>
+                                                                <td data-label="@lang('Sets')">
+                                                                    <input type="text" name="exercises[ex_1][sets]" class="form-control wb-num" maxlength="50" inputmode="numeric"
+                                                                           placeholder="4" aria-label="@lang('Sets')">
+                                                                </td>
+                                                                <td data-label="@lang('Reps')">
+                                                                    <input type="text" name="exercises[ex_1][reps]" class="form-control wb-num" maxlength="50"
+                                                                           placeholder="8-12" aria-label="@lang('Reps')">
+                                                                </td>
+                                                                <td data-label="@lang('Rest')">
+                                                                    <input type="text" name="exercises[ex_1][rest]" class="form-control wb-num" maxlength="50"
+                                                                           placeholder="90s" aria-label="@lang('Rest')">
+                                                                </td>
+                                                                <td data-label="@lang('Tempo')">
+                                                                    <input type="text" name="exercises[ex_1][tempo]" class="form-control wb-num" maxlength="50"
+                                                                           placeholder="3-0-1" aria-label="@lang('Tempo')">
+                                                                </td>
+                                                                <td class="wb-cell-weights" data-label="@lang('Weights') (max 4)">
+                                                                    @include('system.workout.partials.weight-inputs', [
+                                                                        'name' => "exercises[ex_1][internal_weight]",
+                                                                        'weights' => []
+                                                                    ])
+                                                                </td>
+                                                                <td class="wb-cell-action" rowspan="2">
+                                                                    <button type="button" class="wb-delete delete-exercise-btn" title="@lang('Delete Exercise')" aria-label="@lang('Delete Exercise')">
+                                                                        <i class="fas fa-trash-alt"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="wb-row-detail">
+                                                                <td data-label="@lang('Video Link')">
+                                                                    <span class="wb-mini-label">@lang('Video Link')</span>
+                                                                    <div class="wb-input-icon">
+                                                                        <i class="fab fa-youtube"></i>
+                                                                        <input type="url" name="exercises[ex_1][link]" class="form-control" maxlength="255"
+                                                                               placeholder="https://youtube.com/..." aria-label="@lang('Video Link')">
+                                                                    </div>
+                                                                </td>
+                                                                <td colspan="5" data-label="@lang('Coach Notes')">
+                                                                    <span class="wb-mini-label">@lang('Coach Notes')</span>
+                                                                    <textarea name="exercises[ex_1][notes_en]" rows="1" class="form-control wb-notes"
+                                                                              placeholder="@lang('Form cues, progression, tips...')" aria-label="@lang('Coach Notes')"></textarea>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    @endif
+                                                </table>
+                                            </div>
+
+                                            <div class="wb-exercises__footer">
+                                                <button type="button" class="wb-add add-exercise-btn" data-day-id="{{ $plan->id }}">
+                                                    <i class="fas fa-plus"></i>@lang('Add Exercise')
+                                                </button>
+                                            </div>
+                                        </section>
+
+                                        <div class="mb-5">
+                                            <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-snowflake text-info"></i>@lang('Post-Workout')</label>
+                                            <textarea name="post_workout" class="form-control form-control-solid" rows="2"
+                                                      placeholder="@lang('Cool down instructions...')">{{ $plan->post_workout }}</textarea>
+                                            <div class="invalid-feedback"></div>
                                         </div>
 
-                                        <div class="d-flex flex-wrap justify-content-between align-items-center mt-6 pt-4 border-top border-gray-800 gap-4">
-                                            <button type="button" class="btn btn-light-primary rounded-3 add-exercise-btn d-flex align-items-center gap-2 fw-bold px-5 py-3" data-day-id="{{ $plan->id }}">
-                                                <i class="fas fa-plus fs-5"></i>
-                                                <span>@lang('Add Exercise')</span>
-                                            </button>
-
+                                        <div class="d-flex justify-content-end align-items-center mt-6 pt-4 border-top" style="border-color: var(--wb-row-border) !important;">
                                             <button type="submit" class="btn btn-gym-neon d-flex align-items-center gap-2 px-6 py-3">
                                                 <i class="fas fa-save fs-4 text-dark"></i>
-                                                <span>@lang('Update Day')</span>
+                                                <span class="text-dark fw-bold">@lang('Update Day')</span>
                                             </button>
                                         </div>
                                     </div>
@@ -716,15 +742,15 @@
                     </div>
                 </div>
             @else
-                <div class="card rounded-4 shadow-sm mb-8 border">
+                <div class="card rounded-4 shadow-sm mb-8 border" style="background: var(--wb-surface-solid); border-color: var(--wb-row-border) !important;">
                     <div class="card-body text-center py-12">
-                        <div class="symbol symbol-100px bg-light-primary rounded-circle mb-6 d-inline-flex flex-center">
-                            <i class="fas fa-dumbbell fs-1x text-primary"></i>
+                        <div class="symbol symbol-100px rounded-circle mb-6 d-inline-flex flex-center" style="background: var(--wb-accent-soft); color: var(--wb-accent);">
+                            <i class="fas fa-dumbbell fs-1x" style="color: inherit;"></i>
                         </div>
-                        <h3 class="text-gray-900 fw-bolder mb-3 fs-2">@lang('No Workout Program Assigned')</h3>
-                        <p class="text-gray-600 fs-5 mb-8 max-w-500px mx-auto">@lang('This trainee does not currently have an active workout plan.')</p>
-                        <a href="{{ route('system.workout.create', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-primary px-6 py-3">
-                            <i class="ki-duotone ki-plus fs-2 me-1"></i> @lang('Assign Program')
+                        <h3 class="fw-bolder mb-3 fs-2" style="color: var(--wb-text);">@lang('No Workout Program Assigned')</h3>
+                        <p class="fs-5 mb-8 max-w-500px mx-auto" style="color: var(--wb-text-muted);">@lang('This trainee does not currently have an active workout plan.')</p>
+                        <a href="{{ route('system.workout.create', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-gym-neon px-6 py-3 fw-bold">
+                            <i class="ki-duotone ki-plus fs-2 me-1 text-dark"></i> <span class="text-dark">@lang('Assign Program')</span>
                         </a>
                     </div>
                 </div>
@@ -732,19 +758,19 @@
 
             {{-- ===== ARCHIVED WORKOUT HISTORY ===== --}}
             @if($result->archivedWorkoutPlans->count() > 0)
-                <div class="archived-history-card mt-6">
+                <div class="archived-history-card mt-6" style="background: var(--wb-surface-solid); border: 1px solid var(--wb-row-border);">
                     <div class="p-5">
                         <button class="archived-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#archivedPlansCollapse" aria-expanded="false" aria-controls="archivedPlansCollapse">
-                            <i class="fas fa-chevron-down toggle-icon" style="color: #ffa800;"></i>
-                            <i class="fas fa-archive" style="color: #ffa800;"></i>
-                            <span>{{ __('Workout History') }}</span>
+                            <i class="fas fa-chevron-down toggle-icon" style="color: var(--wb-accent);"></i>
+                            <i class="fas fa-archive" style="color: var(--wb-accent);"></i>
+                            <span style="color: var(--wb-text);">{{ __('Workout History') }}</span>
                             <span class="badge badge-archived ms-2">{{ $result->archivedWorkoutPlans->count() }} {{ __('archived days') }}</span>
                         </button>
                     </div>
 
                     <div class="collapse" id="archivedPlansCollapse">
                         <div class="px-5 pb-5">
-                            <div class="border-top pt-5" style="border-color: rgba(255,255,255,0.06) !important;">
+                            <div class="border-top pt-5" style="border-color: var(--wb-row-border) !important;">
                                 @php
                                     $archivedGrouped = $result->archivedWorkoutPlans->groupBy(function($plan) {
                                         return $plan->updated_at ? $plan->updated_at->format('Y-m-d') : 'unknown';
@@ -761,30 +787,29 @@
                                     <div class="mb-6">
                                         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
                                             <div class="d-flex align-items-center gap-2">
-                                                <i class="fas fa-clock" style="color: rgba(255,168,0,0.5);"></i>
-                                                <span class="archived-date-label">
+                                                <i class="fas fa-clock" style="color: var(--wb-accent);"></i>
+                                                <span class="archived-date-label" style="color: var(--wb-text-muted);">
                                                     {{ __('Archived on') }}: {{ $archivedDate !== 'unknown' ? \Carbon\Carbon::parse($archivedDate)->format('M d, Y') : __('Unknown date') }}
                                                 </span>
                                             </div>
                                             @if(userCan('system.trainee.restore-plan'))
-
-                                            <form action="{{ route('system.trainee.restore-plan', $result->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ addslashes($restoreHistoryConfirmMsg) }}')">
-                                                @csrf
-                                                <input type="hidden" name="archived_at" value="{{ $archivedPlans->first()->updated_at }}">
-                                                <button type="submit" class="btn btn-sm btn-light-warning fw-bold rounded-3 d-flex align-items-center gap-1 py-1 px-3">
-                                                    <i class="ki-duotone ki-arrows-loop fs-5"></i>
-                                                    <span>{{ __('Restore Program') }}</span>
-                                                </button>
-                                            </form>
+                                                <form action="{{ route('system.trainee.restore-plan', $result->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ addslashes($restoreHistoryConfirmMsg) }}')">
+                                                    @csrf
+                                                    <input type="hidden" name="archived_at" value="{{ $archivedPlans->first()->updated_at }}">
+                                                    <button type="submit" class="btn btn-sm btn-light-warning fw-bold rounded-3 d-flex align-items-center gap-1 py-1 px-3">
+                                                        <i class="ki-duotone ki-arrows-loop fs-5"></i>
+                                                        <span>{{ __('Restore Program') }}</span>
+                                                    </button>
+                                                </form>
                                             @endif
                                         </div>
 
                                         @foreach($archivedPlans as $archivedPlan)
-                                            <div class="archived-day-pill">
+                                            <div class="archived-day-pill" style="background: var(--wb-row-bg); border: 1px solid var(--wb-row-border); border-radius: 14px; padding: 1.25rem; margin-bottom: 1rem;">
                                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <i class="fas fa-calendar-day text-primary"></i>
-                                                        <span class="fw-bold text-gray-900">{{ $archivedPlan->display_day_name }}</span>
+                                                        <i class="fas fa-calendar-day" style="color: var(--wb-accent);"></i>
+                                                        <span class="fw-bold" style="color: var(--wb-text);">{{ $archivedPlan->day_name ?? '' }}</span>
                                                         <span class="badge badge-archived">{{ __('Archived') }}</span>
                                                     </div>
                                                     @if($archivedPlan->exercises->count() > 0)
@@ -792,48 +817,65 @@
                                                     @endif
                                                 </div>
 
-                                                @if($archivedPlan->warmup || $archivedPlan->warmup_ar)
+                                                @if($archivedPlan->warmup)
                                                     <div class="mb-3 px-3 py-2 rounded-3" style="background: rgba(255,193,7,0.06); border-left: 3px solid rgba(255,193,7,0.3);">
                                                         <small class="fw-bold text-warning"><i class="fas fa-fire me-1"></i>{{ __('Warm Up') }}:</small>
-                                                        <span class="text-gray-800 fs-7">{{ $archivedPlan->display_warmup }}</span>
+                                                        <span class="fs-7" style="color: var(--wb-text-secondary, #cbd5e1);">{{ $archivedPlan->warmup }}</span>
                                                     </div>
                                                 @endif
 
                                                 @if($archivedPlan->exercises->count() > 0)
-                                                    <table class="archived-exercise-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>#</th>
-                                                                <th>{{ __('Exercise') }}</th>
-                                                                <th>{{ __('Sets') }}</th>
-                                                                <th>{{ __('Reps') }}</th>
-                                                                <th>{{ __('Rest') }}</th>
-                                                                <th>{{ __('Weight') }}</th>
-                                                                <th>{{ __('Tempo') }}</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach($archivedPlan->exercises as $exIdx => $exercise)
+                                                    <div class="table-responsive">
+                                                        <table class="archived-exercise-table">
+                                                            <thead>
                                                                 <tr>
-                                                                    <td>{{ $exIdx + 1 }}</td>
-                                                                    <td class="text-gray-900 fw-semibold">{{ $exercise->display_name }}</td>
-                                                                    <td>{{ $exercise->sets ?? '—' }}</td>
-                                                                    <td>{{ $exercise->reps ?? '—' }}</td>
-                                                                    <td>{{ $exercise->rest ?? '—' }}</td>
-                                                                    <td>{{ $exercise->internal_weight ?? '—' }}</td>
-                                                                    <td>{{ $exercise->tempo ?? '—' }}</td>
+                                                                    <th>#</th>
+                                                                    <th>{{ __('Exercise') }}</th>
+                                                                    <th class="text-center">{{ __('Sets') }}</th>
+                                                                    <th class="text-center">{{ __('Reps') }}</th>
+                                                                    <th class="text-center">{{ __('Rest') }}</th>
+                                                                    <th>{{ __('Weights') }}</th>
+                                                                    <th class="text-center">{{ __('Tempo') }}</th>
                                                                 </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach($archivedPlan->exercises as $exIdx => $exercise)
+                                                                    <tr>
+                                                                        <td class="fw-bold" style="color: var(--wb-accent);">{{ $exIdx + 1 }}</td>
+                                                                        <td class="fw-semibold" style="color: var(--wb-text);">{{ $exercise->name }}</td>
+                                                                        <td class="text-center">{{ $exercise->sets ?? '—' }}</td>
+                                                                        <td class="text-center">{{ $exercise->reps ?? '—' }}</td>
+                                                                        <td class="text-center">{{ $exercise->rest ?? '—' }}</td>
+                                                                        <td>
+                                                                            @php
+                                                                                $weightsList = \App\Models\Exercise::normalizeWeights($exercise->internal_weight);
+                                                                            @endphp
+                                                                            @if(!empty($weightsList))
+                                                                                <div class="d-flex flex-wrap gap-1 align-items-center">
+                                                                                    @foreach($weightsList as $weight)
+                                                                                        <span class="badge fw-bold px-2 py-1" style="background: var(--wb-accent-soft); color: var(--wb-accent); border: 1px solid var(--wb-row-border); border-radius: 6px; font-size: 0.78rem;">
+                                                                                            {{ $weight }}
+                                                                                        </span>
+                                                                                    @endforeach
+                                                                                </div>
+                                                                            @else
+                                                                                <span class="text-muted">—</span>
+                                                                            @endif
+                                                                        </td>
+                                                                        <td class="text-center">{{ $exercise->tempo ?? '—' }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 @else
                                                     <p class="mb-0 text-muted fs-7"><em>{{ __('No exercises recorded for this day.') }}</em></p>
                                                 @endif
 
-                                                @if($archivedPlan->post_workout || $archivedPlan->post_workout_ar)
+                                                @if($archivedPlan->post_workout)
                                                     <div class="mt-3 px-3 py-2 rounded-3" style="background: rgba(114,57,234,0.06); border-left: 3px solid rgba(114,57,234,0.3);">
                                                         <small class="fw-bold text-info"><i class="fas fa-flag-checkered me-1"></i>{{ __('Post Workout') }}:</small>
-                                                        <span class="text-gray-800 fs-7">{{ $archivedPlan->display_post_workout }}</span>
+                                                        <span class="fs-7" style="color: var(--wb-text-secondary, #cbd5e1);">{{ $archivedPlan->post_workout }}</span>
                                                     </div>
                                                 @endif
                                             </div>
@@ -864,15 +906,24 @@
                             </h2>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <a href="{{ route('system.nutrition.my-plan', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-sm btn-light-info fw-bold rounded-3">
-                                <i class="fa-solid fa-eye me-1"></i>@lang('Trainee View')
-                            </a>
-                            <a href="{{ route('system.nutrition.edit', $activeNutrition->id) }}" class="btn btn-sm btn-light-primary fw-bold rounded-3">
-                                <i class="fa-solid fa-pen-to-square me-1"></i>@lang('Edit Plan')
-                            </a>
-                            <a href="{{ route('system.nutrition.create', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-sm btn-success fw-bold rounded-3">
-                                <i class="fa-solid fa-plus me-1"></i>@lang('New Plan')
-                            </a>
+
+{{--                            <a href="{{ route('system.nutrition.my-plan', ['trainee' => Crypt::encrypt($result->id)]) }}" class="btn btn-sm btn-light-info fw-bold rounded-3">--}}
+{{--                                <i class="fa-solid fa-eye me-1"></i>@lang('Trainee View')--}}
+{{--                            </a>--}}
+
+                            @if(userCan('system.nutrition.edit'))
+                                <a href="{{ route('system.nutrition.edit', $activeNutrition->id) }}"
+                                   class="btn btn-sm btn-light-primary fw-bold rounded-3">
+                                    <i class="fa-solid fa-pen-to-square me-1"></i>@lang('Edit Plan')
+                                </a>
+                            @endif
+
+                            @if(userCan('system.nutrition.create'))
+                                <a href="{{ route('system.nutrition.create', ['trainee' => Crypt::encrypt($result->id)]) }}"
+                                   class="btn btn-sm btn-success fw-bold rounded-3">
+                                    <i class="fa-solid fa-plus me-1"></i>@lang('New Plan')
+                                </a>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body p-6 p-lg-8">
@@ -1070,7 +1121,74 @@
 @endsection
 
 @section('footer')
+    @include('system.workout.partials.weight-inputs-script')
     <script type="text/javascript">
+        $(document).ready(function() {
+            // Add new exercise
+            $(document).on('click', '.add-exercise-btn', function() {
+        /**
+         * One exercise = one <tbody class="exercise-row"> (main metrics row + detail row).
+         * Field names match the day form: exercises[ex_Y][...]
+         */
+        function traineeExerciseRowHtml(dayId, exIdx) {
+            var base = `exercises[ex_${exIdx}]`;
+            return `
+            <tbody class="exercise-row wb-row-enter">
+                <tr class="wb-row-main">
+                    <td class="wb-cell-idx" rowspan="2"><span class="wb-idx" aria-hidden="true"></span></td>
+                    <td class="wb-cell-name" data-label="@lang('Exercise')">
+                        <input type="text" name="${base}[name]" class="form-control wb-name" maxlength="150" autocomplete="off"
+                               placeholder="@lang('e.g. Incline Bench Press')" aria-label="@lang('Exercise Name')">
+                        <div class="invalid-feedback"></div>
+                    </td>
+                    <td data-label="@lang('Sets')">
+                        <input type="text" name="${base}[sets]" class="form-control wb-num" maxlength="50" inputmode="numeric"
+                               placeholder="4" aria-label="@lang('Sets')">
+                    </td>
+                    <td data-label="@lang('Reps')">
+                        <input type="text" name="${base}[reps]" class="form-control wb-num" maxlength="50"
+                               placeholder="8-12" aria-label="@lang('Reps')">
+                    </td>
+                    <td data-label="@lang('Rest')">
+                        <input type="text" name="${base}[rest]" class="form-control wb-num" maxlength="50"
+                               placeholder="90s" aria-label="@lang('Rest')">
+                    </td>
+                    <td data-label="@lang('Tempo')">
+                        <input type="text" name="${base}[tempo]" class="form-control wb-num" maxlength="50"
+                               placeholder="3-0-1" aria-label="@lang('Tempo')">
+                    </td>
+                    <td class="wb-cell-weights" data-label="@lang('Weights') (max 4)">
+                        ${GymWeights.build(`${base}[internal_weight]`)}
+                    </td>
+                    <td class="wb-cell-action" rowspan="2">
+                        <button type="button" class="wb-delete delete-exercise-btn" title="@lang('Delete Exercise')" aria-label="@lang('Delete Exercise')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="wb-row-detail">
+                    <td data-label="@lang('Link')">
+                        <span class="wb-mini-label">@lang('Video Link')</span>
+                        <div class="wb-input-icon">
+                            <i class="fab fa-link"></i>
+                            <input type="url" name="${base}[link]" class="form-control" maxlength="255"
+                                   placeholder="https://link.com/..." aria-label="@lang('Video Link')">
+                        </div>
+                    </td>
+                    <td colspan="5" data-label="@lang('Coach Notes')">
+                        <span class="wb-mini-label">@lang('Coach Notes')</span>
+                        <textarea name="${base}[notes_en]" rows="1" class="form-control wb-notes"
+                                  placeholder="@lang('Form cues, progression, tips...')" aria-label="@lang('Coach Notes')"></textarea>
+                    </td>
+                </tr>
+            </tbody>`;
+        }
+
+        function updateExerciseCount(container) {
+            var dayId = (container.attr('id') || '').replace('exercises-container-day-', '');
+            $(`#exercise-count-day-${dayId}`).text(container.find('.exercise-row').length);
+        }
+
         $(document).ready(function() {
             // Add new exercise
             $(document).on('click', '.add-exercise-btn', function() {
@@ -1080,62 +1198,10 @@
                 var currentExerciseIdx = parseInt(container.attr('data-exercise-index')) + 1;
                 container.attr('data-exercise-index', currentExerciseIdx);
 
-                var newExerciseRow = `
-                <div class="p-4 mb-4 rounded border border-gray-300 bg-white exercise-row" style="display:none;">
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label fs-7 fw-bold text-gray-700">@lang('Exercise Name (English)')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][name]" class="form-control form-control-solid" placeholder="e.g. Incline Bench Press">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fs-7 fw-bold text-gray-700">اسم التمرين (عربي)</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][name_ar]" class="form-control form-control-solid" dir="rtl" placeholder="مثال: بنش مائل بالبار">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
-
-                    <div class="row g-2 align-items-end">
-                        <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold">@lang('Sets')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][sets]" class="form-control form-control-solid text-center" placeholder="4">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold">@lang('Reps')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][reps]" class="form-control form-control-solid text-center" placeholder="10">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold">@lang('Rest')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][rest]" class="form-control form-control-solid text-center" placeholder="90s">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold">@lang('Weight')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][weight]" class="form-control form-control-solid text-center" placeholder="20kg">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-6 col-md-1">
-                            <label class="form-label fs-7 fw-bold">@lang('Tempo')</label>
-                            <input type="text" name="exercises[ex_${currentExerciseIdx}][tempo]" class="form-control form-control-solid text-center" placeholder="3-0-1">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-12 col-md-5">
-                            <label class="form-label fs-7 fw-bold">@lang('Video Tutorial Link')</label>
-                            <input type="url" name="exercises[ex_${currentExerciseIdx}][link]" class="form-control form-control-solid" placeholder="https://youtube.com/...">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-12 col-md-2 d-flex justify-content-end">
-                            <button type="button" class="btn btn-icon btn-light-danger delete-exercise-btn w-100 rounded-3" title="@lang('Delete Exercise')">
-                                <i class="fas fa-trash fs-5"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
-
-                container.append(newExerciseRow);
-                container.find('.exercise-row').last().slideDown(250);
+                var $row = $(traineeExerciseRowHtml(dayId, currentExerciseIdx));
+                container.append($row);
+                updateExerciseCount(container);
+                $row.find('.wb-name').trigger('focus');
             });
 
             // Delete exercise
@@ -1144,11 +1210,28 @@
                 var container = $(this).closest('[id^="exercises-container-day-"]');
 
                 if (container.find('.exercise-row').length > 1) {
-                    row.slideUp(200, function() {
-                        $(this).remove();
-                    });
+                    row.removeClass('wb-row-enter').addClass('wb-row-leave');
+                    setTimeout(function () {
+                        row.remove();
+                        updateExerciseCount(container);
+                    }, 200);
                 } else {
-                    container.find('.exercise-row input:not([type=hidden])').val('');
+                    container.find('.exercise-row input:not([type=hidden]), .exercise-row textarea').val('');
+                    container.find('.wb-notes').css('height', '');
+                    GymWeights.reset(container.find('.exercise-row'));
+                }
+            });
+
+            // Auto-grow coach notes
+            $(document).on('input', '.wb-notes', function () {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+
+            $(document).on('input', '.wb-name', function () {
+                if ($.trim($(this).val()) !== '') {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').text('').css('display', 'none');
                 }
             });
 
@@ -1156,6 +1239,30 @@
             $('.workout-day-form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this);
+
+                var validExCount = 0;
+                form.find('.wb-name').each(function () {
+                    if ($.trim($(this).val()) !== '') {
+                        validExCount++;
+                    }
+                });
+
+                if (validExCount === 0) {
+                    var $firstInput = form.find('.wb-name').first();
+                    $firstInput.addClass('is-invalid');
+                    $firstInput.siblings('.invalid-feedback')
+                        .text("{{ __('Cannot save workout day without exercises. Please enter an exercise name.') }}")
+                        .css('display', 'block');
+                    $firstInput.trigger('focus');
+                    var errorMsg = "{{ __('Cannot save workout day without exercises. Please add at least one exercise.') }}";
+                    if (typeof notify === 'function') {
+                        notify(errorMsg, 'error');
+                    } else {
+                        alert(errorMsg);
+                    }
+                    return false;
+                }
+
                 var btn = form.find('button[type="submit"]');
                 var originalText = btn.html();
 
@@ -1167,15 +1274,31 @@
                     data: form.serialize(),
                     success: function(response) {
                         btn.html(originalText).prop('disabled', false);
-                        if(typeof FormAlert === "function") {
-                            FormAlert('success', 'Day updated successfully!');
+                        var successMsg = "{{ __('Exercises updated successfully') }}";
+                        if (typeof notify === 'function') {
+                            notify(successMsg, 'success');
+                        } else if(typeof FormAlert === "function") {
+                            FormAlert('success', successMsg);
                         } else {
-                            alert('Day updated successfully!');
+                            alert(successMsg);
                         }
                     },
                     error: function(xhr) {
                         btn.html(originalText).prop('disabled', false);
-                        alert('Error updating day. Please check inputs.');
+                        var errorMsg = "{{ __('Error updating day. Please check inputs.') }}";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            var firstErr = Object.values(xhr.responseJSON.errors)[0];
+                            if (Array.isArray(firstErr) && firstErr[0]) {
+                                errorMsg = firstErr[0];
+                            }
+                        }
+                        if (typeof notify === 'function') {
+                            notify(errorMsg, 'error');
+                        } else {
+                            alert(errorMsg);
+                        }
                     }
                 });
             });

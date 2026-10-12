@@ -1,0 +1,422 @@
+{{-- Workout builder: themed exercise table (dark default + light override via [data-bs-theme]). --}}
+<style>
+    /* ------------------------------------------------------------------
+       Design tokens — dark (default, matches gym-polish slate theme)
+       ------------------------------------------------------------------ */
+    .wb-scope {
+        --wb-surface: linear-gradient(180deg, #0F172A 0%, #111B2E 100%);
+        --wb-surface-solid: #0F172A;
+        --wb-row-bg: rgba(30, 41, 59, .55);
+        --wb-row-hover: rgba(30, 41, 59, .9);
+        --wb-row-border: rgba(51, 65, 85, .6);
+        --wb-head-bg: rgba(15, 23, 42, .85);
+        --wb-head-text: #94A3B8;
+        --wb-text: #F1F5F9;
+        --wb-text-muted: #94A3B8;
+        --wb-input-bg: rgba(2, 6, 23, .55);
+        --wb-input-border: #334155;
+        --wb-input-border-hover: #475569;
+        --wb-accent: var(--gp-accent, #FACC15);
+        --wb-accent-soft: rgba(250, 204, 21, .14);
+        --wb-ring: rgba(250, 204, 21, .28);
+        --wb-danger: #F43F5E;
+        --wb-danger-soft: rgba(244, 63, 94, .14);
+        --wb-shadow: 0 10px 30px -12px rgba(0, 0, 0, .6);
+    }
+    [data-bs-theme="light"] .wb-scope {
+        --wb-surface: linear-gradient(180deg, #F1F5F9 0%, #EEF2F7 100%);
+        --wb-surface-solid: #F1F5F9;
+        --wb-row-bg: #F8FAFC;
+        --wb-row-hover: #E9EEF5;
+        --wb-row-border: #DCE3EC;
+        --wb-head-bg: #E2E8F0;
+        --wb-head-text: #475569;
+        --wb-text: #0F172A;
+        --wb-text-muted: #64748B;
+        --wb-input-bg: #FDFEFF;
+        --wb-input-border: #CBD5E1;
+        --wb-input-border-hover: #94A3B8;
+        --wb-accent: var(--gp-accent, #D97706);
+        --wb-accent-soft: rgba(217, 119, 6, .12);
+        --wb-ring: rgba(217, 119, 6, .25);
+        --wb-shadow: 0 8px 24px -14px rgba(15, 23, 42, .25);
+    }
+
+    /* ------------------------------------------------------------------
+       Day step layout
+       ------------------------------------------------------------------ */
+    .wb-day__header {
+        display: flex;
+        align-items: center;
+        gap: .85rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.1rem;
+        border-bottom: 1px solid var(--wb-row-border);
+    }
+    .wb-day__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        height: 44px;
+        padding: 0 .75rem;
+        border-radius: 12px;
+        background: var(--wb-accent-soft);
+        color: var(--wb-accent);
+        font-weight: 800;
+        font-size: 1.05rem;
+        letter-spacing: .02em;
+    }
+    .wb-day__title {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--wb-text);
+        letter-spacing: -.01em;
+    }
+    .wb-day__subtitle {
+        margin: .15rem 0 0;
+        font-size: .85rem;
+        color: var(--wb-text-muted);
+    }
+    .wb-field-label {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+    }
+    .wb-field-label i { font-size: .9rem; }
+
+    /* ------------------------------------------------------------------
+       Exercises card
+       ------------------------------------------------------------------ */
+    .wb-exercises {
+        background: var(--wb-surface);
+        border: 1px solid var(--wb-row-border);
+        border-radius: 16px;
+        box-shadow: var(--wb-shadow);
+        margin: 1.75rem 0;
+        overflow: hidden;
+    }
+    .wb-exercises__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.1rem 1.25rem;
+        border-bottom: 1px solid var(--wb-row-border);
+    }
+    .wb-exercises__title {
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+    }
+    .wb-exercises__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        background: var(--wb-accent-soft);
+        color: var(--wb-accent);
+        font-size: 1rem;
+    }
+    .wb-exercises__title h3 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--wb-text);
+    }
+    .wb-exercises__title p {
+        margin: .1rem 0 0;
+        font-size: .8rem;
+        color: var(--wb-text-muted);
+    }
+    .wb-count {
+        flex: 0 0 auto;
+        padding: .35rem .75rem;
+        border-radius: 999px;
+        border: 1px solid var(--wb-row-border);
+        color: var(--wb-text-muted);
+        font-size: .78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+    .wb-count__num { color: var(--wb-accent); }
+
+    .wb-table-wrap {
+        padding: .5rem .75rem .25rem;
+        overflow-x: auto;
+    }
+
+    /* ------------------------------------------------------------------
+       Table
+       ------------------------------------------------------------------ */
+    .wb-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 .6rem;
+        table-layout: fixed;
+        counter-reset: wb-exercise;
+        color: var(--wb-text);
+    }
+    .wb-col-idx     { width: 44px; }
+    .wb-col-name    { width: auto; }
+    .wb-col-num     { width: 74px; }
+    .wb-col-tempo   { width: 88px; }
+    .wb-col-weights { width: 214px; }
+    .wb-col-action  { width: 52px; }
+
+    .wb-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        padding: .7rem .5rem;
+        background: var(--wb-head-bg);
+        color: var(--wb-head-text);
+        font-size: .7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .09em;
+        white-space: nowrap;
+        border-bottom: 2px solid var(--wb-row-border);
+    }
+    .wb-table thead th:first-child { border-radius: 10px 0 0 10px; text-align: center; }
+    .wb-table thead th:last-child  { border-radius: 0 10px 10px 0; }
+    .wb-th-hint {
+        margin-inline-start: .25rem;
+        padding: .05rem .4rem;
+        border-radius: 6px;
+        background: var(--wb-accent-soft);
+        color: var(--wb-accent);
+        font-size: .62rem;
+        letter-spacing: .04em;
+    }
+
+    /* Each exercise = one <tbody> with a main row + a detail row */
+    .wb-table tbody.exercise-row { counter-increment: wb-exercise; }
+    .wb-table tbody.exercise-row td {
+        background: var(--wb-row-bg);
+        padding: .55rem .45rem;
+        vertical-align: top;
+        border-top: 1px solid var(--wb-row-border);
+        border-bottom: 1px solid var(--wb-row-border);
+        transition: background-color .18s ease !important;
+    }
+    .wb-table tbody.exercise-row .wb-row-main td { border-bottom: 0; padding-top: .8rem; }
+    .wb-table tbody.exercise-row .wb-row-detail td { border-top: 0; padding-bottom: .8rem; }
+    .wb-table tbody.exercise-row td.wb-cell-idx {
+        border-inline-start: 3px solid transparent;
+        border-start-start-radius: 12px;
+        border-end-start-radius: 12px;
+        text-align: center;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--wb-row-border);
+    }
+    .wb-table tbody.exercise-row td.wb-cell-action {
+        border-inline-end: 1px solid var(--wb-row-border);
+        border-start-end-radius: 12px;
+        border-end-end-radius: 12px;
+        text-align: center;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--wb-row-border);
+    }
+    .wb-table tbody.exercise-row:hover td { background: var(--wb-row-hover); }
+    .wb-table tbody.exercise-row:hover td.wb-cell-idx,
+    .wb-table tbody.exercise-row:focus-within td.wb-cell-idx { border-inline-start-color: var(--wb-accent); }
+
+    .wb-idx::before {
+        content: counter(wb-exercise);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: var(--wb-accent-soft);
+        color: var(--wb-accent);
+        font-weight: 800;
+        font-size: .82rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .wb-mini-label {
+        display: block;
+        margin-bottom: .3rem;
+        color: var(--wb-text-muted);
+        font-size: .66rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+    }
+
+    /* Inputs inside the table (beats gym-polish global !important rules) */
+    .wb-scope .wb-table .form-control {
+        min-height: 40px !important;
+        padding: .5rem .65rem !important;
+        background-color: var(--wb-input-bg) !important;
+        border: 1px solid var(--wb-input-border) !important;
+        border-radius: 9px !important;
+        color: var(--wb-text) !important;
+        font-size: .9rem !important;
+        font-weight: 500;
+        box-shadow: none !important;
+    }
+    .wb-scope .wb-table .form-control:hover { border-color: var(--wb-input-border-hover) !important; }
+    .wb-scope .wb-table .form-control:focus {
+        border-color: var(--wb-accent) !important;
+        box-shadow: 0 0 0 3px var(--wb-ring) !important;
+        outline: none !important;
+    }
+    .wb-scope .wb-table .form-control::placeholder { color: var(--wb-text-muted) !important; opacity: .7; }
+    .wb-scope .wb-table .wb-num {
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+    }
+    .wb-scope .wb-table .wb-name { font-weight: 700; }
+    .wb-scope .wb-table .wb-notes {
+        resize: none;
+        overflow: hidden;
+        line-height: 1.45;
+    }
+
+    .wb-input-icon { position: relative; }
+    .wb-input-icon > i {
+        position: absolute;
+        top: 50%;
+        inset-inline-start: .7rem;
+        transform: translateY(-50%);
+        color: var(--wb-text-muted);
+        pointer-events: none;
+        font-size: .9rem;
+    }
+    .wb-scope .wb-table .wb-input-icon .form-control { padding-inline-start: 2.05rem !important; }
+
+    /* Weight group inside the table */
+    .wb-table .weight-inputs { gap: .35rem; }
+    .wb-table .weight-inputs__list { grid-template-columns: repeat(auto-fill, minmax(66px, 1fr)); gap: .35rem; }
+    .wb-scope .wb-table .weight-inputs__item .form-control {
+        text-align: center;
+        padding-inline: .45rem 1.35rem !important;
+    }
+    .wb-scope .wb-table .weight-inputs__item:only-child .form-control { padding-inline: .45rem !important; }
+    .wb-table .weight-inputs__add {
+        width: 40px;
+        height: 40px;
+        border-radius: 9px;
+        background: var(--wb-accent-soft) !important;
+        color: var(--wb-accent) !important;
+        border: 1px dashed var(--wb-accent) !important;
+    }
+    .wb-table .weight-inputs__add i { color: inherit !important; }
+    .wb-table .weight-inputs__add:not(:disabled):hover { background: var(--wb-accent) !important; color: #0F172A !important; }
+
+    /* Row delete */
+    .wb-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--wb-danger-soft);
+        color: var(--wb-danger);
+        cursor: pointer;
+        transition: background-color .15s ease, color .15s ease, transform .15s ease !important;
+    }
+    .wb-delete:hover { background: var(--wb-danger); color: #fff; transform: scale(1.06); }
+    .wb-delete:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(244, 63, 94, .35); }
+
+    .wb-exercises__footer {
+        padding: .5rem 1.25rem 1.25rem;
+    }
+    .wb-add {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .5rem;
+        width: 100%;
+        padding: .8rem 1rem;
+        border: 1.5px dashed var(--wb-row-border);
+        border-radius: 12px;
+        background: transparent;
+        color: var(--wb-text-muted);
+        font-weight: 700;
+        font-size: .9rem;
+        cursor: pointer;
+        transition: border-color .15s ease, color .15s ease, background-color .15s ease !important;
+    }
+    .wb-add:hover, .wb-add:focus-visible {
+        border-color: var(--wb-accent);
+        color: var(--wb-accent);
+        background: var(--wb-accent-soft);
+        outline: none;
+    }
+
+    .wb-row-enter { animation: wbRowIn .25s ease-out; }
+    .wb-row-leave { animation: wbRowOut .2s ease-in forwards; }
+    @keyframes wbRowIn  { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    @keyframes wbRowOut { to   { opacity: 0; transform: translateY(-4px); } }
+
+    /* ------------------------------------------------------------------
+       Responsive: stack each exercise into a card below lg
+       ------------------------------------------------------------------ */
+    @media (max-width: 991.98px) {
+        .wb-table, .wb-table tbody, .wb-table tr, .wb-table td { display: block; width: 100%; }
+        .wb-table colgroup, .wb-table thead { display: none; }
+        .wb-table { border-spacing: 0; }
+        .wb-table tbody.exercise-row {
+            position: relative;
+            margin-bottom: .85rem;
+            padding: .9rem;
+            background: var(--wb-row-bg);
+            border: 1px solid var(--wb-row-border);
+            border-inline-start: 3px solid var(--wb-accent);
+            border-radius: 12px;
+        }
+        .wb-table tbody.exercise-row td,
+        .wb-table tbody.exercise-row:hover td {
+            padding: 0 !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            background: transparent;
+        }
+        .wb-row-main, .wb-row-detail {
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .65rem;
+        }
+        .wb-row-detail { margin-top: .65rem; grid-template-columns: 1fr; }
+        .wb-table td.wb-cell-name,
+        .wb-table td.wb-cell-weights { grid-column: 1 / -1; }
+        .wb-table td.wb-cell-name { padding-inline-end: 2.75rem !important; }
+        .wb-table td.wb-cell-idx { display: none; }
+        .wb-table td.wb-cell-action {
+            position: absolute;
+            top: .8rem;
+            inset-inline-end: .8rem;
+            width: auto;
+        }
+        .wb-table td[data-label]::before {
+            content: attr(data-label);
+            display: block;
+            margin-bottom: .3rem;
+            color: var(--wb-text-muted);
+            font-size: .66rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+        .wb-table .wb-mini-label { display: none; }
+    }
+    @media (max-width: 575.98px) {
+        .wb-row-main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .wb-exercises__header { flex-wrap: wrap; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .wb-row-enter, .wb-row-leave { animation: none; }
+    }
+</style>

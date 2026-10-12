@@ -117,13 +117,15 @@ class TraineeService extends BaseService
         return Datatables::eloquent($query)
             ->addColumn('id', '{{$id}}')
             ->addColumn('user_id', function ($data) {
-                if ($data->user_id)
+                if ($data->user_id) {
                     return datatable_links('system.trainee.show', route('system.trainee.show', $data->id), $data->user?->name);
+                }
+                return '';
             })
             ->editColumn('weight', '{{$weight}}')
             ->editColumn('height', '{{$height}}')
             ->editColumn('status', function ($data) {
-                return status_icon($data->status);
+                return $data->status ;
             })
             ->addColumn('membership_start', function ($data) {
                 return $data->membership_start;
@@ -232,9 +234,9 @@ class TraineeService extends BaseService
         try {
             $userData = $request->only(['name', 'email']);
 
-            if ($request->filled('password')) {
-                $userData['password'] = $this->userPassword($request->password);
-            }
+//            if ($request->filled('password')) {
+//                $userData['password'] = $this->userPassword($request->password);
+//            }
 
             if ($request->filled('telephone')) {
                 $userData['mobile'] = \formatMobileNumber($request->telephone, $request->telephone_code);

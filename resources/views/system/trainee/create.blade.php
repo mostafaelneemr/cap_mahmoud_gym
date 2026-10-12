@@ -1,8 +1,5 @@
 @extends('system.layout')
-@section('header')
 
-
-@endsection
 @section('content')
 
     {!! Form::open([
@@ -87,7 +84,7 @@
             {{ label(__('Status'),'required') }}
             <!--begin::Input group-->
             <div class="mb-5">
-                {!! Form::select('status',trainee_status(),isset($result->id) ? $trainee->status:old('status'),
+                {!! Form::select('status',trainee_status(null,true),isset($result->id) ? $trainee->status:old('status'),
                 ['class'=>'form-select form-select-solid','id'=>'status','data-placeholder'=>__('Select an option')]) !!}
                 <div class="invalid-feedback" id="status-form-error"></div>
             </div>

@@ -13,6 +13,11 @@
         background: linear-gradient(135deg, #151521 0%, #1e1e2d 100%);
         border: 1px solid rgba(255, 255, 255, 0.08);
     }
+    .is-invalid + .select2-container .select2-selection,
+    .select2-container--bootstrap5.is-invalid .select2-selection,
+    .select2-container .select2-selection.border-danger {
+        border-color: #f1416c !important;
+    }
 </style>
 @endsection
 
@@ -33,7 +38,7 @@
                 <!-- Trainee Selection -->
                 <div class="col-md-6 fv-row mb-5">
                     <label class="form-label required fw-bold text-gray-900 fs-6">@lang('Trainee')</label>
-                    <select name="trainee_id" class="form-select form-select-solid" data-control="select2" required>
+                    <select name="trainee_id" id="trainee_id-form-input" class="form-select form-select-solid" data-control="select2" data-placeholder="@lang('Select Trainee')">
                         <option value="">@lang('Select Trainee')</option>
                         @foreach($trainees as $trainee)
                             @php
@@ -48,18 +53,21 @@
                             </option>
                         @endforeach
                     </select>
+                    <div class="invalid-feedback" id="trainee_id-form-error"></div>
                 </div>
 
                 <!-- Plan Name / Title -->
                 <div class="col-md-6 fv-row mb-5">
                     <label class="form-label fw-bold text-gray-900 fs-6">@lang('Plan Name / Title')</label>
-                    <input type="text" name="name" class="form-control form-control-solid" placeholder="@lang('e.g. Winter Cutting 2200 kcal Plan')" value="{{ $isEdit ? $plan->name : '' }}">
+                    <input type="text" name="name" id="name-form-input" class="form-control form-control-solid" placeholder="@lang('e.g. Winter Cutting 2200 kcal Plan')" value="{{ $isEdit ? $plan->name : '' }}">
+                    <div class="invalid-feedback" id="name-form-error"></div>
                 </div>
 
                 <!-- Plan Description (CKEditor / Summernote Rich Text Editor) -->
                 <div class="col-12 fv-row mb-5">
                     <label class="form-label fw-bold text-gray-900 fs-6 mb-2">@lang('Nutrition Plan Details & Instructions')</label>
-                    <textarea name="description" class="form-control form-control-solid text-editor" rows="12" placeholder="@lang('Enter detailed meal plan instructions, food items, macro breakdowns, and notes...')">{{ $isEdit ? $plan->description : '' }}</textarea>
+                    <textarea name="description" id="description-form-input" class="form-control form-control-solid text-editor" rows="12" placeholder="@lang('Enter detailed meal plan instructions, food items, macro breakdowns, and notes...')">{{ $isEdit ? $plan->description : '' }}</textarea>
+                    <div class="invalid-feedback" id="description-form-error"></div>
                 </div>
             </div>
         </div>
@@ -82,6 +90,14 @@
         if (typeof text_editor === 'function') {
             text_editor('text-editor');
         }
+
+        $('select[name="trainee_id"]').on('change select2:select', function () {
+            if ($(this).val()) {
+                $(this).removeClass('is-invalid');
+                $(this).next('.select2-container').find('.select2-selection').removeClass('border-danger');
+                $('#trainee_id-form-error').text('').hide();
+            }
+        });
     });
 </script>
 @endsection
