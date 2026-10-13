@@ -4,9 +4,11 @@ namespace App\Modules\System;
 
 use App\Http\Requests\StoreExercisFormRequest;
 use App\Http\Requests\WorkoutFormRequest;
+use App\Models\WorkoutPlan;
 use App\Repositories\Workout\WorkoutRepository;
 use App\Services\WorkoutService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WorkoutController extends SystemController
 {
@@ -72,5 +74,77 @@ class WorkoutController extends SystemController
 
         flash_msg('success', __('Exercises updated successfully'));
         return redirect()->back();
+    }
+
+    public function toggleDayStatus($dayId, Request $request)
+    {
+        $day = WorkoutPlan::find($dayId);
+        if (!$day) {
+            return $this->fail(__('Workout day not found'));
+        }
+
+        $newStatus = ($day->status === 'active') ? 'inactive' : 'active';
+        $day->status = $newStatus;
+        $day->save();
+
+        $message = ($newStatus === 'active')
+            ? __('Workout day ":day" is now Active.', ['day' => $day->day_name ?: __('Day')])
+            : __('Workout day ":day" is now Inactive (temporarily muted).', ['day' => $day->day_name ?: __('Day')]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return $this->success($message, [
+                'day_id' => $day->id,
+                'status' => $newStatus,
+                'status_label' => ($newStatus === 'active') ? __('Active') : __('Inactive'),
+            ]);
+        }
+
+        flash_msg('success', $message);
+        return redirect()->back();
+    }
+
+    public function storeInlineDay(StoreExercisFormRequest $request, WorkoutRepository $workoutRepository)
+    {
+        $traineeId = $request->input('trainee_id');
+        if (!$traineeId) {
+            return $this->fail(__('Trainee ID is required'));
+        }
+
+        $dayName = $request->input('day_name') ?: __('New Day');
+        $warmup = $request->input('warmup');
+        $postWorkout = $request->input('post_workout');
+
+        DB::beginTransaction();
+        try {
+            $plan = WorkoutPlan::create([
+                'trainee_id' => $traineeId,
+                'day_name' => $dayName,
+                'warmup' => $warmup,
+                'post_workout' => $postWorkout,
+                'status' => 'active',
+            ]);
+
+            $exercises = $request->input('exercises', []);
+            if (!empty($exercises) && is_array($exercises)) {
+                $workoutRepository->syncDayExercises($plan->id, $exercises, []);
+            }
+
+            DB::commit();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return $this->success(__('New workout day added successfully'), [
+                    'plan_id' => $plan->id,
+                    'day_name' => $plan->day_name,
+                    'reload' => true,
+                ]);
+            }
+
+            flash_msg('success', __('New workout day added successfully'));
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            errorLog('WorkoutController@storeInlineDay: ' . $e->getMessage());
+            return $this->fail(__('Failed to create workout day'));
+        }
     }
 }

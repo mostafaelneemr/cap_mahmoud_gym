@@ -64,6 +64,8 @@ Route::controller('TraineeProgressController')->prefix('trainee-progress')->grou
 });
 
 Route::post('/workout/day/{dayId}/update', 'WorkoutController@storeDayExercises')->name('system.workout.updateDay');
+Route::post('/workout/day/{dayId}/toggle-status', 'WorkoutController@toggleDayStatus')->name('system.workout.toggleDayStatus');
+Route::post('/workout/inline-day', 'WorkoutController@storeInlineDay')->name('system.workout.storeInlineDay');
 Route::resource('/workout', 'WorkoutController', ['as' => 'system']); //
 
 Route::get('/nutrition/my-plan', 'NutritionController@myPlan')->name('system.nutrition.my-plan');

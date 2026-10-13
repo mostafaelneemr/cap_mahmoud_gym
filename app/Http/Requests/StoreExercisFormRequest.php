@@ -47,6 +47,7 @@ class StoreExercisFormRequest extends FormRequest
             case 'PATCH':
             {
                 return [
+                    'trainee_id' => 'nullable|integer',
                     'day_name' => 'nullable|string|max:100',
                     'warmup' => 'nullable|string',
                     'post_workout' => 'nullable|string',

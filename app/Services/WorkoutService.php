@@ -172,8 +172,8 @@ class WorkoutService extends BaseService
         return $this->workoutRepository->updateTraineeWorkout($id);
     }
 
-    public function restoreLatestArchivedWorkout(int $traineeId, ?string $archivedAt = null): bool
+    public function restoreLatestArchivedWorkout(int $traineeId, $batchOrIds = null): bool
     {
-        return $this->workoutRepository->restoreLatestArchivedWorkout($traineeId, $archivedAt);
+        return $this->workoutRepository->restoreLatestArchivedWorkout($traineeId, $batchOrIds);
     }
 }

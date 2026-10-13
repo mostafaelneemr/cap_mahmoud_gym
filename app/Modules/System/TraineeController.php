@@ -110,9 +110,12 @@ class TraineeController extends SystemController
             return redirect()->back();
         }
 
+        $batchOrIds = $request->input('plan_ids')
+            ?: ($request->input('ids') ?: ($request->input('archived_at') ?: $request->input('archived_date')));
+
         $restored = $this->workoutService->restoreLatestArchivedWorkout(
             (int) $id,
-            $request->input('archived_at') ?: $request->input('archived_date')
+            $batchOrIds
         );
 
         if ($restored) {

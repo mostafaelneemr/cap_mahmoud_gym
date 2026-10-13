@@ -65,18 +65,32 @@ class WorkoutRepository extends BaseRepository
 
     public function updateTraineeWorkout($id)
     {
-        return $this->modeler->where('trainee_id', $id)->where('status', 'active')->update(['status' => 'archived']);
+        return $this->modeler
+            ->where('trainee_id', $id)
+            ->whereIn('status', ['active', 'inactive'])
+            ->update(['status' => 'archived']);
     }
 
-    public function restoreLatestArchivedWorkout(int $traineeId, ?string $archivedAt = null): bool
+    public function restoreLatestArchivedWorkout(int $traineeId, $batchOrIds = null): bool
     {
-        return DB::transaction(function () use ($traineeId, $archivedAt) {
+        return DB::transaction(function () use ($traineeId, $batchOrIds) {
             $query = WorkoutPlan::where('trainee_id', $traineeId)->where('status', 'archived');
+            $plansToRestore = collect();
 
-            if ($archivedAt) {
-                $plansToRestore = (clone $query)->where('updated_at', $archivedAt)->get();
-                if ($plansToRestore->isEmpty()) {
-                    $plansToRestore = (clone $query)->whereDate('updated_at', substr($archivedAt, 0, 10))->get();
+            if (!empty($batchOrIds)) {
+                if (is_array($batchOrIds)) {
+                    $ids = array_filter(array_map('intval', $batchOrIds));
+                    $plansToRestore = (clone $query)->whereIn('id', $ids)->get();
+                } elseif (is_string($batchOrIds) && str_contains($batchOrIds, ',')) {
+                    $ids = array_filter(array_map('intval', explode(',', $batchOrIds)));
+                    $plansToRestore = (clone $query)->whereIn('id', $ids)->get();
+                } elseif (is_numeric($batchOrIds)) {
+                    $plansToRestore = (clone $query)->where('id', (int) $batchOrIds)->get();
+                } else {
+                    $plansToRestore = (clone $query)->where('updated_at', $batchOrIds)->get();
+                    if ($plansToRestore->isEmpty()) {
+                        $plansToRestore = (clone $query)->whereDate('updated_at', substr($batchOrIds, 0, 10))->get();
+                    }
                 }
             } else {
                 $latestTimestamp = (clone $query)->max('updated_at');
@@ -90,10 +104,10 @@ class WorkoutRepository extends BaseRepository
                 return false;
             }
 
-            // 1. Swap: If trainee currently has active days, archive them first
+            // 1. Swap: Archive all current active/inactive routines for this trainee
             $this->modeler
                 ->where('trainee_id', $traineeId)
-                ->where('status', 'active')
+                ->whereIn('status', ['active', 'inactive'])
                 ->update(['status' => 'archived']);
 
             // 2. Restore chosen archived days back to active

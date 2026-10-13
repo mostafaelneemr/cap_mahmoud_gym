@@ -257,6 +257,38 @@
             font-style: italic;
         }
 
+        /* Inactive Day & Tab Badging */
+        .wb-tab-pill--inactive {
+            opacity: 0.72;
+            border: 2px dashed rgba(245, 158, 11, 0.45) !important;
+        }
+        .wb-tab-pill--inactive:hover {
+            opacity: 0.95;
+        }
+        .wb-day--inactive {
+            border-color: rgba(245, 158, 11, 0.4) !important;
+            background: rgba(30, 41, 59, 0.5) !important;
+        }
+        .wb-day--inactive .wb-day__badge {
+            background: rgba(245, 158, 11, 0.15) !important;
+            color: #f59e0b !important;
+            border-color: rgba(245, 158, 11, 0.4) !important;
+        }
+
+        /* Archived Program Version Card */
+        .archived-program-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .archived-program-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35) !important;
+        }
+        .transition-transform {
+            transition: transform 0.25s ease;
+        }
+        [aria-expanded="true"] .transition-transform {
+            transform: rotate(180deg);
+        }
+
         /* ===== CKEditor Inner HTML Content Adaptation ===== */
         .nutrition-content {
             line-height: 1.8;
@@ -326,7 +358,7 @@
 {{--        @endif--}}
 
         @if(userCan('system.trainee.reset-plan'))
-            @if($result->activeWorkoutPlans->count() > 0)
+            @if($result->currentWorkoutPlans->count() > 0)
                 <form action="{{ route('system.trainee.reset-plan', $result->id) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('{{ __('Are you sure you want to archive the current workout plan for this trainee? This action cannot be undone.') }}')">
                     @csrf
@@ -341,15 +373,19 @@
 
         @if($result->archivedWorkoutPlans->count() > 0)
             @php
-                $restoreTopConfirmMsg = $result->activeWorkoutPlans->count() > 0
+                $restoreTopConfirmMsg = $result->currentWorkoutPlans->count() > 0
                     ? __('The trainee currently has an active workout plan. Restoring this archived program will archive the current active plan and replace it. Are you sure you want to proceed?')
                     : __('Are you sure you want to restore this archived workout program?');
+                $latestBatch = $result->archived_program_batches->first();
             @endphp
             <form action="{{ route('system.trainee.restore-plan', $result->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ addslashes($restoreTopConfirmMsg) }}')">
                 @csrf
+                @if($latestBatch && !empty($latestBatch['plan_ids_str']))
+                    <input type="hidden" name="plan_ids" value="{{ $latestBatch['plan_ids_str'] }}">
+                @endif
                 <button type="submit" class="btn btn-sm btn-light-warning fw-bold rounded-3 d-flex align-items-center gap-1">
                     <i class="ki-duotone ki-arrows-loop fs-4"></i>
-                    <span>{{ __('Restore Workout Plan') }}</span>
+                    <span>{{ __('Restore Latest Program') }}</span>
                 </button>
             </form>
         @endif
@@ -500,8 +536,8 @@
 
         <!-- WORKOUT PROGRAM TAB -->
         <div class="tab-pane fade show active wb-scope" id="kt_staff_programs_tab" role="tabpanel">
-            {{-- ===== ACTIVE WORKOUT PLANS ===== --}}
-            @if($result->activeWorkoutPlans->count() > 0)
+            {{-- ===== CURRENT WORKOUT PLANS (ACTIVE & INACTIVE) ===== --}}
+            @if($result->currentWorkoutPlans->count() > 0)
                 <div class="card mb-8 rounded-4 shadow-sm border" style="background: var(--wb-surface-solid); border-color: var(--wb-row-border) !important;">
                     <div class="card-header border-bottom pt-6 pb-5" style="border-color: var(--wb-row-border) !important; background: var(--wb-head-bg);">
                         <div class="card-title">
@@ -514,37 +550,74 @@
                     </div>
                     <div class="card-body p-6 p-lg-8" style="background: transparent;">
                         <!-- Days Nav Tabs -->
-                        <ul class="nav nav-pills nav-pills-custom mb-8 d-flex flex-wrap gap-4" id="pills-tab" role="tablist">
-                            @foreach($result->activeWorkoutPlans as $index => $plan)
+                        <ul class="nav nav-pills nav-pills-custom mb-8 d-flex flex-wrap gap-4 align-items-stretch" id="pills-tab" role="tablist">
+                            @foreach($result->currentWorkoutPlans as $index => $plan)
+                                @php
+                                    $isDayInactive = ($plan->status === 'inactive');
+                                @endphp
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link d-flex flex-column flex-center p-5 text-center {{ $index == 0 ? 'active' : '' }}"
+                                    <a class="nav-link d-flex flex-column flex-center p-5 text-center {{ $index == 0 ? 'active' : '' }} {{ $isDayInactive ? 'wb-tab-pill--inactive' : '' }}"
+                                       id="tab_pill_{{ $plan->id }}"
                                        data-bs-toggle="pill"
                                        href="#plan_day_{{ $plan->id }}"
                                        style="min-width: 140px; min-height: 110px;">
-                                        <div class="nav-icon mb-3">
+                                        <div class="nav-icon mb-2">
                                             <i class="fas fa-calendar-day fs-2x" style="color: var(--wb-accent);"></i>
                                         </div>
                                         <div>
                                             <span class="day-title-text fw-bold fs-5 d-block">{{ $plan->day_name ?? '' }}</span>
+                                            <span class="badge badge-sm mt-1 day-status-badge-{{ $plan->id }} {{ $isDayInactive ? 'badge-light-warning text-warning' : 'badge-light-success text-success' }}" style="font-size: 0.72rem;">
+                                                {{ $isDayInactive ? __('Inactive') : __('Active') }}
+                                            </span>
                                         </div>
                                     </a>
                                 </li>
                             @endforeach
+
+                            <li class="nav-item d-flex align-items-stretch" role="presentation">
+                                <button type="button" class="btn btn-outline btn-outline-dashed d-flex flex-column flex-center p-4 text-center rounded-3 hover-elevate-up"
+                                        data-bs-toggle="modal" data-bs-target="#inlineAddDayModal"
+                                        style="min-width: 130px; min-height: 110px; border-width: 2px; border-color: var(--wb-accent) !important; color: var(--wb-accent) !important; background: var(--wb-accent-soft);">
+                                    <i class="fas fa-plus-circle fs-1 mb-2" style="color: var(--wb-accent);"></i>
+                                    <span class="fw-bolder fs-6" style="color: var(--wb-text);">{{ __('+ Add Day') }}</span>
+                                </button>
+                            </li>
                         </ul>
 
                         <!-- Days Content -->
                         <div class="tab-content" id="pills-tabContent">
-                            @foreach($result->activeWorkoutPlans as $index => $plan)
+                            @foreach($result->currentWorkoutPlans as $index => $plan)
+                                @php
+                                    $isDayInactive = ($plan->status === 'inactive');
+                                @endphp
                                 <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="plan_day_{{ $plan->id }}" role="tabpanel">
 
                                     {!! Form::open(['url' => route('system.workout.updateDay', $plan->id), 'method' => 'POST', 'class' => 'workout-day-form']) !!}
 
-                                    <div class="wb-day">
-                                        <div class="wb-day__header">
-                                            <span class="wb-day__badge">D{{ $index + 1 }}</span>
-                                            <div>
-                                                <h2 class="wb-day__title">{{ $plan->day_name ?? '' }}</h2>
-                                                <p class="wb-day__subtitle">@lang('Exercises list and training instructions')</p>
+                                    <div class="wb-day {{ $isDayInactive ? 'wb-day--inactive' : '' }}" id="wb_day_card_{{ $plan->id }}">
+                                        <div class="wb-day__header d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <span class="wb-day__badge">D{{ $index + 1 }}</span>
+                                                <div>
+                                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                        <h2 class="wb-day__title m-0">{{ $plan->day_name ?? '' }}</h2>
+                                                        <span class="badge {{ $isDayInactive ? 'badge-light-warning text-warning' : 'badge-light-success text-success' }} fs-8 day-header-badge-{{ $plan->id }}">
+                                                            {{ $isDayInactive ? __('Inactive') : __('Active') }}
+                                                        </span>
+                                                    </div>
+                                                    <p class="wb-day__subtitle mb-0">@lang('Exercises list and training instructions')</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex align-items-center gap-2">
+                                                <button type="button"
+                                                        class="btn btn-sm {{ $isDayInactive ? 'btn-light-success text-success' : 'btn-light-warning text-warning' }} fw-bold d-flex align-items-center gap-1 toggle-day-status-btn"
+                                                        data-day-id="{{ $plan->id }}"
+                                                        data-status="{{ $plan->status ?? 'active' }}"
+                                                        data-url="{{ route('system.workout.toggleDayStatus', $plan->id) }}">
+                                                    <i class="fas {{ $isDayInactive ? 'fa-play' : 'fa-pause' }} fs-7"></i>
+                                                    <span class="toggle-status-text">{{ $isDayInactive ? __('Activate Day') : __('Deactivate Day') }}</span>
+                                                </button>
                                             </div>
                                         </div>
 
@@ -756,60 +829,96 @@
                 </div>
             @endif
 
-            {{-- ===== ARCHIVED WORKOUT HISTORY ===== --}}
-            @if($result->archivedWorkoutPlans->count() > 0)
-                <div class="archived-history-card mt-6" style="background: var(--wb-surface-solid); border: 1px solid var(--wb-row-border);">
-                    <div class="p-5">
-                        <button class="archived-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#archivedPlansCollapse" aria-expanded="false" aria-controls="archivedPlansCollapse">
-                            <i class="fas fa-chevron-down toggle-icon" style="color: var(--wb-accent);"></i>
-                            <i class="fas fa-archive" style="color: var(--wb-accent);"></i>
-                            <span style="color: var(--wb-text);">{{ __('Workout History') }}</span>
-                            <span class="badge badge-archived ms-2">{{ $result->archivedWorkoutPlans->count() }} {{ __('archived days') }}</span>
-                        </button>
+            {{-- ===== ARCHIVED WORKOUT HISTORY (PROGRAM-LEVEL VERSIONING) ===== --}}
+            @if($result->archived_program_batches->count() > 0)
+                <div class="mt-8">
+                    <div class="d-flex align-items-center justify-content-between mb-5 flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="symbol symbol-40px rounded-3 d-inline-flex flex-center" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);">
+                                <i class="fas fa-history fs-3" style="color: inherit;"></i>
+                            </div>
+                            <div>
+                                <h3 class="fw-bold fs-4 m-0" style="color: var(--wb-text);">{{ __('Workout Routine History & Archived Programs') }}</h3>
+                                <p class="fs-7 mb-0" style="color: var(--wb-text-muted);">
+                                    {{ __('Browse past versions of this trainee\'s routine and restore any previous program at any time.') }}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="badge badge-light-warning fw-bold fs-7 px-3 py-2">
+                            {{ $result->archived_program_batches->count() }} {{ $result->archived_program_batches->count() === 1 ? __('Archived Routine') : __('Archived Routines') }} ({{ $result->archivedWorkoutPlans->count() }} {{ __('archived days') }})
+                        </span>
                     </div>
 
-                    <div class="collapse" id="archivedPlansCollapse">
-                        <div class="px-5 pb-5">
-                            <div class="border-top pt-5" style="border-color: var(--wb-row-border) !important;">
-                                @php
-                                    $archivedGrouped = $result->archivedWorkoutPlans->groupBy(function($plan) {
-                                        return $plan->updated_at ? $plan->updated_at->format('Y-m-d') : 'unknown';
-                                    });
-                                @endphp
-
-                                @php
-                                    $restoreHistoryConfirmMsg = $result->activeWorkoutPlans->count() > 0
-                                        ? __('The trainee currently has an active workout plan. Restoring this archived program will archive the current active plan and replace it. Are you sure you want to proceed?')
-                                        : __('Are you sure you want to restore this archived workout program?');
-                                @endphp
-
-                                @foreach($archivedGrouped as $archivedDate => $archivedPlans)
-                                    <div class="mb-6">
-                                        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="fas fa-clock" style="color: var(--wb-accent);"></i>
-                                                <span class="archived-date-label" style="color: var(--wb-text-muted);">
-                                                    {{ __('Archived on') }}: {{ $archivedDate !== 'unknown' ? \Carbon\Carbon::parse($archivedDate)->format('M d, Y') : __('Unknown date') }}
+                    <div class="d-flex flex-column gap-5">
+                        @foreach($result->archived_program_batches as $bIndex => $batch)
+                            @php
+                                $collapseId = 'archived_batch_' . md5($batch['batch_key'] . '_' . $bIndex);
+                                $restoreConfirmMsg = $result->currentWorkoutPlans->count() > 0
+                                    ? __('The trainee currently has an active workout routine. Restoring this archived program will archive the current active program and restore this :days-day routine (:exercises exercises). Are you sure you want to proceed?', ['days' => $batch['days_count'], 'exercises' => $batch['exercises_count']])
+                                    : __('Are you sure you want to restore this archived program routine (:days days, :exercises exercises)?', ['days' => $batch['days_count'], 'exercises' => $batch['exercises_count']]);
+                            @endphp
+                            <div class="archived-program-card rounded-4 border overflow-hidden" 
+                                 style="background: var(--wb-surface-solid); border-color: var(--wb-row-border) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+                                
+                                {{-- Header with Summary and Dedicated Restore Button --}}
+                                <div class="p-5 d-flex align-items-center justify-content-between flex-wrap gap-4"
+                                     style="background: var(--wb-head-bg); border-bottom: 1px solid var(--wb-row-border);">
+                                    
+                                    <div class="d-flex align-items-center gap-4 flex-grow-1 cursor-pointer"
+                                         data-bs-toggle="collapse" data-bs-target="#{{ $collapseId }}" aria-expanded="false" aria-controls="{{ $collapseId }}">
+                                        <div class="symbol symbol-40px rounded-3 d-inline-flex flex-center flex-shrink-0"
+                                             style="background: var(--wb-accent-soft); color: var(--wb-accent); border: 1px solid var(--wb-row-border);">
+                                            <i class="fas fa-layer-group fs-4" style="color: inherit;"></i>
+                                        </div>
+                                        <div>
+                                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                <h4 class="fw-bold fs-5 m-0" style="color: var(--wb-text);">
+                                                    {{ $batch['routine_name'] }}
+                                                </h4>
+                                                <span class="badge badge-light-info fs-8 fw-semibold">
+                                                    <i class="fas fa-clock fs-9 me-1"></i>{{ $batch['archived_date_formatted'] }}
                                                 </span>
                                             </div>
-                                            @if(userCan('system.trainee.restore-plan'))
-                                                <form action="{{ route('system.trainee.restore-plan', $result->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ addslashes($restoreHistoryConfirmMsg) }}')">
-                                                    @csrf
-                                                    <input type="hidden" name="archived_at" value="{{ $archivedPlans->first()->updated_at }}">
-                                                    <button type="submit" class="btn btn-sm btn-light-warning fw-bold rounded-3 d-flex align-items-center gap-1 py-1 px-3">
-                                                        <i class="ki-duotone ki-arrows-loop fs-5"></i>
-                                                        <span>{{ __('Restore Program') }}</span>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            <div class="d-flex align-items-center gap-3 mt-1 fs-7" style="color: var(--wb-text-secondary, #cbd5e1);">
+                                                <span><i class="fas fa-calendar-day text-primary me-1"></i><strong>{{ $batch['days_count'] }}</strong> {{ __('Days') }}</span>
+                                                <span>&bull;</span>
+                                                <span><i class="fas fa-dumbbell text-success me-1"></i><strong>{{ $batch['exercises_count'] }}</strong> {{ __('Exercises') }}</span>
+                                                <span>&bull;</span>
+                                                <span class="text-muted"><i class="fas fa-chevron-down fs-9 ms-1"></i> {{ __('Click to expand / collapse') }}</span>
+                                            </div>
                                         </div>
+                                    </div>
 
-                                        @foreach($archivedPlans as $archivedPlan)
-                                            <div class="archived-day-pill" style="background: var(--wb-row-bg); border: 1px solid var(--wb-row-border); border-radius: 14px; padding: 1.25rem; margin-bottom: 1rem;">
-                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        @if(userCan('system.trainee.restore-plan'))
+                                            <form action="{{ route('system.trainee.restore-plan', $result->id) }}" method="POST" class="d-inline restore-batch-form"
+                                                  data-confirm-msg="{{ $restoreConfirmMsg }}">
+                                                @csrf
+                                                <input type="hidden" name="plan_ids" value="{{ $batch['plan_ids_str'] }}">
+                                                <button type="submit" class="btn btn-sm btn-gym-neon fw-bold d-flex align-items-center gap-2 px-4 py-2 shadow-sm">
+                                                    <i class="ki-duotone ki-arrows-loop fs-4 text-dark"></i>
+                                                    <span class="text-dark">{{ __('Restore This Program') }}</span>
+                                                </button>
+                                            </form>
+                                        @endif
+                                        <button type="button" class="btn btn-sm btn-icon btn-light" 
+                                                data-bs-toggle="collapse" data-bs-target="#{{ $collapseId }}" aria-expanded="false" aria-controls="{{ $collapseId }}">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {{-- Collapsible Body: Days and Exercises --}}
+                                <div class="collapse" id="{{ $collapseId }}">
+                                    <div class="p-5 p-lg-6 d-flex flex-column gap-5">
+                                        @foreach($batch['plans'] as $dIdx => $archivedPlan)
+                                            <div class="archived-day-pill" style="background: var(--wb-row-bg); border: 1px solid var(--wb-row-border); border-radius: 14px; padding: 1.25rem;">
+                                                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <i class="fas fa-calendar-day" style="color: var(--wb-accent);"></i>
-                                                        <span class="fw-bold" style="color: var(--wb-text);">{{ $archivedPlan->day_name ?? '' }}</span>
+                                                        <span class="badge fw-bold" style="background: var(--wb-accent-soft); color: var(--wb-accent); border: 1px solid var(--wb-row-border);">
+                                                            Day {{ $dIdx + 1 }}
+                                                        </span>
+                                                        <span class="fw-bold fs-5" style="color: var(--wb-text);">{{ $archivedPlan->day_name ?? '' }}</span>
                                                         <span class="badge badge-archived">{{ __('Archived') }}</span>
                                                     </div>
                                                     @if($archivedPlan->exercises->count() > 0)
@@ -881,9 +990,9 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                @endforeach
+                                </div>
                             </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             @endif
@@ -1118,24 +1227,181 @@
 
     </div>
 
+    {{-- ===== INLINE ADD WORKOUT DAY MODAL ===== --}}
+    <div class="modal fade" id="inlineAddDayModal" tabindex="-1" aria-labelledby="inlineAddDayModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+            <div class="modal-content rounded-4 border shadow-lg" style="background: var(--wb-surface-solid); border-color: var(--wb-row-border) !important; color: var(--wb-text);">
+                <div class="modal-header border-bottom py-4 px-6" style="border-color: var(--wb-row-border) !important; background: var(--wb-head-bg);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="symbol symbol-40px rounded-3 d-inline-flex flex-center" style="background: var(--wb-accent-soft); color: var(--wb-accent); border: 1px solid var(--wb-row-border);">
+                            <i class="fas fa-calendar-plus fs-3" style="color: inherit;"></i>
+                        </div>
+                        <div>
+                            <h3 class="modal-title fw-bold fs-4 m-0" id="inlineAddDayModalLabel" style="color: var(--wb-text);">
+                                {{ __('Add Workout Day') }}
+                            </h3>
+                            <p class="fs-7 mb-0" style="color: var(--wb-text-muted);">
+                                {{ __('Create and attach a new workout routine day directly to this trainee profile.') }}
+                            </p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-6 p-lg-8">
+                    <form id="inline-add-day-form" action="{{ route('system.workout.storeInlineDay') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="trainee_id" value="{{ $result->id }}">
+
+                        <div class="wb-day mb-0" style="background: transparent; border: none; padding: 0;">
+                            <div class="row g-4 mb-6">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label required" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;">@lang('Day Name')</label>
+                                    <input type="text" name="day_name" id="inline_day_name" class="form-control form-control-solid" maxlength="100" required
+                                           placeholder="e.g. Day {{ ($result->currentWorkoutPlans->count() ?? 0) + 1 }}: Shoulders & Abs"/>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-fire text-warning me-1"></i>@lang('Warmup')</label>
+                                    <input type="text" name="warmup" class="form-control form-control-solid"
+                                           placeholder="@lang('Warm up instructions...')"/>
+                                </div>
+                            </div>
+
+                            <section class="wb-exercises" aria-label="@lang('Exercises')">
+                                <header class="wb-exercises__header">
+                                    <div class="wb-exercises__title">
+                                        <span class="wb-exercises__icon"><i class="fas fa-dumbbell"></i></span>
+                                        <div>
+                                            <h3>@lang('Exercises')</h3>
+                                            <p>@lang('Sets, reps, rest, tempo and up to 4 target weights')</p>
+                                        </div>
+                                    </div>
+                                    <span class="wb-count"><span class="wb-count__num" id="modal-exercise-count">1</span> @lang('Exercises')</span>
+                                </header>
+
+                                <div class="wb-table-wrap">
+                                    <table class="wb-table" id="modal-exercises-container" data-exercise-index="1">
+                                        <colgroup>
+                                            <col class="wb-col-idx">
+                                            <col class="wb-col-name">
+                                            <col class="wb-col-num">
+                                            <col class="wb-col-num">
+                                            <col class="wb-col-num">
+                                            <col class="wb-col-tempo">
+                                            <col class="wb-col-weights">
+                                            <col class="wb-col-action">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">@lang('Exercise') <span class="text-danger">*</span></th>
+                                                <th scope="col" class="text-center">@lang('Sets')</th>
+                                                <th scope="col" class="text-center">@lang('Reps')</th>
+                                                <th scope="col" class="text-center">@lang('Rest')</th>
+                                                <th scope="col" class="text-center">@lang('Tempo')</th>
+                                                <th scope="col">@lang('Weights')<span class="wb-th-hint">max 4</span></th>
+                                                <th scope="col"><span class="visually-hidden">@lang('Actions')</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="exercise-row wb-row-enter">
+                                            <tr class="wb-row-main">
+                                                <td class="wb-cell-idx" rowspan="2"><span class="wb-idx" aria-hidden="true">1</span></td>
+                                                <td class="wb-cell-name" data-label="@lang('Exercise')">
+                                                    <input type="text" name="exercises[ex_1][name]" class="form-control wb-name" maxlength="150" autocomplete="off"
+                                                           placeholder="@lang('e.g. Incline Bench Press')" aria-label="@lang('Exercise Name')" required>
+                                                    <div class="invalid-feedback"></div>
+                                                </td>
+                                                <td data-label="@lang('Sets')">
+                                                    <input type="text" name="exercises[ex_1][sets]" class="form-control wb-num" maxlength="50" inputmode="numeric"
+                                                           placeholder="4" aria-label="@lang('Sets')">
+                                                </td>
+                                                <td data-label="@lang('Reps')">
+                                                    <input type="text" name="exercises[ex_1][reps]" class="form-control wb-num" maxlength="50"
+                                                           placeholder="8-12" aria-label="@lang('Reps')">
+                                                </td>
+                                                <td data-label="@lang('Rest')">
+                                                    <input type="text" name="exercises[ex_1][rest]" class="form-control wb-num" maxlength="50"
+                                                           placeholder="90s" aria-label="@lang('Rest')">
+                                                </td>
+                                                <td data-label="@lang('Tempo')">
+                                                    <input type="text" name="exercises[ex_1][tempo]" class="form-control wb-num" maxlength="50"
+                                                           placeholder="3-0-1" aria-label="@lang('Tempo')">
+                                                </td>
+                                                <td class="wb-cell-weights" data-label="@lang('Weights') (max 4)">
+                                                    @include('system.workout.partials.weight-inputs', [
+                                                        'name' => "exercises[ex_1][internal_weight]",
+                                                        'weights' => []
+                                                    ])
+                                                </td>
+                                                <td class="wb-cell-action" rowspan="2">
+                                                    <button type="button" class="wb-delete delete-exercise-btn" title="@lang('Delete Exercise')" aria-label="@lang('Delete Exercise')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="wb-row-detail">
+                                                <td data-label="@lang('Video Link')">
+                                                    <span class="wb-mini-label">@lang('Video Link')</span>
+                                                    <div class="wb-input-icon">
+                                                        <i class="fab fa-youtube"></i>
+                                                        <input type="url" name="exercises[ex_1][link]" class="form-control" maxlength="255"
+                                                               placeholder="https://youtube.com/..." aria-label="@lang('Video Link')">
+                                                    </div>
+                                                </td>
+                                                <td colspan="5" data-label="@lang('Coach Notes')">
+                                                    <span class="wb-mini-label">@lang('Coach Notes')</span>
+                                                    <textarea name="exercises[ex_1][notes_en]" rows="1" class="form-control wb-notes"
+                                                              placeholder="@lang('Form cues, progression, tips...')" aria-label="@lang('Coach Notes')"></textarea>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="wb-exercises__footer">
+                                    <button type="button" class="wb-add" id="modal-add-exercise-btn">
+                                        <i class="fas fa-plus"></i>@lang('Add Exercise')
+                                    </button>
+                                </div>
+                            </section>
+
+                            <div class="mt-5">
+                                <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-snowflake text-info me-1"></i>@lang('Post-Workout')</label>
+                                <textarea name="post_workout" class="form-control form-control-solid" rows="2"
+                                          placeholder="@lang('Cool down instructions...')"></textarea>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer border-top py-4 px-6 d-flex justify-content-between" style="border-color: var(--wb-row-border) !important; background: var(--wb-head-bg);">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">@lang('Cancel')</button>
+                    <button type="submit" form="inline-add-day-form" id="save-inline-day-btn" class="btn btn-gym-neon fw-bold d-flex align-items-center gap-2 px-6 py-3">
+                        <i class="fas fa-plus text-dark fs-5"></i>
+                        <span class="text-dark">@lang('Save & Add Day')</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('footer')
     @include('system.workout.partials.weight-inputs-script')
     <script type="text/javascript">
-        $(document).ready(function() {
-            // Add new exercise
-            $(document).on('click', '.add-exercise-btn', function() {
         /**
          * One exercise = one <tbody class="exercise-row"> (main metrics row + detail row).
          * Field names match the day form: exercises[ex_Y][...]
          */
-        function traineeExerciseRowHtml(dayId, exIdx) {
+        function traineeExerciseRowHtml(scopeId, exIdx) {
             var base = `exercises[ex_${exIdx}]`;
             return `
             <tbody class="exercise-row wb-row-enter">
                 <tr class="wb-row-main">
-                    <td class="wb-cell-idx" rowspan="2"><span class="wb-idx" aria-hidden="true"></span></td>
+                    <td class="wb-cell-idx" rowspan="2"><span class="wb-idx" aria-hidden="true">${exIdx}</span></td>
                     <td class="wb-cell-name" data-label="@lang('Exercise')">
                         <input type="text" name="${base}[name]" class="form-control wb-name" maxlength="150" autocomplete="off"
                                placeholder="@lang('e.g. Incline Bench Press')" aria-label="@lang('Exercise Name')">
@@ -1167,12 +1433,12 @@
                     </td>
                 </tr>
                 <tr class="wb-row-detail">
-                    <td data-label="@lang('Link')">
+                    <td data-label="@lang('Video Link')">
                         <span class="wb-mini-label">@lang('Video Link')</span>
                         <div class="wb-input-icon">
-                            <i class="fab fa-link"></i>
+                            <i class="fab fa-Link"></i>
                             <input type="url" name="${base}[link]" class="form-control" maxlength="255"
-                                   placeholder="https://link.com/..." aria-label="@lang('Video Link')">
+                                   placeholder="https://Link.com/..." aria-label="@lang('Video Link')">
                         </div>
                     </td>
                     <td colspan="5" data-label="@lang('Coach Notes')">
@@ -1190,12 +1456,12 @@
         }
 
         $(document).ready(function() {
-            // Add new exercise
+            // Add new exercise to day form
             $(document).on('click', '.add-exercise-btn', function() {
                 var dayId = $(this).data('day-id');
                 var container = $(`#exercises-container-day-${dayId}`);
 
-                var currentExerciseIdx = parseInt(container.attr('data-exercise-index')) + 1;
+                var currentExerciseIdx = parseInt(container.attr('data-exercise-index') || 1) + 1;
                 container.attr('data-exercise-index', currentExerciseIdx);
 
                 var $row = $(traineeExerciseRowHtml(dayId, currentExerciseIdx));
@@ -1204,21 +1470,38 @@
                 $row.find('.wb-name').trigger('focus');
             });
 
-            // Delete exercise
+            // Add new exercise to modal form
+            $(document).on('click', '#modal-add-exercise-btn', function() {
+                var container = $('#modal-exercises-container');
+                var currentExerciseIdx = parseInt(container.attr('data-exercise-index') || 1) + 1;
+                container.attr('data-exercise-index', currentExerciseIdx);
+
+                var $row = $(traineeExerciseRowHtml('modal', currentExerciseIdx));
+                container.append($row);
+                $('#modal-exercise-count').text(container.find('.exercise-row').length);
+                $row.find('.wb-name').trigger('focus');
+            });
+
+            // Delete exercise (both day forms & modal form)
             $(document).on('click', '.delete-exercise-btn', function() {
                 var row = $(this).closest('.exercise-row');
-                var container = $(this).closest('[id^="exercises-container-day-"]');
+                var container = $(this).closest('table');
+                var isModal = (container.attr('id') === 'modal-exercises-container');
 
                 if (container.find('.exercise-row').length > 1) {
                     row.removeClass('wb-row-enter').addClass('wb-row-leave');
                     setTimeout(function () {
                         row.remove();
-                        updateExerciseCount(container);
+                        if (isModal) {
+                            $('#modal-exercise-count').text(container.find('.exercise-row').length);
+                        } else {
+                            updateExerciseCount(container);
+                        }
                     }, 200);
                 } else {
-                    container.find('.exercise-row input:not([type=hidden]), .exercise-row textarea').val('');
-                    container.find('.wb-notes').css('height', '');
-                    GymWeights.reset(container.find('.exercise-row'));
+                    row.find('input:not([type=hidden]), textarea').val('');
+                    row.find('.wb-notes').css('height', '');
+                    GymWeights.reset(row);
                 }
             });
 
@@ -1235,7 +1518,7 @@
                 }
             });
 
-            // Handle form submission via ajax
+            // Handle day form submission via AJAX
             $('.workout-day-form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this);
@@ -1255,7 +1538,9 @@
                         .css('display', 'block');
                     $firstInput.trigger('focus');
                     var errorMsg = "{{ __('Cannot save workout day without exercises. Please add at least one exercise.') }}";
-                    if (typeof notify === 'function') {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({ icon: 'warning', title: "{{ __('Missing Exercises') }}", text: errorMsg });
+                    } else if (typeof notify === 'function') {
                         notify(errorMsg, 'error');
                     } else {
                         alert(errorMsg);
@@ -1275,7 +1560,14 @@
                     success: function(response) {
                         btn.html(originalText).prop('disabled', false);
                         var successMsg = "{{ __('Exercises updated successfully') }}";
-                        if (typeof notify === 'function') {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: successMsg,
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        } else if (typeof notify === 'function') {
                             notify(successMsg, 'success');
                         } else if(typeof FormAlert === "function") {
                             FormAlert('success', successMsg);
@@ -1294,13 +1586,226 @@
                                 errorMsg = firstErr[0];
                             }
                         }
-                        if (typeof notify === 'function') {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ icon: 'error', title: "{{ __('Error') }}", text: errorMsg });
+                        } else if (typeof notify === 'function') {
                             notify(errorMsg, 'error');
                         } else {
                             alert(errorMsg);
                         }
                     }
                 });
+            });
+
+            // Toggle Day Active / Inactive Status
+            $(document).on('click', '.toggle-day-status-btn', function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var dayId = btn.data('day-id');
+                var currentStatus = btn.attr('data-status');
+                var url = btn.data('url');
+
+                var confirmMsg = (currentStatus === 'inactive')
+                    ? "{{ __('Are you sure you want to activate this workout day?') }}"
+                    : "{{ __('Are you sure you want to deactivate this workout day? It will be temporarily muted.') }}";
+
+                var doToggle = function () {
+                    btn.prop('disabled', true);
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (res) {
+                            btn.prop('disabled', false);
+                            var newStatus = res.data && res.data.status ? res.data.status : (res.new_status || (currentStatus === 'inactive' ? 'active' : 'inactive'));
+                            btn.attr('data-status', newStatus);
+
+                            var tabBadge = $('.day-status-badge-' + dayId);
+                            var headerBadge = $('.day-header-badge-' + dayId);
+                            var dayCard = $('#wb_day_card_' + dayId);
+                            var tabPill = $('#tab_pill_' + dayId);
+
+                            if (newStatus === 'inactive') {
+                                btn.removeClass('btn-light-warning text-warning').addClass('btn-light-success text-success');
+                                btn.find('i').removeClass('fa-pause').addClass('fa-play');
+                                btn.find('.toggle-status-text').text("{{ __('Activate Day') }}");
+
+                                tabBadge.removeClass('badge-light-success text-success').addClass('badge-light-warning text-warning').text("{{ __('Inactive') }}");
+                                headerBadge.removeClass('badge-light-success text-success').addClass('badge-light-warning text-warning').text("{{ __('Inactive') }}");
+                                dayCard.addClass('wb-day--inactive');
+                                tabPill.addClass('wb-tab-pill--inactive');
+                            } else {
+                                btn.removeClass('btn-light-success text-success').addClass('btn-light-warning text-warning');
+                                btn.find('i').removeClass('fa-play').addClass('fa-pause');
+                                btn.find('.toggle-status-text').text("{{ __('Deactivate Day') }}");
+
+                                tabBadge.removeClass('badge-light-warning text-warning').addClass('badge-light-success text-success').text("{{ __('Active') }}");
+                                headerBadge.removeClass('badge-light-warning text-warning').addClass('badge-light-success text-success').text("{{ __('Active') }}");
+                                dayCard.removeClass('wb-day--inactive');
+                                tabPill.removeClass('wb-tab-pill--inactive');
+                            }
+
+                            var successMsg = res.message || "{{ __('Day status updated successfully') }}";
+                            if (typeof Swal !== 'undefined') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: successMsg,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            } else if (typeof notify === 'function') {
+                                notify(successMsg, 'success');
+                            } else {
+                                alert(successMsg);
+                            }
+                        },
+                        error: function (xhr) {
+                            btn.prop('disabled', false);
+                            var err = "{{ __('Failed to update day status') }}";
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                err = xhr.responseJSON.message;
+                            }
+                            if (typeof Swal !== 'undefined') {
+                                Swal.fire({ icon: 'error', title: "{{ __('Error') }}", text: err });
+                            } else {
+                                alert(err);
+                            }
+                        }
+                    });
+                };
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: "{{ __('Confirm Status Change') }}",
+                        text: confirmMsg,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: "{{ __('Yes, proceed') }}",
+                        cancelButtonText: "{{ __('Cancel') }}",
+                        confirmButtonColor: '#10b981',
+                        cancelButtonColor: '#6b7280'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            doToggle();
+                        }
+                    });
+                } else {
+                    if (confirm(confirmMsg)) {
+                        doToggle();
+                    }
+                }
+            });
+
+            // Handle Inline Add Day Form Submission
+            $('#inline-add-day-form').on('submit', function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                var dayName = $.trim($('#inline_day_name').val());
+                if (!dayName) {
+                    $('#inline_day_name').addClass('is-invalid');
+                    $('#inline_day_name').siblings('.invalid-feedback')
+                        .text("{{ __('Please enter a day name.') }}")
+                        .css('display', 'block');
+                    $('#inline_day_name').trigger('focus');
+                    return false;
+                }
+
+                var validExCount = 0;
+                form.find('.wb-name').each(function () {
+                    if ($.trim($(this).val()) !== '') {
+                        validExCount++;
+                    }
+                });
+
+                if (validExCount === 0) {
+                    var $firstInput = form.find('.wb-name').first();
+                    $firstInput.addClass('is-invalid');
+                    $firstInput.siblings('.invalid-feedback')
+                        .text("{{ __('Cannot save workout day without exercises. Please enter an exercise name.') }}")
+                        .css('display', 'block');
+                    $firstInput.trigger('focus');
+                    var errorMsg = "{{ __('Cannot save workout day without exercises. Please add at least one exercise.') }}";
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({ icon: 'warning', title: "{{ __('Missing Exercises') }}", text: errorMsg });
+                    } else if (typeof notify === 'function') {
+                        notify(errorMsg, 'error');
+                    } else {
+                        alert(errorMsg);
+                    }
+                    return false;
+                }
+
+                var btn = $('#save-inline-day-btn');
+                var originalHtml = btn.html();
+                btn.html('<i class="fas fa-spinner fa-spin text-dark me-1"></i> <span class="text-dark">@lang("Saving...")</span>').prop('disabled', true);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function (res) {
+                        btn.html(originalHtml).prop('disabled', false);
+                        var successMsg = (res.data && res.data.message) || res.message || "{{ __('New workout day added successfully!') }}";
+
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: successMsg,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            alert(successMsg);
+                            window.location.reload();
+                        }
+                    },
+                    error: function (xhr) {
+                        btn.html(originalHtml).prop('disabled', false);
+                        var errMsg = "{{ __('Failed to add workout day. Please check inputs.') }}";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            var firstErr = Object.values(xhr.responseJSON.errors)[0];
+                            if (Array.isArray(firstErr) && firstErr[0]) {
+                                errMsg = firstErr[0];
+                            }
+                        }
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ icon: 'error', title: "{{ __('Error') }}", text: errMsg });
+                        } else {
+                            alert(errMsg);
+                        }
+                    }
+                });
+            });
+
+            // Confirm SweetAlert for Program Batch Restores
+            $(document).on('submit', '.restore-batch-form', function(e) {
+                var form = this;
+                var msg = $(form).data('confirm-msg') || "{{ __('Are you sure you want to restore this archived workout program?') }}";
+
+                if (typeof Swal !== 'undefined') {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: "{{ __('Restore Archived Program') }}",
+                        text: msg,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: "{{ __('Yes, Restore Program') }}",
+                        cancelButtonText: "{{ __('Cancel') }}",
+                        confirmButtonColor: '#10b981',
+                        cancelButtonColor: '#6b7280'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                }
             });
         });
     </script>

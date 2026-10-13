@@ -20,7 +20,6 @@ use libphonenumber\PhoneNumberUtil;
 
 function img($path)
 {
-
     return asset('storage/' . $path);
 }
 
@@ -75,36 +74,6 @@ function whereBetween(&$eloquent, $columnName, $form, $to)
     }
 }
 
-// function imageResize($imagePath, $width, $height)
-// {
-//     $vImagePath = $imagePath;
-//     $imagePath = storage_path('app/public/' . $imagePath);
-
-//     if (File::exists($imagePath) && explode('/', File::mimeType($imagePath))[0] == 'image') {
-//         $resizedFileName = File::dirname($imagePath) . '/' . File::name($imagePath) . '_' . $width . 'X' . $height . '.' . File::extension($imagePath);
-
-//         if (!Storage::exists($resizedFileName)) {
-//             Image::make($imagePath)
-//                 ->resize($width, $height)
-//                 ->save($resizedFileName);
-//         }
-
-//         return File::dirname($vImagePath) . '/' . File::name($imagePath) . '_' . $width . 'X' . $height . '.' . File::extension($imagePath);
-
-//         //        return $resizedFileName;
-//     }
-
-
-//     return false;
-// }
-
-
-
-
-// function image($imagePath, $width, $height)
-// {
-//     return imageResize($imagePath, $width, $height);
-// }
 
 
 function generateMenu(array $array)
@@ -535,13 +504,6 @@ function break_word($text)
 {
     return view('system.partials.spans.break_word', compact('text'));
 }
-
-// function get_types_trans($text)
-// {
-//     $types = get_types();
-
-//     return isset($types[$text]) ? $types[$text] : '';
-// }
 
 
 function language_data()
