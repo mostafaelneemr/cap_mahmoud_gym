@@ -29,7 +29,6 @@ return [
             'create-trainee' => ['system.trainee.create', 'system.trainee.store'],
             'update-trainee' => ['system.trainee.edit', 'system.trainee.update', 'system.trainee.reset-plan', 'system.trainee.restore-plan'],
             'show-trainee-dashboard' => ['system.dashboard.trainer'],
-            'edit-trainee-nutrition' => ['system.nutrition.edit','system.nutrition.update'],
             'view-like-trainee-dashboard' => ['system.impersonate.leave','system.trainee.impersonate'],
         ]
     ],
@@ -52,6 +51,7 @@ return [
             'show-nutrition' => ['system.nutrition.show'],
             'delete-nutrition' => ['system.nutrition.destroy'],
             'show-my-nutrition' => ['system.nutrition.my-plan'],
+            'edit-nutrition' => ['system.nutrition.edit','system.nutrition.update'],
         ]
     ],
 
