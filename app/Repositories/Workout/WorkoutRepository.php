@@ -5,6 +5,7 @@ namespace App\Repositories\Workout;
 use App\Models\Exercise;
 use App\Models\WorkoutPlan;
 use App\Repositories\BaseRepository;
+use App\Services\ExerciseMachineImageService;
 use Illuminate\Support\Facades\DB;
 
 class WorkoutRepository extends BaseRepository
@@ -29,6 +30,8 @@ class WorkoutRepository extends BaseRepository
             $day->update($dayData);
         }
 
+        $imageService = app(ExerciseMachineImageService::class);
+
         $keptExerciseIds = [];
         foreach ($exercisesData as $exData) {
             if (empty($exData['name'])) {
@@ -47,10 +50,13 @@ class WorkoutRepository extends BaseRepository
                 // Update
                 $exercise = Exercise::find($exData['exercise_id']);
                 if ($exercise && $exercise->workout_plan_id == $dayId) {
+                    [$exData, $oldImage] = $imageService->resolve($exData, $exercise);
                     $exercise->update($exData);
+                    $imageService->delete($oldImage);
                     $keptExerciseIds[] = $exercise->id;
                 }
             } else {
+                [$exData] = $imageService->resolve($exData);
                 $exData['workout_plan_id'] = $dayId;
                 $newEx = Exercise::create($exData);
                 $keptExerciseIds[] = $newEx->id;

@@ -1,6 +1,7 @@
 @extends('system.layout')
 
 @section('header')
+    @include('system.workout.partials.workout-media-assets')
     <style>
         /* ===== Trainee Dashboard Custom Styles ===== */
         .trainee-welcome-card {
@@ -259,6 +260,30 @@
             color: #f56c6c;
         }
 
+        .badge-notes {
+            background: rgba(255, 193, 7, 0.12);
+            color: #b45309;
+            white-space: normal;
+            min-width: 140px;
+            max-width: 260px;
+            line-height: 1.4;
+            font-size: 0.83rem;
+            text-align: start;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 6px;
+            padding: 6px 10px;
+            word-break: break-word;
+        }
+
+        .badge-notes i {
+            color: #d97706;
+            margin-top: 3px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
         .video-link {
             display: inline-flex;
             align-items: center;
@@ -476,12 +501,15 @@
                          role="tabpanel">
 
                         {{-- Warmup --}}
-                        @if($plan->warmup)
+                        @if($plan->warmup || !empty($plan->warmup_links_list))
                             <div class="warmup-section mb-5">
                                 <div class="section-label text-warning">
                                     <i class="fas fa-fire me-1"></i> {{ __('Warm Up') }}
                                 </div>
-                                <div class="text-gray-800 fw-semibold">{{ $plan->display_warmup }}</div>
+                                @if($plan->warmup)
+                                    <div class="text-gray-800 fw-semibold mb-2">{{ $plan->display_warmup }}</div>
+                                @endif
+                                @include('system.workout.partials.warmup-link-badges', ['links' => $plan->warmup_links_list, 'modal' => true, 'title' => $plan->day_name])
                             </div>
                         @endif
 
@@ -498,7 +526,8 @@
                                         <th>{{ __('Rest') }}</th>
                                         <th>{{ __('Weight') }}</th>
                                         <th>{{ __('Tempo') }}</th>
-                                        <th>{{ __('Video') }}</th>
+                                        <th>{{ __('Note') }}</th>
+                                        <th>{{ __('Media') }}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -561,16 +590,34 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($exercise->link)
-                                                    <button type="button" class="video-link open-video-btn"
-                                                            data-video-url="{{ $exercise->link }}"
-                                                            data-exercise-name="{{ $exercise->name }}">
-                                                        <i class="fab fa-youtube"></i>
-                                                        {{ __('Watch') }}
-                                                    </button>
+                                                @if($exercise->notes_en)
+                                                    <span class="badge-metric badge-notes" title="{{ $exercise->notes_en }}">
+                                                        <i class="fas fa-comment-dots"></i>
+                                                        <span>{{ $exercise->notes_en }}</span>
+                                                    </span>
                                                 @else
                                                     <span class="text-muted">—</span>
                                                 @endif
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    @if($exercise->link)
+                                                        <button type="button" class="video-link open-video-btn"
+                                                                data-video-url="{{ $exercise->link }}"
+                                                                data-exercise-name="{{ $exercise->name }}">
+                                                            <i class="fab fa-youtube"></i>
+                                                            {{ __('Watch') }}
+                                                        </button>
+                                                    @endif
+                                                    @if($exercise->machine_image_url)
+                                                        <button type="button" class="btn btn-sm btn-icon btn-light-warning mi-preview-btn p-0" style="width:34px;height:34px;border-radius:8px;overflow:hidden;display:inline-flex;" data-img-url="{{ $exercise->machine_image_url }}" data-title="{{ $exercise->name }}" title="{{ __('View Equipment Image') }}">
+                                                            <img src="{{ $exercise->machine_image_url }}" style="width:100%;height:100%;object-fit:cover;">
+                                                        </button>
+                                                    @endif
+                                                    @if(!$exercise->link && !$exercise->machine_image_url)
+                                                        <span class="text-muted">—</span>
+                                                    @endif
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

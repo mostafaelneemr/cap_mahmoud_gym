@@ -2,7 +2,6 @@
 
 namespace App\Modules\System;
 
-use App\Models\Setting;
 use App\Services\SettingService;
 use Illuminate\Http\Request;
 

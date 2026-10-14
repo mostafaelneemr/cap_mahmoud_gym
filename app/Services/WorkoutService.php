@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Models\Exercise;
+use App\Models\WorkoutPlan;
 use App\Repositories\Exercise\ExerciseRepository;
 use App\Repositories\Trainee\TraineeRepository;
 use App\Repositories\Workout\WorkoutRepository;
 use Illuminate\Support\Facades\Crypt;
-
 
 class WorkoutService extends BaseService
 {
@@ -112,6 +112,8 @@ class WorkoutService extends BaseService
             return false;
         }
 
+        $imageService = app(ExerciseMachineImageService::class);
+
         \DB::beginTransaction();
         try {
             foreach ($programs as $dayKey => $dayData) {
@@ -123,6 +125,7 @@ class WorkoutService extends BaseService
                     'trainee_id' => $trainee_id,
                     'day_name' => $dayName,
                     'warmup' => $warmup,
+                    'warmup_links' => WorkoutPlan::normalizeWarmupLinks($dayData['warmup_links'] ?? null),
                     'post_workout' => $postWorkout,
                 ]);
 
@@ -131,6 +134,10 @@ class WorkoutService extends BaseService
                         $exName = !empty($exData['name']) ? $exData['name'] : null;
 
                         if (!empty($exName)) {
+                            [$imageData] = $imageService->resolve([
+                                'machine_image' => $exData['machine_image'] ?? null,
+                            ]);
+
                             $this->exerciseRepository->store([
                                 'workout_plan_id' => $workoutPlan->id,
                                 'name' => $exName,
@@ -143,6 +150,7 @@ class WorkoutService extends BaseService
                                 'tempo' => $exData['tempo'] ?? null,
                                 'link' => $exData['link'] ?? null,
                                 'notes_en' => $exData['notes_en'] ?? null,
+                                'machine_image' => $imageData['machine_image'] ?? null,
                             ]);
                         }
                     }
@@ -153,6 +161,7 @@ class WorkoutService extends BaseService
         } catch (\Exception $e) {
             errorLog('WorkoutService@store: ' . $e->getMessage());
             \DB::rollBack();
+            $imageService->discardStored();
             return false;
         }
     }

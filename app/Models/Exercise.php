@@ -3,9 +3,11 @@
 namespace App\Models;
 
 
+use App\Services\ExerciseMachineImageService;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Exercise extends GlobalModel
@@ -27,8 +29,28 @@ class Exercise extends GlobalModel
         'tempo',
         'link',
         'notes_en',
+        'machine_image',
         'status'
     ];
+
+    /** Public URL of the machine / equipment photo (or null). */
+    public function getMachineImageUrlAttribute(): ?string
+    {
+        if (empty($this->machine_image)) {
+            return null;
+        }
+
+        return Storage::disk(ExerciseMachineImageService::DISK)->url($this->machine_image);
+    }
+
+    protected static function booted()
+    {
+        // Soft-deleted exercises keep their image (they can be restored);
+        // only a permanent delete removes the file from storage.
+        static::forceDeleted(function (Exercise $exercise) {
+            app(ExerciseMachineImageService::class)->delete($exercise->machine_image);
+        });
+    }
 
     /** Maximum number of recommended weights per exercise. */
     public const MAX_WEIGHTS = 4;

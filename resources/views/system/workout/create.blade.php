@@ -2,6 +2,7 @@
 
 @section('header')
     @include('system.workout.partials.exercise-table-styles')
+    @include('system.workout.partials.workout-media-assets')
     <style>
         .is-invalid + .select2-container .select2-selection,
         .select2-container--bootstrap5.is-invalid .select2-selection,
@@ -13,7 +14,7 @@
 
 @section('content')
 
-    {!! Form::open(['id'=>'main-form','onsubmit' => 'FormSubmit("'.route('system.workout.store') .'");return false;','method' => 'POST']) !!}
+    {!! Form::open(['id'=>'main-form','files' => true, 'enctype' => 'multipart/form-data', 'onsubmit' => 'FormSubmit("'.route('system.workout.store') .'");return false;','method' => 'POST']) !!}
     <div id="form-alert-message"></div>
 
     <div class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row w-100" id="kt_dynamic_stepper">
@@ -123,7 +124,7 @@
             return `
             <tbody class="exercise-row wb-row-enter">
                 <tr class="wb-row-main">
-                    <td class="wb-cell-idx" rowspan="2"><span class="wb-idx" aria-hidden="true"></span></td>
+                    <td class="wb-cell-idx" rowspan="3"><span class="wb-idx" aria-hidden="true"></span></td>
                     <td class="wb-cell-name" data-label="@lang('Exercise')">
                         <input type="text" name="${base}[name]" class="form-control wb-name" maxlength="150" autocomplete="off"
                                placeholder="@lang('e.g. Incline Bench Press')" aria-label="@lang('Exercise Name')">
@@ -148,14 +149,14 @@
                     <td class="wb-cell-weights" data-label="@lang('Weights') (max 4)">
                         ${GymWeights.build(`${base}[internal_weight]`)}
                     </td>
-                    <td class="wb-cell-action" rowspan="2">
+                    <td class="wb-cell-action" rowspan="3">
                         <button type="button" class="wb-delete delete-exercise-btn" title="@lang('Delete Exercise')" aria-label="@lang('Delete Exercise')">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
                 </tr>
-                <tr class="wb-row-detail">
-                    <td data-label="@lang('Video Link')">
+                <tr class="wb-row-detail wb-row-media">
+                    <td colspan="3" data-label="@lang('Video Link')">
                         <span class="wb-mini-label">@lang('Video Link')</span>
                         <div class="wb-input-icon">
                             <i class="fab fa-youtube"></i>
@@ -163,7 +164,13 @@
                                    placeholder="https://youtube.com/..." aria-label="@lang('Video Link')">
                         </div>
                     </td>
-                    <td colspan="5" data-label="@lang('Coach Notes')">
+                    <td colspan="3" data-label="@lang('Machine / Equipment Photo')">
+                        <span class="wb-mini-label">@lang('Machine Photo')</span>
+                        ${GymMedia.buildMachineImage(base, '', '')}
+                    </td>
+                </tr>
+                <tr class="wb-row-detail wb-row-notes">
+                    <td colspan="6" data-label="@lang('Coach Notes')">
                         <span class="wb-mini-label">@lang('Coach Notes')</span>
                         <textarea name="${base}[notes_en]" rows="1" class="form-control wb-notes"
                                   placeholder="@lang('Form cues, progression, tips...')" aria-label="@lang('Coach Notes')"></textarea>
@@ -191,11 +198,12 @@
                         <div class="invalid-feedback"></div>
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-4">
                         <label class="form-label wb-field-label"><i class="fas fa-fire text-warning"></i>@lang('Warmup')</label>
                         <textarea name="program[day_${i}][warmup]" class="form-control form-control-solid" rows="2"
                                   placeholder="@lang('Warm up instructions...')"></textarea>
                         <div class="invalid-feedback"></div>
+                        ${GymMedia.buildWarmupLinks(`program[day_${i}][warmup_links]`, [])}
                     </div>
 
                     <section class="wb-exercises" aria-label="@lang('Exercises')">
@@ -451,6 +459,12 @@
                     container.find('.exercise-row input, .exercise-row textarea').val('');
                     container.find('.wb-notes').css('height', '');
                     GymWeights.reset(container.find('.exercise-row'));
+                    var $mi = container.find('.exercise-row .mi-wrapper');
+                    $mi.removeClass('has-image').find('.mi-file-input').val('');
+                    $mi.find('.mi-preview-img').attr('src', '');
+                    $mi.find('.mi-preview-btn').attr('data-img-url', '');
+                    $mi.find('.mi-upload-text').text("{{ __('Machine Photo') }}");
+                    $mi.find('.mi-remove-flag').val('0');
                 }
             });
 

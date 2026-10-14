@@ -113,10 +113,7 @@ class TraineeController extends SystemController
         $batchOrIds = $request->input('plan_ids')
             ?: ($request->input('ids') ?: ($request->input('archived_at') ?: $request->input('archived_date')));
 
-        $restored = $this->workoutService->restoreLatestArchivedWorkout(
-            (int) $id,
-            $batchOrIds
-        );
+        $restored = $this->workoutService->restoreLatestArchivedWorkout((int) $id, $batchOrIds);
 
         if ($restored) {
             if ($request->ajax() || $request->wantsJson()) {

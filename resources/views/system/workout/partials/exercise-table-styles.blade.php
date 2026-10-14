@@ -194,7 +194,7 @@
         letter-spacing: .04em;
     }
 
-    /* Each exercise = one <tbody> with a main row + a detail row */
+    /* Each exercise = one <tbody> with a main row + 2 detail rows (media + notes) */
     .wb-table tbody.exercise-row { counter-increment: wb-exercise; }
     .wb-table tbody.exercise-row td {
         background: var(--wb-row-bg);
@@ -205,7 +205,9 @@
         transition: background-color .18s ease !important;
     }
     .wb-table tbody.exercise-row .wb-row-main td { border-bottom: 0; padding-top: .8rem; }
-    .wb-table tbody.exercise-row .wb-row-detail td { border-top: 0; padding-bottom: .8rem; }
+    .wb-table tbody.exercise-row .wb-row-detail td { border-top: 0; }
+    .wb-table tbody.exercise-row .wb-row-media td { border-top: 0; border-bottom: 0; padding-top: .25rem; padding-bottom: .35rem; }
+    .wb-table tbody.exercise-row .wb-row-notes td { border-top: 0; padding-top: .25rem; padding-bottom: .8rem; }
     .wb-table tbody.exercise-row td.wb-cell-idx {
         border-inline-start: 3px solid transparent;
         border-start-start-radius: 12px;
@@ -390,6 +392,8 @@
             gap: .65rem;
         }
         .wb-row-detail { margin-top: .65rem; grid-template-columns: 1fr; }
+        .wb-row-media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .wb-row-notes { grid-template-columns: 1fr; margin-top: .45rem; }
         .wb-table td.wb-cell-name,
         .wb-table td.wb-cell-weights { grid-column: 1 / -1; }
         .wb-table td.wb-cell-name { padding-inline-end: 2.75rem !important; }
@@ -414,6 +418,7 @@
     }
     @media (max-width: 575.98px) {
         .wb-row-main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .wb-row-media { grid-template-columns: 1fr; }
         .wb-exercises__header { flex-wrap: wrap; }
     }
     @media (prefers-reduced-motion: reduce) {
