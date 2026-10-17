@@ -523,6 +523,77 @@ window.GymMedia = window.GymMedia || (function ($) {
         }
     });
 
+    // Preview / Open Exercise Video Link in new tab
+    $(document).on('click', '.wb-video-preview-btn', function (e) {
+        e.preventDefault();
+        const $btn = $(this);
+        const $wrap = $btn.closest('.wb-video-link-wrap, td');
+        let $input = $wrap.find('input[type="url"], .wb-video-input');
+        if (!$input.length) {
+            $input = $btn.siblings('.wb-input-icon').find('input');
+        }
+        let url = $.trim($input.val());
+
+        if (!url) {
+            const noUrlMsg = "{{ __('Please enter a video URL first.') }}";
+            if (typeof notify === 'function') {
+                notify(noUrlMsg, 'warning');
+            } else if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'info',
+                    title: "{{ __('No URL') }}",
+                    text: noUrlMsg,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                alert(noUrlMsg);
+            }
+            $input.trigger('focus');
+            return;
+        }
+
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
+        }
+
+        try {
+            const parsed = new URL(url);
+            if (!parsed.hostname || !parsed.hostname.includes('.')) {
+                throw new Error('Invalid host');
+            }
+            window.open(url, '_blank', 'noopener,noreferrer');
+        } catch (err) {
+            const invalidMsg = "{{ __('Please enter a valid URL.') }}";
+            if (typeof notify === 'function') {
+                notify(invalidMsg, 'error');
+            } else if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: "{{ __('Invalid URL') }}",
+                    text: invalidMsg,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                alert(invalidMsg);
+            }
+            $input.trigger('focus');
+        }
+    });
+
+    // Toggle Exercise Video Preview button active/disabled state on typing
+    $(document).on('input change', '.wb-video-link-wrap input, .wb-video-input', function () {
+        const val = $.trim($(this).val());
+        const $wrap = $(this).closest('.wb-video-link-wrap, td');
+        const $btn = $wrap.find('.wb-video-preview-btn');
+        if (val && (val.includes('.') || /^https?:\/\//i.test(val))) {
+            $btn.removeClass('is-disabled').removeAttr('aria-disabled');
+        } else {
+            $btn.addClass('is-disabled').attr('aria-disabled', 'true');
+        }
+    });
+
     // Machine image file selection -> instant thumbnail preview
     $(document).on('change', '.mi-file-input', function () {
         const input = this;

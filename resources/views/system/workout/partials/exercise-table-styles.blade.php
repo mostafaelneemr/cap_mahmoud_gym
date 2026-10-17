@@ -296,6 +296,51 @@
     }
     .wb-scope .wb-table .wb-input-icon .form-control { padding-inline-start: 2.05rem !important; }
 
+    /* Exercise Video Link & Preview Action */
+    .wb-video-link-wrap {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+    }
+    .wb-video-link-wrap .wb-input-icon {
+        flex: 1;
+        min-width: 0;
+    }
+    .wb-video-preview-btn {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 9px;
+        background: rgba(0, 158, 247, 0.12);
+        color: #009ef7;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        flex-shrink: 0;
+        font-size: 0.95rem;
+        padding: 0;
+        text-decoration: none;
+    }
+    .wb-video-preview-btn:hover:not(.is-disabled):not(:disabled) {
+        background: #009ef7;
+        border-color: #009ef7;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(0, 158, 247, 0.35);
+    }
+    .wb-video-preview-btn.is-disabled,
+    .wb-video-preview-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        background: rgba(148, 163, 184, 0.08);
+        border-color: rgba(255, 255, 255, 0.06);
+        color: #94a3b8;
+        transform: none;
+        box-shadow: none;
+    }
+
     /* Weight group inside the table */
     .wb-table .weight-inputs { gap: .35rem; }
     .wb-table .weight-inputs__list { grid-template-columns: repeat(auto-fill, minmax(66px, 1fr)); gap: .35rem; }

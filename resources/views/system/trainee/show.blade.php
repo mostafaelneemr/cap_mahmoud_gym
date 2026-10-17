@@ -748,14 +748,23 @@
                                                         <tr class="wb-row-detail wb-row-media">
                                                             <td colspan="3" data-label="@lang('Video Link')">
                                                                 <span class="wb-mini-label">@lang('Video Link')</span>
-                                                                <div class="wb-input-icon">
-                                                                    <i class="fab fa-youtube"></i>
-                                                                    <input type="url"
-                                                                           name="exercises[ex_{{ $currentExIdx }}][link]"
-                                                                           value="{{ $exercise->link }}"
-                                                                           class="form-control" maxlength="255"
-                                                                           placeholder="https://video Link.com/..."
-                                                                           aria-label="@lang('Video Link')">
+                                                                @php $hasExLink = !empty(trim((string)$exercise->link)); @endphp
+                                                                <div class="wb-video-link-wrap">
+                                                                    <div class="wb-input-icon">
+                                                                        <i class="fab fa-youtube"></i>
+                                                                        <input type="url"
+                                                                               name="exercises[ex_{{ $currentExIdx }}][link]"
+                                                                               value="{{ $exercise->link }}"
+                                                                               class="form-control wb-video-input" maxlength="255"
+                                                                               placeholder="https://video link.com/..."
+                                                                               aria-label="@lang('Video Link')">
+                                                                    </div>
+                                                                    <button type="button" class="wb-video-preview-btn {{ $hasExLink ? '' : 'is-disabled' }}"
+                                                                            title="@lang('Preview / Open Video')"
+                                                                            aria-label="@lang('Preview / Open Video')"
+                                                                            @if(!$hasExLink) aria-disabled="true" @endif>
+                                                                        <i class="fas fa-external-link-alt"></i>
+                                                                    </button>
                                                                 </div>
                                                             </td>
                                                             <td colspan="3"
@@ -834,12 +843,20 @@
                                                         <tr class="wb-row-detail wb-row-media">
                                                             <td colspan="3" data-label="@lang('Video Link')">
                                                                 <span class="wb-mini-label">@lang('Video Link')</span>
-                                                                <div class="wb-input-icon">
-                                                                    <i class="fab fa-youtube"></i>
-                                                                    <input type="url" name="exercises[ex_1][link]"
-                                                                           class="form-control" maxlength="255"
-                                                                           placeholder="https://youtube.com/..."
-                                                                           aria-label="@lang('Video Link')">
+                                                                <div class="wb-video-link-wrap">
+                                                                    <div class="wb-input-icon">
+                                                                        <i class="fab fa-youtube"></i>
+                                                                        <input type="url" name="exercises[ex_1][link]"
+                                                                               class="form-control wb-video-input" maxlength="255"
+                                                                               placeholder="https://video link.com/..."
+                                                                               aria-label="@lang('Video Link')">
+                                                                    </div>
+                                                                    <button type="button" class="wb-video-preview-btn is-disabled"
+                                                                            title="@lang('Preview / Open Video')"
+                                                                            aria-label="@lang('Preview / Open Video')"
+                                                                            aria-disabled="true">
+                                                                        <i class="fas fa-external-link-alt"></i>
+                                                                    </button>
                                                                 </div>
                                                             </td>
                                                             <td colspan="3"
@@ -1450,10 +1467,18 @@
                                             <tr class="wb-row-detail wb-row-media">
                                                 <td colspan="3" data-label="@lang('Video Link')">
                                                     <span class="wb-mini-label">@lang('Video Link')</span>
-                                                    <div class="wb-input-icon">
-                                                        <i class="fab fa-youtube"></i>
-                                                        <input type="url" name="exercises[ex_1][link]" class="form-control" maxlength="255"
-                                                               placeholder="https://youtube.com/..." aria-label="@lang('Video Link')">
+                                                    <div class="wb-video-link-wrap">
+                                                        <div class="wb-input-icon">
+                                                            <i class="fab fa-youtube"></i>
+                                                            <input type="url" name="exercises[ex_1][link]" class="form-control wb-video-input" maxlength="255"
+                                                                   placeholder="https://video link.com/..." aria-label="@lang('Video Link')">
+                                                        </div>
+                                                        <button type="button" class="wb-video-preview-btn is-disabled"
+                                                                title="@lang('Preview / Open Video')"
+                                                                aria-label="@lang('Preview / Open Video')"
+                                                                aria-disabled="true">
+                                                            <i class="fas fa-external-link-alt"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                                 <td colspan="3" data-label="@lang('Machine / Equipment Photo')">
@@ -1552,10 +1577,18 @@
                 <tr class="wb-row-detail wb-row-media">
                     <td colspan="3" data-label="@lang('Video Link')">
                         <span class="wb-mini-label">@lang('Video Link')</span>
-                        <div class="wb-input-icon">
-                            <i class="fab fa-youtube"></i>
-                            <input type="url" name="${base}[link]" class="form-control" maxlength="255"
-                                   placeholder="https://youtube.com/..." aria-label="@lang('Video Link')">
+                        <div class="wb-video-link-wrap">
+                            <div class="wb-input-icon">
+                                <i class="fab fa-youtube"></i>
+                                <input type="url" name="${base}[link]" class="form-control wb-video-input" maxlength="255"
+                                       placeholder="https://video link.com/..." aria-label="@lang('Video Link')">
+                            </div>
+                            <button type="button" class="wb-video-preview-btn is-disabled"
+                                    title="@lang('Preview / Open Video')"
+                                    aria-label="@lang('Preview / Open Video')"
+                                    aria-disabled="true">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
                         </div>
                     </td>
                     <td colspan="3" data-label="@lang('Machine / Equipment Photo')">
@@ -1631,6 +1664,7 @@
                     $mi.find('.mi-preview-btn').attr('data-img-url', '');
                     $mi.find('.mi-upload-text').text("{{ __('Machine Photo') }}");
                     $mi.find('.mi-remove-flag').val('1');
+                    row.find('.wb-video-preview-btn').addClass('is-disabled').attr('aria-disabled', 'true');
                 }
             });
 
