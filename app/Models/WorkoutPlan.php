@@ -24,7 +24,7 @@ class WorkoutPlan extends GlobalModel
     protected $fillable = ['trainee_id', 'day_name', 'warmup', 'warmup_links', 'post_workout', 'status'];
 
     /** Maximum number of warmup video links per workout day. */
-    public const MAX_WARMUP_LINKS = 2;
+    public const MAX_WARMUP_LINKS = 5;
 
     /**
      * Normalize warmup links input: trimmed strings, no empty values,

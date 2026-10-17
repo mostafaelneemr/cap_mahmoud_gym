@@ -17,20 +17,48 @@ class StoreExercisFormRequest extends FormRequest
     protected function prepareForValidation()
     {
         $exercises = $this->input('exercises');
-        if (!is_array($exercises)) {
-            return;
-        }
+        if (is_array($exercises)) {
+            foreach ($exercises as $key => $exData) {
+                if (!is_array($exData)) {
+                    continue;
+                }
+                $raw = $exData['internal_weight'] ?? ($exData['weight'] ?? null);
+                $exercises[$key]['internal_weight'] = Exercise::normalizeWeights($raw);
+                unset($exercises[$key]['weight']);
 
-        foreach ($exercises as $key => $exData) {
-            if (!is_array($exData)) {
-                continue;
+                if (isset($exData['link']) && is_string($exData['link'])) {
+                    $link = trim($exData['link']);
+                    if ($link !== '' && !preg_match('~^https?://~i', $link)) {
+                        $exercises[$key]['link'] = 'https://' . $link;
+                    } elseif ($link === '') {
+                        $exercises[$key]['link'] = null;
+                    }
+                }
             }
-            $raw = $exData['internal_weight'] ?? ($exData['weight'] ?? null);
-            $exercises[$key]['internal_weight'] = Exercise::normalizeWeights($raw);
-            unset($exercises[$key]['weight']);
+            $this->merge(['exercises' => $exercises]);
         }
 
-        $this->merge(['exercises' => $exercises]);
+        $rawWarmupLinks = $this->input('warmup_links');
+        if (is_array($rawWarmupLinks)) {
+            $cleaned = array_values(array_filter(
+                array_map(function ($l) {
+                    if (!is_scalar($l)) {
+                        return '';
+                    }
+                    $trimmed = trim((string) $l);
+                    if ($trimmed === '') {
+                        return '';
+                    }
+                    if (!preg_match('~^https?://~i', $trimmed)) {
+                        $trimmed = 'https://' . $trimmed;
+                    }
+                    return $trimmed;
+                }, $rawWarmupLinks),
+                fn($l) => $l !== ''
+            ));
+            $cleaned = array_slice($cleaned, 0, \App\Models\WorkoutPlan::MAX_WARMUP_LINKS);
+            $this->merge(['warmup_links' => $cleaned]);
+        }
     }
 
     public function rules()
@@ -50,6 +78,8 @@ class StoreExercisFormRequest extends FormRequest
                     'trainee_id' => 'nullable|integer',
                     'day_name' => 'nullable|string|max:100',
                     'warmup' => 'nullable|string',
+                    'warmup_links' => ['nullable', 'array', 'max:5'],
+                    'warmup_links.*' => ['nullable', 'url', 'max:255'],
                     'post_workout' => 'nullable|string',
                     'exercises' => 'nullable|array',
                     'exercises.*.exercise_id' => 'nullable|integer',
@@ -62,7 +92,6 @@ class StoreExercisFormRequest extends FormRequest
                     'exercises.*.tempo' => 'nullable|string|max:50',
                     'exercises.*.link' => 'nullable|url|max:255',
                     'exercises.*.notes_en' => 'nullable|string',
-
                 ];
 
             }

@@ -62,17 +62,50 @@ class WorkoutController extends SystemController
 
     public function storeDayExercises(StoreExercisFormRequest $request, $dayId, WorkoutRepository $workoutRepository)
     {
-        $dayData = array_filter($request->only([
-            'day_name', 'warmup', 'post_workout'
-        ]), fn($v) => !is_null($v));
+        $rawWarmupLinks = $request->input('warmup_links', []);
+        $warmupLinks = WorkoutPlan::normalizeWarmupLinks($rawWarmupLinks);
 
-        $workoutRepository->syncDayExercises($dayId, $request->input('exercises', []), $dayData);
+        $dayData = [
+            'day_name' => $request->input('day_name'),
+            'warmup' => $request->input('warmup'),
+            'post_workout' => $request->input('post_workout'),
+            'warmup_links' => $warmupLinks,
+        ];
 
-        if ($request->ajax()) {
-            return $this->success(__('Exercises updated successfully'));
+        // Filter out null values except for warmup_links which can be explicitly set to null
+        $dayData = array_filter($dayData, fn($v) => !is_null($v));
+        $dayData['warmup_links'] = $warmupLinks;
+
+        $day = $workoutRepository->syncDayExercises((int) $dayId, $request->input('exercises', []), $dayData);
+
+        if (!$day) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => false,
+                    'success' => false,
+                    'message' => __('Workout day not found'),
+                ], 404);
+            }
+            flash_msg('error', __('Workout day not found'));
+            return redirect()->back();
         }
 
-        flash_msg('success', __('Exercises updated successfully'));
+        $message = __('Day updated successfully');
+        flash_msg('success', $message);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => true,
+                'success' => true,
+                'message' => $message,
+                'data' => [
+                    'day_id' => $day->id,
+                    'day_name' => $day->day_name,
+                    'warmup_links' => $day->warmup_links_list,
+                ],
+            ]);
+        }
+
         return redirect()->back();
     }
 
@@ -112,6 +145,7 @@ class WorkoutController extends SystemController
 
         $dayName = $request->input('day_name') ?: __('New Day');
         $warmup = $request->input('warmup');
+        $warmupLinks = WorkoutPlan::normalizeWarmupLinks($request->input('warmup_links', []));
         $postWorkout = $request->input('post_workout');
 
         DB::beginTransaction();
@@ -120,6 +154,7 @@ class WorkoutController extends SystemController
                 'trainee_id' => $traineeId,
                 'day_name' => $dayName,
                 'warmup' => $warmup,
+                'warmup_links' => $warmupLinks,
                 'post_workout' => $postWorkout,
                 'status' => 'active',
             ]);
@@ -132,10 +167,15 @@ class WorkoutController extends SystemController
             DB::commit();
 
             if ($request->ajax() || $request->wantsJson()) {
-                return $this->success(__('New workout day added successfully'), [
-                    'plan_id' => $plan->id,
-                    'day_name' => $plan->day_name,
-                    'reload' => true,
+                return response()->json([
+                    'status' => true,
+                    'success' => true,
+                    'message' => __('New workout day added successfully'),
+                    'data' => [
+                        'plan_id' => $plan->id,
+                        'day_name' => $plan->day_name,
+                        'reload' => true,
+                    ],
                 ]);
             }
 

@@ -102,7 +102,7 @@
         <div class="col-lg-6 ">
             {{ label(__('Weight')) }}
             <div class="mb-5">
-                {!! Form::number('weight',isset($result->id) ? $trainee->weight:old('weight'),['class'=>'form-control
+                {!! Form::text('weight',isset($result->id) ? $trainee->weight:old('weight'),['class'=>'form-control
                 form-control-solid']) !!}
                 <div class="invalid-feedback" id="weight-form-error"></div>
             </div>

@@ -77,6 +77,33 @@
         font-size: 0.85rem !important;
         height: 38px !important;
     }
+    .wl-preview-btn {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(0, 158, 247, 0.12);
+        color: #009ef7;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+        font-size: 0.85rem;
+    }
+    .wl-preview-btn:hover:not(.is-disabled):not(:disabled) {
+        background: #009ef7;
+        color: #fff;
+        transform: scale(1.05);
+    }
+    .wl-preview-btn.is-disabled,
+    .wl-preview-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background: rgba(148, 163, 184, 0.1);
+        color: #94a3b8;
+    }
     .wl-remove-btn {
         width: 34px;
         height: 34px;
@@ -295,7 +322,7 @@
 
 <script type="text/javascript">
 window.GymMedia = window.GymMedia || (function ($) {
-    const MAX_WARMUP = 2;
+    const MAX_WARMUP = 5;
 
     function buildWarmupLinksHtml(baseName, existingLinks) {
         let links = Array.isArray(existingLinks) ? existingLinks.filter(l => l && String(l).trim() !== '') : [];
@@ -310,15 +337,23 @@ window.GymMedia = window.GymMedia || (function ($) {
 
         let rowsHtml = '';
         links.forEach((link, idx) => {
+            const safeLink = link ? $('<div>').text(link).html() : '';
+            const hasLink = !!(link && String(link).trim() !== '');
             rowsHtml += `
             <div class="wl-item" data-index="${idx}">
                 <div class="wl-input-wrap">
                     <i class="fas fa-link"></i>
-                    <input type="url" name="${baseName}[]" value="${link ? $('<div>').text(link).html() : ''}"
+                    <input type="url" name="${baseName}[]" value="${safeLink}"
                            class="form-control form-control-solid wl-input" maxlength="500"
-                           placeholder="https://youtube.com/... (@lang('Warmup Link') ${idx + 1})"
+                           placeholder="https://video link.com/... (@lang('Warmup Link') ${idx + 1})"
                            aria-label="@lang('Warmup Link') ${idx + 1}">
                 </div>
+                <button type="button" class="wl-preview-btn ${hasLink ? '' : 'is-disabled'}"
+                        title="@lang('Preview / Open Video')"
+                        aria-label="@lang('Preview / Open Video')"
+                        ${hasLink ? '' : 'aria-disabled="true"'}>
+                    <i class="fas fa-external-link-alt"></i>
+                </button>
                 <button type="button" class="wl-remove-btn" title="@lang('Remove')">
                     <i class="fas fa-times"></i>
                 </button>
@@ -329,13 +364,13 @@ window.GymMedia = window.GymMedia || (function ($) {
         <div class="wl-section" data-base-name="${baseName}">
             <div class="wl-header">
                 <span class="wl-title"><i class="fas fa-play-circle text-warning"></i> @lang('Warmup Video Links')</span>
-                <span class="wl-badge-counter"><span class="wl-count">${links.filter(l => l.trim() !== '').length || links.length}</span> / ${MAX_WARMUP}</span>
+                <span class="wl-badge-counter"><span class="wl-count">${links.filter(l => String(l).trim() !== '').length || links.length}</span> / ${MAX_WARMUP}</span>
             </div>
             <div class="wl-list">
                 ${rowsHtml}
             </div>
             <button type="button" class="wl-add-btn" ${isFull ? 'disabled style="display:none !important;"' : ''}>
-                <i class="fas fa-plus"></i> @lang('Add 2nd Warmup Link')
+                <i class="fas fa-plus"></i> @lang('Add Warmup Link')
             </button>
         </div>`;
     }
@@ -376,7 +411,7 @@ window.GymMedia = window.GymMedia || (function ($) {
         }
     }
 
-    // Add 2nd warmup link
+    // Add warmup link (up to MAX_WARMUP = 5)
     $(document).on('click', '.wl-add-btn', function () {
         const $section = $(this).closest('.wl-section');
         const count = $section.find('.wl-item').length;
@@ -390,9 +425,15 @@ window.GymMedia = window.GymMedia || (function ($) {
                 <i class="fas fa-link"></i>
                 <input type="url" name="${baseName}[]" value=""
                        class="form-control form-control-solid wl-input" maxlength="500"
-                       placeholder="https://youtube.com/... (@lang('Warmup Link') ${nextIdx})"
+                       placeholder="https://video link.com/... (@lang('Warmup Link') ${nextIdx})"
                        aria-label="@lang('Warmup Link') ${nextIdx}">
             </div>
+            <button type="button" class="wl-preview-btn is-disabled"
+                    title="@lang('Preview / Open Video')"
+                    aria-label="@lang('Preview / Open Video')"
+                    aria-disabled="true">
+                <i class="fas fa-external-link-alt"></i>
+            </button>
             <button type="button" class="wl-remove-btn" title="@lang('Remove')">
                 <i class="fas fa-times"></i>
             </button>
@@ -411,8 +452,75 @@ window.GymMedia = window.GymMedia || (function ($) {
         } else {
             // If only 1 link left, just clear its text
             $items.find('input').val('');
+            $items.find('.wl-preview-btn').addClass('is-disabled').attr('aria-disabled', 'true');
         }
         updateWarmupCounter($section);
+    });
+
+    // Preview / Open Warmup Video Link in new tab
+    $(document).on('click', '.wl-preview-btn', function (e) {
+        e.preventDefault();
+        const $btn = $(this);
+        const $item = $btn.closest('.wl-item');
+        let url = $.trim($item.find('.wl-input').val());
+
+        if (!url) {
+            const noUrlMsg = "{{ __('Please enter a video URL first.') }}";
+            if (typeof notify === 'function') {
+                notify(noUrlMsg, 'warning');
+            } else if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'info',
+                    title: "{{ __('No URL') }}",
+                    text: noUrlMsg,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                alert(noUrlMsg);
+            }
+            $item.find('.wl-input').trigger('focus');
+            return;
+        }
+
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
+        }
+
+        try {
+            const parsed = new URL(url);
+            if (!parsed.hostname || !parsed.hostname.includes('.')) {
+                throw new Error('Invalid host');
+            }
+            window.open(url, '_blank', 'noopener,noreferrer');
+        } catch (err) {
+            const invalidMsg = "{{ __('Please enter a valid URL.') }}";
+            if (typeof notify === 'function') {
+                notify(invalidMsg, 'error');
+            } else if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: "{{ __('Invalid URL') }}",
+                    text: invalidMsg,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                alert(invalidMsg);
+            }
+            $item.find('.wl-input').trigger('focus');
+        }
+    });
+
+    // Toggle Preview button active/disabled state on typing
+    $(document).on('input change', '.wl-input', function () {
+        const val = $.trim($(this).val());
+        const $btn = $(this).closest('.wl-item').find('.wl-preview-btn');
+        if (val && (val.includes('.') || /^https?:\/\//i.test(val))) {
+            $btn.removeClass('is-disabled').removeAttr('aria-disabled');
+        } else {
+            $btn.addClass('is-disabled').attr('aria-disabled', 'true');
+        }
     });
 
     // Machine image file selection -> instant thumbnail preview

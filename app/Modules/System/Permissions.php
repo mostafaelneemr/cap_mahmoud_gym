@@ -40,6 +40,7 @@ return [
             'create-workout' => ['system.workout.create', 'system.workout.store'],
             'update-workout' => ['system.workout.edit', 'system.workout.update', 'system.workout.updateDay'],
             'delete-workout' => ['system.workout.destroy'],
+            'activate-or-deactivate-workout' => ['system.workout.toggleDayStatus'],
         ]
     ],
 
