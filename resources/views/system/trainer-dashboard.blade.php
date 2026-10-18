@@ -1,6 +1,7 @@
 @extends('system.layout')
 
 @section('header')
+    @include('system.workout.partials.warmup-editor-assets')
     @include('system.workout.partials.workout-media-assets')
     <style>
         /* ===== Trainee Dashboard Custom Styles ===== */
@@ -503,13 +504,15 @@
                         {{-- Warmup --}}
                         @if($plan->warmup || !empty($plan->warmup_links_list))
                             <div class="warmup-section mb-5">
-                                <div class="section-label text-warning">
-                                    <i class="fas fa-fire me-1"></i> {{ __('Warm Up') }}
+                                <div class="section-label text-warning d-flex align-items-center gap-1 mb-2">
+                                    <i class="fas fa-fire"></i> <span>{{ __('Warm Up') }}</span>
                                 </div>
                                 @if($plan->warmup)
-                                    <div class="text-gray-800 fw-semibold mb-2">{{ $plan->display_warmup }}</div>
+                                    <div class="warmup-rich-content text-gray-800 fw-semibold mb-2">{!! $plan->display_warmup !!}</div>
                                 @endif
-                                @include('system.workout.partials.warmup-link-badges', ['links' => $plan->warmup_links_list, 'modal' => true, 'title' => $plan->day_name])
+                                @if(!empty($plan->warmup_links_list))
+                                    @include('system.workout.partials.warmup-link-badges', ['links' => $plan->warmup_links_list, 'modal' => true, 'title' => $plan->day_name])
+                                @endif
                             </div>
                         @endif
 
@@ -637,7 +640,7 @@
                                 <div class="section-label text-primary">
                                     <i class="fas fa-flag-checkered me-1"></i> {{ __('Post Workout') }}
                                 </div>
-                                <div class="text-gray-800 fw-semibold">{{ $plan->display_post_workout }}</div>
+                                <div class="warmup-rich-content text-gray-800 fw-semibold">{!! $plan->display_post_workout !!}</div>
                             </div>
                         @endif
 

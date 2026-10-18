@@ -325,54 +325,8 @@ window.GymMedia = window.GymMedia || (function ($) {
     const MAX_WARMUP = 5;
 
     function buildWarmupLinksHtml(baseName, existingLinks) {
-        let links = Array.isArray(existingLinks) ? existingLinks.filter(l => l && String(l).trim() !== '') : [];
-        if (links.length === 0) {
-            links = [''];
-        }
-        if (links.length > MAX_WARMUP) {
-            links = links.slice(0, MAX_WARMUP);
-        }
-
-        const isFull = links.length >= MAX_WARMUP;
-
-        let rowsHtml = '';
-        links.forEach((link, idx) => {
-            const safeLink = link ? $('<div>').text(link).html() : '';
-            const hasLink = !!(link && String(link).trim() !== '');
-            rowsHtml += `
-            <div class="wl-item" data-index="${idx}">
-                <div class="wl-input-wrap">
-                    <i class="fas fa-link"></i>
-                    <input type="url" name="${baseName}[]" value="${safeLink}"
-                           class="form-control form-control-solid wl-input" maxlength="500"
-                           placeholder="https://video link.com/... (@lang('Warmup Link') ${idx + 1})"
-                           aria-label="@lang('Warmup Link') ${idx + 1}">
-                </div>
-                <button type="button" class="wl-preview-btn ${hasLink ? '' : 'is-disabled'}"
-                        title="@lang('Preview / Open Video')"
-                        aria-label="@lang('Preview / Open Video')"
-                        ${hasLink ? '' : 'aria-disabled="true"'}>
-                    <i class="fas fa-external-link-alt"></i>
-                </button>
-                <button type="button" class="wl-remove-btn" title="@lang('Remove')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>`;
-        });
-
-        return `
-        <div class="wl-section" data-base-name="${baseName}">
-            <div class="wl-header">
-                <span class="wl-title"><i class="fas fa-play-circle text-warning"></i> @lang('Warmup Video Links')</span>
-                <span class="wl-badge-counter"><span class="wl-count">${links.filter(l => String(l).trim() !== '').length || links.length}</span> / ${MAX_WARMUP}</span>
-            </div>
-            <div class="wl-list">
-                ${rowsHtml}
-            </div>
-            <button type="button" class="wl-add-btn" ${isFull ? 'disabled style="display:none !important;"' : ''}>
-                <i class="fas fa-plus"></i> @lang('Add Warmup Link')
-            </button>
-        </div>`;
+        // Consolidated into Quill.js WYSIWYG editor
+        return '';
     }
 
     function buildMachineImageHtml(baseName, existingUrl, exerciseName) {

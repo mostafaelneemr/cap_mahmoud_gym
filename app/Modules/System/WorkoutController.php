@@ -62,19 +62,15 @@ class WorkoutController extends SystemController
 
     public function storeDayExercises(StoreExercisFormRequest $request, $dayId, WorkoutRepository $workoutRepository)
     {
-        $rawWarmupLinks = $request->input('warmup_links', []);
-        $warmupLinks = WorkoutPlan::normalizeWarmupLinks($rawWarmupLinks);
-
         $dayData = [
             'day_name' => $request->input('day_name'),
             'warmup' => $request->input('warmup'),
             'post_workout' => $request->input('post_workout'),
-            'warmup_links' => $warmupLinks,
         ];
 
-        // Filter out null values except for warmup_links which can be explicitly set to null
-        $dayData = array_filter($dayData, fn($v) => !is_null($v));
-        $dayData['warmup_links'] = $warmupLinks;
+        if ($request->has('warmup_links')) {
+            $dayData['warmup_links'] = WorkoutPlan::normalizeWarmupLinks($request->input('warmup_links', []));
+        }
 
         $day = $workoutRepository->syncDayExercises((int) $dayId, $request->input('exercises', []), $dayData);
 
@@ -145,7 +141,7 @@ class WorkoutController extends SystemController
 
         $dayName = $request->input('day_name') ?: __('New Day');
         $warmup = $request->input('warmup');
-        $warmupLinks = WorkoutPlan::normalizeWarmupLinks($request->input('warmup_links', []));
+        $warmupLinks = $request->has('warmup_links') ? WorkoutPlan::normalizeWarmupLinks($request->input('warmup_links', [])) : null;
         $postWorkout = $request->input('post_workout');
 
         DB::beginTransaction();

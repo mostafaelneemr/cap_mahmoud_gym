@@ -2,6 +2,7 @@
 
 @section('header')
     @include('system.workout.partials.exercise-table-styles')
+    @include('system.workout.partials.warmup-editor-assets')
     @include('system.workout.partials.workout-media-assets')
     <style>
         /* ==========================================================================
@@ -633,14 +634,11 @@
                                         </div>
 
                                         <div class="mb-4">
-                                            <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-fire text-warning"></i>@lang('Warmup')</label>
-                                            <textarea name="warmup" class="form-control form-control-solid" rows="5"
-                                                      placeholder="@lang('Warm up instructions...')">{{ $plan->warmup }}</textarea>
-                                            <div class="invalid-feedback"></div>
-                                            @include('system.workout.partials.warmup-links', [
-                                                'name' => 'warmup_links',
-                                                'links' => $plan->warmup_links_list
-                                            ])
+                                            <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-fire text-warning me-1"></i>@lang('Warmup Instructions & Video Links')</label>
+                                            <div class="warmup-quill-wrapper">
+                                                <div id="warmup_editor_day_{{ $plan->id }}" class="warmup-quill-editor" data-placeholder="@lang('Warm up instructions, stretch routine, embed video links...')">{!! $plan->warmup !!}</div>
+                                                <input type="hidden" name="warmup" id="warmup_input_day_{{ $plan->id }}" class="warmup-hidden-input" value="{{ $plan->warmup }}">
+                                            </div>
                                         </div>
 
                                         <section class="wb-exercises" aria-label="@lang('Exercises')">
@@ -892,10 +890,11 @@
                                         </section>
 
                                         <div class="mb-5">
-                                            <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-snowflake text-info"></i>@lang('Post-Workout')</label>
-                                            <textarea name="post_workout" class="form-control form-control-solid" rows="2"
-                                                      placeholder="@lang('Cool down instructions...')">{{ $plan->post_workout }}</textarea>
-                                            <div class="invalid-feedback"></div>
+                                            <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-snowflake text-info me-1"></i>@lang('Post-Workout Instructions & Video Links')</label>
+                                            <div class="warmup-quill-wrapper">
+                                                <div id="post_workout_editor_day_{{ $plan->id }}" class="warmup-quill-editor" data-placeholder="@lang('Cool down instructions, post-stretch routine, embed video links, table...')">{!! $plan->post_workout !!}</div>
+                                                <input type="hidden" name="post_workout" id="post_workout_input_day_{{ $plan->id }}" class="warmup-hidden-input" value="{{ $plan->post_workout }}">
+                                            </div>
                                         </div>
 
                                         <div class="d-flex justify-content-end align-items-center mt-6 pt-4 border-top" style="border-color: var(--wb-row-border) !important;">
@@ -1033,12 +1032,14 @@
                                                 </div>
 
                                                 @if($archivedPlan->warmup || !empty($archivedPlan->warmup_links_list))
-                                                    <div class="mb-3 px-3 py-2 rounded-3" style="background: rgba(255,193,7,0.06); border-left: 3px solid rgba(255,193,7,0.3);">
+                                                    <div class="mb-3 px-3 py-2 rounded-3 warmup-display-box" style="background: rgba(255,193,7,0.06); border-left: 3px solid rgba(255,193,7,0.3);">
+                                                        <small class="fw-bold text-warning d-flex align-items-center gap-1 mb-1"><i class="fas fa-fire"></i><span>{{ __('Warm Up') }}:</span></small>
                                                         @if($archivedPlan->warmup)
-                                                            <small class="fw-bold text-warning"><i class="fas fa-fire me-1"></i>{{ __('Warm Up') }}:</small>
-                                                            <span class="fs-7" style="color: var(--wb-text-secondary, #cbd5e1);">{{ $archivedPlan->warmup }}</span>
+                                                            <div class="warmup-rich-content fs-7" style="color: var(--wb-text-secondary, #cbd5e1);">{!! $archivedPlan->display_warmup !!}</div>
                                                         @endif
-                                                        @include('system.workout.partials.warmup-link-badges', ['links' => $archivedPlan->warmup_links_list, 'title' => $archivedPlan->day_name])
+                                                        @if(!empty($archivedPlan->warmup_links_list))
+                                                            @include('system.workout.partials.warmup-link-badges', ['links' => $archivedPlan->warmup_links_list, 'title' => $archivedPlan->day_name])
+                                                        @endif
                                                     </div>
                                                 @endif
 
@@ -1105,9 +1106,9 @@
                                                 @endif
 
                                                 @if($archivedPlan->post_workout)
-                                                    <div class="mt-3 px-3 py-2 rounded-3" style="background: rgba(114,57,234,0.06); border-left: 3px solid rgba(114,57,234,0.3);">
-                                                        <small class="fw-bold text-info"><i class="fas fa-flag-checkered me-1"></i>{{ __('Post Workout') }}:</small>
-                                                        <span class="fs-7" style="color: var(--wb-text-secondary, #cbd5e1);">{{ $archivedPlan->post_workout }}</span>
+                                                    <div class="mt-3 px-3 py-2 rounded-3 post-workout-display-box" style="background: rgba(6,182,212,0.06); border-left: 3px solid rgba(6,182,212,0.4);">
+                                                        <small class="fw-bold text-info d-flex align-items-center gap-1 mb-1"><i class="fas fa-snowflake"></i><span>{{ __('Post Workout') }}:</span></small>
+                                                        <div class="warmup-rich-content fs-7" style="color: var(--wb-text-secondary, #cbd5e1);">{!! $archivedPlan->display_post_workout !!}</div>
                                                     </div>
                                                 @endif
                                             </div>
@@ -1385,10 +1386,11 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-fire text-warning me-1"></i>@lang('Warmup')</label>
-                                    <textarea name="warmup" class="form-control form-control-solid" rows="2"
-                                              placeholder="@lang('Warm up instructions...')"></textarea>
-                                    @include('system.workout.partials.warmup-links', ['name' => 'warmup_links', 'links' => []])
+                                    <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-fire text-warning me-1"></i>@lang('Warmup Instructions & Video Links')</label>
+                                    <div class="warmup-quill-wrapper">
+                                        <div id="inline_warmup_editor" class="warmup-quill-editor" data-placeholder="@lang('Warm up instructions, stretch routine, embed video links...')"></div>
+                                        <input type="hidden" name="warmup" id="inline_warmup_input" class="warmup-hidden-input">
+                                    </div>
                                 </div>
                             </div>
 
@@ -1509,10 +1511,11 @@
                             </section>
 
                             <div class="mt-5">
-                                <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-snowflake text-info me-1"></i>@lang('Post-Workout')</label>
-                                <textarea name="post_workout" class="form-control form-control-solid" rows="2"
-                                          placeholder="@lang('Cool down instructions...')"></textarea>
-                                <div class="invalid-feedback"></div>
+                                <label class="form-label wb-field-label" style="color: var(--wb-text-secondary, #cbd5e1); font-weight: 600;"><i class="fas fa-snowflake text-info me-1"></i>@lang('Post-Workout Instructions & Video Links')</label>
+                                <div class="warmup-quill-wrapper">
+                                    <div id="inline_post_workout_editor" class="warmup-quill-editor" data-placeholder="@lang('Cool down instructions, post-stretch routine, embed video links, table...')"></div>
+                                    <input type="hidden" name="post_workout" id="inline_post_workout_input" class="warmup-hidden-input">
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -1612,6 +1615,33 @@
         }
 
         $(document).ready(function() {
+            // Initialize Quill Editors for all workout plan days
+            if (typeof WarmupQuill !== 'undefined') {
+                @if($result->currentWorkoutPlans->count() > 0)
+                    @foreach($result->currentWorkoutPlans as $plan)
+                        WarmupQuill.init('#warmup_editor_day_{{ $plan->id }}', '#warmup_input_day_{{ $plan->id }}', {!! json_encode($plan->warmup ?? '') !!});
+                        WarmupQuill.init('#post_workout_editor_day_{{ $plan->id }}', '#post_workout_input_day_{{ $plan->id }}', {!! json_encode($plan->post_workout ?? '') !!});
+                    @endforeach
+                @endif
+                WarmupQuill.init('#inline_warmup_editor', '#inline_warmup_input', '');
+                WarmupQuill.init('#inline_post_workout_editor', '#inline_post_workout_input', '');
+            }
+
+            // Reset inline modal editors on close and re-check on shown
+            $('#inlineAddDayModal').on('hidden.bs.modal', function () {
+                if (typeof WarmupQuill !== 'undefined') {
+                    WarmupQuill.reset('#inline_warmup_editor');
+                    WarmupQuill.reset('#inline_post_workout_editor');
+                }
+            });
+
+            $('#inlineAddDayModal').on('shown.bs.modal', function () {
+                if (typeof WarmupQuill !== 'undefined') {
+                    WarmupQuill.init('#inline_warmup_editor', '#inline_warmup_input');
+                    WarmupQuill.init('#inline_post_workout_editor', '#inline_post_workout_input');
+                }
+            });
+
             // Add new exercise to day form
             $(document).on('click', '.add-exercise-btn', function() {
                 var dayId = $(this).data('day-id');
@@ -1681,10 +1711,22 @@
                 }
             });
 
+            $(document).on('click', '.workout-day-form button[type="submit"]', function () {
+                var form = $(this).closest('form');
+                if (typeof WarmupQuill !== 'undefined') {
+                    WarmupQuill.syncForm(form);
+                }
+            });
+
             // Handle day form submission via AJAX (delegated)
             $(document).on('submit', '.workout-day-form', function(e) {
                 e.preventDefault();
                 var form = $(this);
+
+                // Sync Quill editor content to hidden input
+                if (typeof WarmupQuill !== 'undefined') {
+                    WarmupQuill.syncForm(form);
+                }
 
                 // Clear previous validation feedback
                 form.find('.is-invalid').removeClass('is-invalid');
@@ -1900,10 +1942,22 @@
                 }
             });
 
+            $(document).on('click', '#save-inline-day-btn', function () {
+                if (typeof WarmupQuill !== 'undefined') {
+                    WarmupQuill.sync('#inline_warmup_editor');
+                    WarmupQuill.sync('#inline_post_workout_editor');
+                }
+            });
+
             // Handle Inline Add Day Form Submission
             $('#inline-add-day-form').on('submit', function (e) {
                 e.preventDefault();
                 var form = $(this);
+
+                if (typeof WarmupQuill !== 'undefined') {
+                    WarmupQuill.sync('#inline_warmup_editor');
+                    WarmupQuill.sync('#inline_post_workout_editor');
+                }
 
                 var dayName = $.trim($('#inline_day_name').val());
                 if (!dayName) {

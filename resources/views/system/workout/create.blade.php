@@ -2,6 +2,7 @@
 
 @section('header')
     @include('system.workout.partials.exercise-table-styles')
+    @include('system.workout.partials.warmup-editor-assets')
     @include('system.workout.partials.workout-media-assets')
     <style>
         .is-invalid + .select2-container .select2-selection,
@@ -207,11 +208,11 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label wb-field-label"><i class="fas fa-fire text-warning"></i>@lang('Warmup')</label>
-                        <textarea name="program[day_${i}][warmup]" class="form-control form-control-solid" rows="2"
-                                  placeholder="@lang('Warm up instructions...')"></textarea>
-                        <div class="invalid-feedback"></div>
-                        ${GymMedia.buildWarmupLinks(`program[day_${i}][warmup_links]`, [])}
+                        <label class="form-label wb-field-label"><i class="fas fa-fire text-warning me-1"></i>@lang('Warmup Instructions & Video Links')</label>
+                        <div class="warmup-quill-wrapper">
+                            <div id="warmup_editor_step_${i}" class="warmup-quill-editor" data-placeholder="@lang('Warm up instructions, stretch routine, embed video links...')"></div>
+                            <input type="hidden" name="program[day_${i}][warmup]" id="warmup_input_step_${i}" class="warmup-hidden-input">
+                        </div>
                     </div>
 
                     <section class="wb-exercises" aria-label="@lang('Exercises')">
@@ -262,10 +263,11 @@
                     </section>
 
                     <div class="mb-5">
-                        <label class="form-label wb-field-label"><i class="fas fa-snowflake text-info"></i>@lang('Post-Workout')</label>
-                        <textarea name="program[day_${i}][post_workout]" class="form-control form-control-solid" rows="2"
-                                  placeholder="@lang('Cool down instructions...')"></textarea>
-                        <div class="invalid-feedback"></div>
+                        <label class="form-label wb-field-label"><i class="fas fa-snowflake text-info me-1"></i>@lang('Post-Workout Instructions & Video Links')</label>
+                        <div class="warmup-quill-wrapper">
+                            <div id="post_workout_editor_step_${i}" class="warmup-quill-editor" data-placeholder="@lang('Cool down instructions, post-stretch routine, embed video links, table...')"></div>
+                            <input type="hidden" name="program[day_${i}][post_workout]" id="post_workout_input_step_${i}" class="warmup-hidden-input">
+                        </div>
                     </div>
                 </div>
             </div>`;
@@ -374,7 +376,18 @@
                 }
             });
 
+            // Ensure all Quill editor instances sync their HTML into hidden inputs before submit
+            $(document).on('click', '#main-form button[type="submit"], #main-form input[type="submit"]', function () {
+                if (typeof WarmupQuill !== 'undefined') {
+                    WarmupQuill.syncAll();
+                }
+            });
+
             $('#main-form').on('submit', function (e) {
+                if (typeof WarmupQuill !== 'undefined') {
+                    WarmupQuill.syncAll();
+                }
+
                 if (!validateStep1()) {
                     e.preventDefault();
                     if (stepperObj) {
@@ -417,6 +430,10 @@
                         </div>`;
                         navContainer.append(navHtml);
                         contentContainer.append(dayStepHtml(i));
+                        if (typeof WarmupQuill !== 'undefined') {
+                            WarmupQuill.init(`#warmup_editor_step_${i}`, `#warmup_input_step_${i}`);
+                            WarmupQuill.init(`#post_workout_editor_step_${i}`, `#post_workout_input_step_${i}`);
+                        }
                     }
 
                     stepperObj = new KTStepper(stepperElement);

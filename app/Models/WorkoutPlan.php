@@ -113,12 +113,76 @@ class WorkoutPlan extends GlobalModel
 
     public function getDisplayWarmupAttribute(): ?string
     {
-        return $this->warmup;
+        if (empty($this->warmup)) {
+            return null;
+        }
+
+        $content = (string) $this->warmup;
+
+        // If legacy plain text (no HTML tags), safely escape and preserve line breaks with auto-linked URLs
+        if (strip_tags($content) === $content) {
+            $content = nl2br(e($content));
+            $content = preg_replace(
+                '~(https?://[^\s<]+)~i',
+                '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
+                $content
+            );
+        } else {
+            // Ensure any <a> tags in HTML have target="_blank" and rel="noopener noreferrer"
+            $content = preg_replace_callback(
+                '/<a\b([^>]*)>/i',
+                function ($matches) {
+                    $attrs = $matches[1];
+                    if (!preg_match('/\btarget\s*=/i', $attrs)) {
+                        $attrs .= ' target="_blank"';
+                    }
+                    if (!preg_match('/\brel\s*=/i', $attrs)) {
+                        $attrs .= ' rel="noopener noreferrer"';
+                    }
+                    return '<a' . $attrs . '>';
+                },
+                $content
+            );
+        }
+
+        return $content;
     }
 
     public function getDisplayPostWorkoutAttribute(): ?string
     {
-        return $this->post_workout;
+        if (empty($this->post_workout)) {
+            return null;
+        }
+
+        $content = (string) $this->post_workout;
+
+        // If legacy plain text (no HTML tags), safely escape and preserve line breaks with auto-linked URLs
+        if (strip_tags($content) === $content) {
+            $content = nl2br(e($content));
+            $content = preg_replace(
+                '~(https?://[^\s<]+)~i',
+                '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
+                $content
+            );
+        } else {
+            // Ensure any <a> tags in HTML have target="_blank" and rel="noopener noreferrer"
+            $content = preg_replace_callback(
+                '/<a\b([^>]*)>/i',
+                function ($matches) {
+                    $attrs = $matches[1];
+                    if (!preg_match('/\btarget\s*=/i', $attrs)) {
+                        $attrs .= ' target="_blank"';
+                    }
+                    if (!preg_match('/\brel\s*=/i', $attrs)) {
+                        $attrs .= ' rel="noopener noreferrer"';
+                    }
+                    return '<a' . $attrs . '>';
+                },
+                $content
+            );
+        }
+
+        return $content;
     }
 
     public function scopeActive($query)
