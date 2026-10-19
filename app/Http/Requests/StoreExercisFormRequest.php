@@ -16,7 +16,7 @@ class StoreExercisFormRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $exercises = $this->input('exercises');
+        $exercises = $this->all()['exercises'] ?? $this->input('exercises');
         if (is_array($exercises)) {
             foreach ($exercises as $key => $exData) {
                 if (!is_array($exData)) {

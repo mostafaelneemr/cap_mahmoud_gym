@@ -32,8 +32,17 @@ class ExerciseMachineImageService
 
     public function store(UploadedFile $file): string
     {
-//        $path = $file->store(self::DIRECTORY, self::DISK);
-        $path = saveCompressedWebpImage($file, self::DIRECTORY, self::DISK);
+        try {
+            $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+            $img = $manager->decodePath($file->getRealPath());
+            $encodedWebp = $img->encode(new \Intervention\Image\Encoders\WebpEncoder(75));
+            $filename = hexdec(uniqid()) . '_' . \Illuminate\Support\Str::random(8) . '.webp';
+            $path = self::DIRECTORY . '/' . $filename;
+            Storage::disk(self::DISK)->put($path, (string) $encodedWebp);
+        } catch (\Throwable $e) {
+            $path = $file->store(self::DIRECTORY, self::DISK);
+        }
+
         $this->storedPaths[] = $path;
 
         return $path;

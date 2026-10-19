@@ -13,7 +13,7 @@ class WorkoutFormRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $programs = $this->input('program');
+        $programs = $this->all()['program'] ?? $this->input('program');
         if (is_array($programs)) {
             foreach ($programs as $dayKey => $dayData) {
                 if (!isset($dayData['exercises']) || !is_array($dayData['exercises'])) {

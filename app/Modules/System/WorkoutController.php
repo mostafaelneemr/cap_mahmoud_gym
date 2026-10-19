@@ -72,7 +72,8 @@ class WorkoutController extends SystemController
             $dayData['warmup_links'] = WorkoutPlan::normalizeWarmupLinks($request->input('warmup_links', []));
         }
 
-        $day = $workoutRepository->syncDayExercises((int) $dayId, $request->input('exercises', []), $dayData);
+        $exercises = $request->all()['exercises'] ?? $request->input('exercises', []);
+        $day = $workoutRepository->syncDayExercises((int) $dayId, $exercises, $dayData);
 
         if (!$day) {
             if ($request->ajax() || $request->wantsJson()) {
@@ -155,7 +156,7 @@ class WorkoutController extends SystemController
                 'status' => 'active',
             ]);
 
-            $exercises = $request->input('exercises', []);
+            $exercises = $request->all()['exercises'] ?? $request->input('exercises', []);
             if (!empty($exercises) && is_array($exercises)) {
                 $workoutRepository->syncDayExercises($plan->id, $exercises, []);
             }
