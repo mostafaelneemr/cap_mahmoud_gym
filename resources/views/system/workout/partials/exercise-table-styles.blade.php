@@ -1,7 +1,7 @@
 {{-- Workout builder: themed exercise table (dark default + light override via [data-bs-theme]). --}}
 <style>
     /* ------------------------------------------------------------------
-       Design tokens — dark (default, matches gym-polish slate theme)
+       Design tokens â€” dark (default, matches gym-polish slate theme)
        ------------------------------------------------------------------ */
     .wb-scope {
         --wb-surface: linear-gradient(180deg, #0F172A 0%, #111B2E 100%);
@@ -144,6 +144,196 @@
         letter-spacing: .06em;
     }
     .wb-count__num { color: var(--wb-accent); }
+
+    /* ------------------------------------------------------------------
+       Warmup & Post-Workout Routine Sections â€” shared lavender identity
+       (#A78BFA). The violet gradient lives on ::before so it can fade
+       smoothly to a neutral slate on hover (gradients can't be
+       transitioned directly). Main Exercises card is NOT affected.
+       ------------------------------------------------------------------ */
+    .wb-exercises--warmup,
+    .wb-exercises--post {
+        --wb-rt-accent: #A78BFA;
+        --wb-rt-accent-rgb: 167, 139, 250;
+        --wb-rt-base: rgba(15, 23, 42, 0.8);
+        --wb-rt-hover: rgba(30, 41, 59, 0.8);
+        --wb-rt-title: #DDD6FE;
+        --wb-rt-sub: #CBD5E1;
+        position: relative;
+        isolation: isolate;
+        background: var(--wb-rt-base) !important;
+        border: 1px solid rgba(var(--wb-rt-accent-rgb), 0.3) !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 10px 28px -12px rgba(0, 0, 0, 0.55) !important;
+        transition: background-color .3s ease-in-out, border-color .3s ease-in-out, box-shadow .3s ease-in-out !important;
+    }
+    .wb-exercises--warmup::before,
+    .wb-exercises--post::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        pointer-events: none;
+        background: linear-gradient(135deg,
+            rgba(var(--wb-rt-accent-rgb), 0.10) 0%,
+            rgba(15, 23, 42, 0.60) 50%,
+            rgba(15, 23, 42, 0.80) 100%);
+        opacity: 1;
+        transition: opacity .3s ease-in-out;
+    }
+    .wb-exercises--warmup:hover,
+    .wb-exercises--post:hover {
+        background: var(--wb-rt-hover) !important;
+        border-color: rgba(71, 85, 105, 0.5) !important;
+    }
+    .wb-exercises--warmup:hover::before,
+    .wb-exercises--post:hover::before {
+        opacity: 0;
+    }
+
+    /* Header */
+    .wb-exercises--warmup .wb-exercises__header,
+    .wb-exercises--post .wb-exercises__header {
+        background: transparent !important;
+        border-bottom: 1px solid rgba(var(--wb-rt-accent-rgb), 0.18) !important;
+        transition: border-color .3s ease-in-out;
+    }
+    .wb-exercises--warmup:hover .wb-exercises__header,
+    .wb-exercises--post:hover .wb-exercises__header {
+        border-bottom-color: rgba(71, 85, 105, 0.45) !important;
+    }
+    .wb-exercises--warmup .wb-exercises__icon,
+    .wb-exercises--post .wb-exercises__icon {
+        background: rgba(var(--wb-rt-accent-rgb), 0.15) !important;
+        color: var(--wb-rt-accent) !important;
+        border: 1px solid rgba(var(--wb-rt-accent-rgb), 0.25) !important;
+    }
+    .wb-exercises--warmup .wb-exercises__title h3,
+    .wb-exercises--post .wb-exercises__title h3 {
+        color: var(--wb-rt-title) !important;
+        font-weight: 800 !important;
+    }
+    .wb-exercises--warmup .wb-exercises__title p,
+    .wb-exercises--post .wb-exercises__title p {
+        color: var(--wb-rt-sub) !important;
+    }
+
+    /* Count pill */
+    .wb-exercises--warmup .wb-count,
+    .wb-exercises--post .wb-count {
+        background: rgba(var(--wb-rt-accent-rgb), 0.15) !important;
+        border: 1px solid rgba(var(--wb-rt-accent-rgb), 0.25) !important;
+        color: var(--wb-rt-accent) !important;
+    }
+    .wb-exercises--warmup .wb-count__num,
+    .wb-exercises--post .wb-count__num {
+        color: var(--wb-rt-accent) !important;
+        font-weight: 800 !important;
+    }
+
+    /* Table chrome â€” inputs keep the shared high-contrast tokens */
+    .wb-exercises--warmup .wb-table thead th,
+    .wb-exercises--post .wb-table thead th {
+        background: rgba(15, 23, 42, 0.7) !important;
+        color: #C4B5FD !important;
+        border-bottom-color: rgba(var(--wb-rt-accent-rgb), 0.18) !important;
+    }
+    .wb-exercises--warmup .wb-th-hint,
+    .wb-exercises--post .wb-th-hint {
+        background: rgba(var(--wb-rt-accent-rgb), 0.18) !important;
+        color: #EDE9FE !important;
+    }
+    .wb-exercises--warmup .wb-table tbody.exercise-row td,
+    .wb-exercises--post .wb-table tbody.exercise-row td {
+        background: rgba(15, 23, 42, 0.55);
+        border-color: rgba(var(--wb-rt-accent-rgb), 0.14) !important;
+    }
+    .wb-exercises--warmup .wb-table tbody.exercise-row td.wb-cell-idx,
+    .wb-exercises--post .wb-table tbody.exercise-row td.wb-cell-idx {
+        border-inline-start-color: var(--wb-rt-accent) !important;
+    }
+    .wb-exercises--warmup .wb-table tbody.exercise-row:hover td,
+    .wb-exercises--post .wb-table tbody.exercise-row:hover td {
+        background: rgba(51, 65, 85, 0.6) !important;
+    }
+
+    /* Add button */
+    .wb-exercises--warmup .wb-add,
+    .wb-exercises--post .wb-add {
+        border: 1.5px dashed rgba(var(--wb-rt-accent-rgb), 0.35) !important;
+        color: var(--wb-rt-accent) !important;
+        background: rgba(var(--wb-rt-accent-rgb), 0.05) !important;
+    }
+    .wb-exercises--warmup .wb-add:hover,
+    .wb-exercises--warmup .wb-add:focus-visible,
+    .wb-exercises--post .wb-add:hover,
+    .wb-exercises--post .wb-add:focus-visible {
+        border-color: var(--wb-rt-accent) !important;
+        background: rgba(var(--wb-rt-accent-rgb), 0.15) !important;
+        color: #ffffff !important;
+    }
+
+    /* Light theme */
+    [data-bs-theme="light"] .wb-exercises--warmup,
+    [data-bs-theme="light"] .wb-exercises--post {
+        --wb-rt-base: rgba(241, 245, 249, 0.9);
+        --wb-rt-hover: rgba(226, 232, 240, 0.7);
+        --wb-rt-title: #5B21B6;
+        --wb-rt-sub: #475569;
+        box-shadow: 0 8px 22px -14px rgba(15, 23, 42, 0.25) !important;
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup::before,
+    [data-bs-theme="light"] .wb-exercises--post::before {
+        background: linear-gradient(135deg,
+            rgba(var(--wb-rt-accent-rgb), 0.15) 0%,
+            rgba(241, 245, 249, 0.70) 50%,
+            rgba(241, 245, 249, 0.90) 100%);
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup:hover,
+    [data-bs-theme="light"] .wb-exercises--post:hover {
+        border-color: #CBD5E1 !important;
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup:hover .wb-exercises__header,
+    [data-bs-theme="light"] .wb-exercises--post:hover .wb-exercises__header {
+        border-bottom-color: #CBD5E1 !important;
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-exercises__icon,
+    [data-bs-theme="light"] .wb-exercises--post .wb-exercises__icon,
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-count,
+    [data-bs-theme="light"] .wb-exercises--post .wb-count,
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-count__num,
+    [data-bs-theme="light"] .wb-exercises--post .wb-count__num,
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-add,
+    [data-bs-theme="light"] .wb-exercises--post .wb-add {
+        color: #7C3AED !important;
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-add:hover,
+    [data-bs-theme="light"] .wb-exercises--post .wb-add:hover {
+        color: #5B21B6 !important;
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-table thead th,
+    [data-bs-theme="light"] .wb-exercises--post .wb-table thead th {
+        background: rgba(226, 232, 240, 0.9) !important;
+        color: #5B21B6 !important;
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-th-hint,
+    [data-bs-theme="light"] .wb-exercises--post .wb-th-hint {
+        color: #5B21B6 !important;
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-table tbody.exercise-row td,
+    [data-bs-theme="light"] .wb-exercises--post .wb-table tbody.exercise-row td {
+        background: rgba(255, 255, 255, 0.75);
+    }
+    [data-bs-theme="light"] .wb-exercises--warmup .wb-table tbody.exercise-row:hover td,
+    [data-bs-theme="light"] .wb-exercises--post .wb-table tbody.exercise-row:hover td {
+        background: rgba(241, 245, 249, 0.95) !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .wb-exercises--warmup, .wb-exercises--post,
+        .wb-exercises--warmup::before, .wb-exercises--post::before { transition: none !important; }
+    }
 
     .wb-table-wrap {
         padding: .5rem .75rem .25rem;
@@ -423,6 +613,11 @@
             border: 1px solid var(--wb-row-border);
             border-inline-start: 3px solid var(--wb-accent);
             border-radius: 12px;
+        }
+        .wb-exercises--warmup .wb-table tbody.exercise-row,
+        .wb-exercises--post .wb-table tbody.exercise-row {
+            border-color: rgba(167, 139, 250, 0.25);
+            border-inline-start-color: #A78BFA;
         }
         .wb-table tbody.exercise-row td,
         .wb-table tbody.exercise-row:hover td {

@@ -120,28 +120,74 @@
          * One exercise = one <tbody class="exercise-row"> (main metrics row + detail row).
          * Field names are unchanged: program[day_X][exercises][ex_Y][...]
          */
-        function exerciseRowHtml(dayId, exIdx) {
-            var base = `program[day_${dayId}][exercises][ex_${exIdx}]`;
+        function exerciseRowHtml(dayId, exIdx, type = 'main') {
+            var uniqueKey = type + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+            var base = `program[day_${dayId}][exercises][${uniqueKey}]`;
+            var isMain = (type === 'main');
+
+            var mediaCellHtml = isMain ? `
+                <td colspan="3" data-label="@lang('Video Link')">
+                    <span class="wb-mini-label">@lang('Video Link')</span>
+                    <div class="wb-video-link-wrap">
+                        <div class="wb-input-icon">
+                            <i class="fab fa-youtube"></i>
+                            <input type="url" name="${base}[link]" class="form-control wb-video-input" maxlength="255"
+                                   placeholder="https://video link.com/..." aria-label="@lang('Video Link')">
+                        </div>
+                        <button type="button" class="wb-video-preview-btn is-disabled"
+                                title="@lang('Preview / Open Video')"
+                                aria-label="@lang('Preview / Open Video')"
+                                aria-disabled="true">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                    </div>
+                </td>
+                <td colspan="3" data-label="@lang('Machine / Equipment Photo')">
+                    <span class="wb-mini-label">@lang('Machine Photo')</span>
+                    ${GymMedia.buildMachineImage(base, '', '')}
+                </td>
+            ` : `
+                <td colspan="6" data-label="@lang('Video Link')">
+                    <span class="wb-mini-label">@lang('Video Link')</span>
+                    <div class="wb-video-link-wrap">
+                        <div class="wb-input-icon">
+                            <i class="fab fa-youtube"></i>
+                            <input type="url" name="${base}[link]" class="form-control wb-video-input" maxlength="255"
+                                   placeholder="https://video link.com/..." aria-label="@lang('Video Link')">
+                        </div>
+                        <button type="button" class="wb-video-preview-btn is-disabled"
+                                title="@lang('Preview / Open Video')"
+                                aria-label="@lang('Preview / Open Video')"
+                                aria-disabled="true">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+
             return `
-            <tbody class="exercise-row wb-row-enter">
+            <tbody class="exercise-row wb-row-enter" data-exercise-type="${type}">
                 <tr class="wb-row-main">
-                    <td class="wb-cell-idx" rowspan="3"><span class="wb-idx" aria-hidden="true"></span></td>
+                    <td class="wb-cell-idx" rowspan="3">
+                        <input type="hidden" name="${base}[type]" value="${type}">
+                        <span class="wb-idx" aria-hidden="true">${exIdx}</span>
+                    </td>
                     <td class="wb-cell-name" data-label="@lang('Exercise')">
                         <input type="text" name="${base}[name]" class="form-control wb-name" maxlength="150" autocomplete="off"
-                               placeholder="@lang('e.g. Incline Bench Press')" aria-label="@lang('Exercise Name')">
+                               placeholder="${isMain ? '@lang('e.g. Incline Bench Press')' : (type === 'warmup' ? '@lang('e.g. Arm Circles / Shoulder Dislocates')' : '@lang('e.g. Static Quad Stretch / Foam Rolling')')}" aria-label="@lang('Exercise Name')">
                         <div class="invalid-feedback"></div>
                     </td>
                     <td data-label="@lang('Sets')">
                         <input type="text" name="${base}[sets]" class="form-control wb-num" maxlength="50" inputmode="numeric"
-                               placeholder="4" aria-label="@lang('Sets')">
+                               placeholder="${type === 'warmup' ? '2' : (isMain ? '4' : '1')}" aria-label="@lang('Sets')">
                     </td>
                     <td data-label="@lang('Reps')">
                         <input type="text" name="${base}[reps]" class="form-control wb-num" maxlength="50"
-                               placeholder="8-12" aria-label="@lang('Reps')">
+                               placeholder="${type === 'warmup' ? '15' : (isMain ? '8-12' : '30s')}" aria-label="@lang('Reps')">
                     </td>
                     <td data-label="@lang('Rest')">
                         <input type="text" name="${base}[rest]" class="form-control wb-num" maxlength="50"
-                               placeholder="90s" aria-label="@lang('Rest')">
+                               placeholder="${type === 'warmup' ? '30s' : (isMain ? '90s' : '0s')}" aria-label="@lang('Rest')">
                     </td>
                     <td data-label="@lang('Tempo')">
                         <input type="text" name="${base}[tempo]" class="form-control wb-num" maxlength="50"
@@ -157,26 +203,7 @@
                     </td>
                 </tr>
                 <tr class="wb-row-detail wb-row-media">
-                    <td colspan="3" data-label="@lang('Video Link')">
-                        <span class="wb-mini-label">@lang('Video Link')</span>
-                        <div class="wb-video-link-wrap">
-                            <div class="wb-input-icon">
-                                <i class="fab fa-youtube"></i>
-                                <input type="url" name="${base}[link]" class="form-control wb-video-input" maxlength="255"
-                                       placeholder="https://video link.com/..." aria-label="@lang('Video Link')">
-                            </div>
-                            <button type="button" class="wb-video-preview-btn is-disabled"
-                                    title="@lang('Preview / Open Video')"
-                                    aria-label="@lang('Preview / Open Video')"
-                                    aria-disabled="true">
-                                <i class="fas fa-external-link-alt"></i>
-                            </button>
-                        </div>
-                    </td>
-                    <td colspan="3" data-label="@lang('Machine / Equipment Photo')">
-                        <span class="wb-mini-label">@lang('Machine Photo')</span>
-                        ${GymMedia.buildMachineImage(base, '', '')}
-                    </td>
+                    ${mediaCellHtml}
                 </tr>
                 <tr class="wb-row-detail wb-row-notes">
                     <td colspan="6" data-label="@lang('Coach Notes')">
@@ -207,15 +234,71 @@
                         <div class="invalid-feedback"></div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label wb-field-label"><i class="fas fa-fire text-warning me-1"></i>@lang('Warmup Instructions & Video Links')</label>
-                        <div class="warmup-quill-wrapper">
-                            <div id="warmup_editor_step_${i}" class="warmup-quill-editor" data-placeholder="@lang('Warm up instructions, stretch routine, embed video links...')"></div>
-                            <input type="hidden" name="program[day_${i}][warmup]" id="warmup_input_step_${i}" class="warmup-hidden-input">
-                        </div>
-                    </div>
+{{--                    --}}{{-- 1. Warmup Routine Section --}}
+{{--                    // <div class="mb-4">--}}
+{{--                    //     <label class="form-label wb-field-label"><i class="fas fa-fire text-warning me-1"></i>@lang('Warmup Instructions & Video Links')</label>--}}
+{{--                    //     <div class="warmup-quill-wrapper">--}}
+{{--                    //         <div id="warmup_editor_step_${i}" class="warmup-quill-editor" data-placeholder="@lang('Warm up instructions, stretch routine, embed video links...')"></div>--}}
+{{--                    //         <input type="hidden" name="program[day_${i}][warmup]" id="warmup_input_step_${i}" class="warmup-hidden-input">--}}
+{{--                    //     </div>--}}
+{{--                    // </div>--}}
 
-                    <section class="wb-exercises" aria-label="@lang('Exercises')">
+                    <section class="wb-exercises wb-exercises--warmup mb-6" aria-label="@lang('Warmup')">
+                        <header class="wb-exercises__header">
+                            <div class="wb-exercises__title">
+                                <span class="wb-exercises__icon"><i class="fas fa-fire"></i></span>
+                                <div>
+                                    <h3>@lang('Warmup Routine')</h3>
+                                    <p>@lang('Warmup exercises, activation movements and dynamic stretches')</p>
+                                </div>
+                            </div>
+                            <span class="wb-count"><span class="wb-count__num" id="warmup-count-day-${i}">0</span> @lang('Warmup')</span>
+                        </header>
+
+                        <div class="wb-table-wrap">
+                            <table class="wb-table" id="warmup-exercises-container-day-${i}" data-exercise-index="0">
+                                <colgroup>
+                                    <col class="wb-col-idx">
+                                    <col class="wb-col-name">
+                                    <col class="wb-col-num">
+                                    <col class="wb-col-num">
+                                    <col class="wb-col-num">
+                                    <col class="wb-col-tempo">
+                                    <col class="wb-col-weights">
+                                    <col class="wb-col-action">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">@lang('Exercise')</th>
+                                        <th scope="col" class="text-center">@lang('Sets')</th>
+                                        <th scope="col" class="text-center">@lang('Reps')</th>
+                                        <th scope="col" class="text-center">@lang('Rest')</th>
+                                        <th scope="col" class="text-center">@lang('Tempo')</th>
+                                        <th scope="col">@lang('Weights')<span class="wb-th-hint">max 4</span></th>
+                                        <th scope="col"><span class="visually-hidden">@lang('Actions')</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="wb-empty-placeholder">
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4 text-muted">
+                                            <i class="fas fa-fire fs-3 mb-1 d-block opacity-50 text-warning"></i>
+                                            <span class="fs-7">@lang('No warmup exercises added yet. Click "+ Add Warmup Exercise" below.')</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="wb-exercises__footer">
+                            <button type="button" class="wb-add add-warmup-exercise-btn" data-day-id="${i}">
+                                <i class="fas fa-plus"></i>@lang('+ Add Warmup Exercise')
+                            </button>
+                        </div>
+                    </section>
+
+                    {{-- 2. Main Exercises Section --}}
+                    <section class="wb-exercises mb-6" aria-label="@lang('Exercises')">
                         <header class="wb-exercises__header">
                             <div class="wb-exercises__title">
                                 <span class="wb-exercises__icon"><i class="fas fa-dumbbell"></i></span>
@@ -251,7 +334,7 @@
                                         <th scope="col"><span class="visually-hidden">@lang('Actions')</span></th>
                                     </tr>
                                 </thead>
-                                ${exerciseRowHtml(i, 1)}
+                                ${exerciseRowHtml(i, 1, 'main')}
                             </table>
                         </div>
 
@@ -262,20 +345,90 @@
                         </div>
                     </section>
 
-                    <div class="mb-5">
-                        <label class="form-label wb-field-label"><i class="fas fa-snowflake text-info me-1"></i>@lang('Post-Workout Instructions & Video Links')</label>
-                        <div class="warmup-quill-wrapper">
-                            <div id="post_workout_editor_step_${i}" class="warmup-quill-editor" data-placeholder="@lang('Cool down instructions, post-stretch routine, embed video links, table...')"></div>
-                            <input type="hidden" name="program[day_${i}][post_workout]" id="post_workout_input_step_${i}" class="warmup-hidden-input">
+                    {{-- 3. Post-Workout Routine Section --}}
+                    <section class="wb-exercises wb-exercises--post mb-6" aria-label="@lang('Post-Workout')">
+                        <header class="wb-exercises__header">
+                            <div class="wb-exercises__title">
+                                <span class="wb-exercises__icon"><i class="fas fa-spa"></i></span>
+                                <div>
+                                    <h3>@lang('Post-Workout Routine')</h3>
+                                    <p>@lang('Cooldown exercises, static stretches and recovery')</p>
+                                </div>
+                            </div>
+                            <span class="wb-count"><span class="wb-count__num" id="post-workout-count-day-${i}">0</span> @lang('Post-Workout')</span>
+                        </header>
+
+                        <div class="wb-table-wrap">
+                            <table class="wb-table" id="post-workout-exercises-container-day-${i}" data-exercise-index="0">
+                                <colgroup>
+                                    <col class="wb-col-idx">
+                                    <col class="wb-col-name">
+                                    <col class="wb-col-num">
+                                    <col class="wb-col-num">
+                                    <col class="wb-col-num">
+                                    <col class="wb-col-tempo">
+                                    <col class="wb-col-weights">
+                                    <col class="wb-col-action">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">@lang('Exercise')</th>
+                                        <th scope="col" class="text-center">@lang('Sets')</th>
+                                        <th scope="col" class="text-center">@lang('Reps')</th>
+                                        <th scope="col" class="text-center">@lang('Rest')</th>
+                                        <th scope="col" class="text-center">@lang('Tempo')</th>
+                                        <th scope="col">@lang('Weights')<span class="wb-th-hint">max 4</span></th>
+                                        <th scope="col"><span class="visually-hidden">@lang('Actions')</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="wb-empty-placeholder">
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4 text-muted">
+                                            <i class="fas fa-snowflake fs-3 mb-1 d-block opacity-50 text-info"></i>
+                                            <span class="fs-7">@lang('No post-workout exercises added yet. Click "+ Add Post-Workout Exercise" below.')</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
+
+                        <div class="wb-exercises__footer">
+                            <button type="button" class="wb-add add-post-workout-exercise-btn" data-day-id="${i}">
+                                <i class="fas fa-plus"></i>@lang('+ Add Post-Workout Exercise')
+                            </button>
+                        </div>
+                    </section>
+
+                    {{--<div class="mb-5">--}}
+                    {{--    <label class="form-label wb-field-label"><i class="fas fa-snowflake text-info me-1"></i>@lang('Post-Workout Instructions & Video Links')</label>--}}
+                    {{--    <div class="warmup-quill-wrapper">--}}
+                    {{--        <div id="post_workout_editor_step_${i}" class="warmup-quill-editor" data-placeholder="@lang('Cool down instructions, post-stretch routine, embed video links, table...')"></div>--}}
+                    {{--        <input type="hidden" name="program[day_${i}][post_workout]" id="post_workout_input_step_${i}" class="warmup-hidden-input">--}}
+                    {{--    </div>--}}
+                    {{--</div>--}}
                 </div>
             </div>`;
         }
 
+        function reindexExerciseTable(container) {
+            container.find('tbody.exercise-row').each(function(idx) {
+                $(this).find('.wb-idx').text(idx + 1);
+            });
+        }
+
         function updateExerciseCount(container) {
-            var dayId = (container.attr('id') || '').replace('exercises-container-day-', '');
-            $(`#exercise-count-day-${dayId}`).text(container.find('.exercise-row').length);
+            var id = container.attr('id') || '';
+            if (id.startsWith('warmup-exercises-container-day-')) {
+                var dayId = id.replace('warmup-exercises-container-day-', '');
+                $(`#warmup-count-day-${dayId}`).text(container.find('.exercise-row').length);
+            } else if (id.startsWith('post-workout-exercises-container-day-')) {
+                var dayId = id.replace('post-workout-exercises-container-day-', '');
+                $(`#post-workout-count-day-${dayId}`).text(container.find('.exercise-row').length);
+            } else if (id.startsWith('exercises-container-day-')) {
+                var dayId = id.replace('exercises-container-day-', '');
+                $(`#exercise-count-day-${dayId}`).text(container.find('.exercise-row').length);
+            }
         }
 
         $(document).ready(function () {
@@ -457,40 +610,85 @@
                 }
             });
 
+            $(document).on('click', '.add-warmup-exercise-btn', function () {
+                var dayId = $(this).data('day-id');
+                var container = $(`#warmup-exercises-container-day-${dayId}`);
+                container.find('.wb-empty-placeholder').hide();
+
+                var currentExerciseIdx = parseInt(container.attr('data-exercise-index') || 0) + 1;
+                container.attr('data-exercise-index', currentExerciseIdx);
+
+                var $row = $(exerciseRowHtml(dayId, currentExerciseIdx, 'warmup'));
+                container.append($row);
+                reindexExerciseTable(container);
+                updateExerciseCount(container);
+                $row.find('.wb-name').trigger('focus');
+            });
+
             $(document).on('click', '.add-exercise-btn', function () {
                 var dayId = $(this).data('day-id');
                 var container = $(`#exercises-container-day-${dayId}`);
 
-                var currentExerciseIdx = parseInt(container.attr('data-exercise-index')) + 1;
+                var currentExerciseIdx = parseInt(container.attr('data-exercise-index') || 0) + 1;
                 container.attr('data-exercise-index', currentExerciseIdx);
 
-                var $row = $(exerciseRowHtml(dayId, currentExerciseIdx));
+                var $row = $(exerciseRowHtml(dayId, currentExerciseIdx, 'main'));
                 container.append($row);
+                reindexExerciseTable(container);
+                updateExerciseCount(container);
+                $row.find('.wb-name').trigger('focus');
+            });
+
+            $(document).on('click', '.add-post-workout-exercise-btn', function () {
+                var dayId = $(this).data('day-id');
+                var container = $(`#post-workout-exercises-container-day-${dayId}`);
+                container.find('.wb-empty-placeholder').hide();
+
+                var currentExerciseIdx = parseInt(container.attr('data-exercise-index') || 0) + 1;
+                container.attr('data-exercise-index', currentExerciseIdx);
+
+                var $row = $(exerciseRowHtml(dayId, currentExerciseIdx, 'post_workout'));
+                container.append($row);
+                reindexExerciseTable(container);
                 updateExerciseCount(container);
                 $row.find('.wb-name').trigger('focus');
             });
 
             $(document).on('click', '.delete-exercise-btn', function () {
                 var row = $(this).closest('.exercise-row');
-                var container = $(this).closest('[id^="exercises-container-day-"]');
+                var container = $(this).closest('table.wb-table');
+                var isMain = (container.attr('id') || '').startsWith('exercises-container-day-');
 
-                if (container.find('.exercise-row').length > 1) {
+                if (!isMain) {
                     row.removeClass('wb-row-enter').addClass('wb-row-leave');
                     setTimeout(function () {
                         row.remove();
+                        reindexExerciseTable(container);
                         updateExerciseCount(container);
+                        if (container.find('.exercise-row').length === 0) {
+                            container.find('.wb-empty-placeholder').show();
+                        }
                     }, 200);
                 } else {
-                    container.find('.exercise-row input, .exercise-row textarea').val('');
-                    container.find('.wb-notes').css('height', '');
-                    GymWeights.reset(container.find('.exercise-row'));
-                    var $mi = container.find('.exercise-row .mi-wrapper');
-                    $mi.removeClass('has-image').find('.mi-file-input').val('');
-                    $mi.find('.mi-preview-img').attr('src', '');
-                    $mi.find('.mi-preview-btn').attr('data-img-url', '');
-                    $mi.find('.mi-upload-text').text("{{ __('Machine Photo') }}");
-                    $mi.find('.mi-remove-flag').val('0');
-                    container.find('.exercise-row .wb-video-preview-btn').addClass('is-disabled').attr('aria-disabled', 'true');
+                    if (container.find('.exercise-row').length > 1) {
+                        row.removeClass('wb-row-enter').addClass('wb-row-leave');
+                        setTimeout(function () {
+                            row.remove();
+                            reindexExerciseTable(container);
+                            updateExerciseCount(container);
+                        }, 200);
+                    } else {
+                        container.find('.exercise-row input:not([name*="[type]"]), .exercise-row textarea').val('');
+                        container.find('.wb-notes').css('height', '');
+                        GymWeights.reset(container.find('.exercise-row'));
+                        var $mi = container.find('.exercise-row .mi-wrapper');
+                        $mi.removeClass('has-image').find('.mi-file-input').val('');
+                        $mi.find('.mi-preview-img').attr('src', '');
+                        $mi.find('.mi-preview-btn').attr('data-img-url', '');
+                        $mi.find('.mi-upload-text').text("{{ __('Machine Photo') }}");
+                        $mi.find('.mi-remove-flag').val('0');
+                        container.find('.exercise-row .wb-video-preview-btn').addClass('is-disabled').attr('aria-disabled', 'true');
+                    }
                 }
             });
 

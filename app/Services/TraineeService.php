@@ -33,7 +33,18 @@ class TraineeService extends BaseService
     public function findById($id)
     {
         $trainee = $this->traineeRepository->find($id);
-        $trainee->load(['currentWorkoutPlans.exercises', 'activeWorkoutPlans.exercises', 'archivedWorkoutPlans.exercises', 'activeNutritionPlans']);
+        $trainee->load([
+            'currentWorkoutPlans.exercises',
+            'currentWorkoutPlans.warmupExercises',
+            'currentWorkoutPlans.mainExercises',
+            'currentWorkoutPlans.postWorkoutExercises',
+            'activeWorkoutPlans.exercises',
+            'archivedWorkoutPlans.exercises',
+            'archivedWorkoutPlans.warmupExercises',
+            'archivedWorkoutPlans.mainExercises',
+            'archivedWorkoutPlans.postWorkoutExercises',
+            'activeNutritionPlans',
+        ]);
         $user_id = $trainee->user_id ?? 0;
 
         $activityLogData = $this->activity_log_service->loadViewData();

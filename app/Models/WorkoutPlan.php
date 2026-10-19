@@ -200,6 +200,21 @@ class WorkoutPlan extends GlobalModel
         return $this->hasMany(Exercise::class, 'workout_plan_id', 'id');
     }
 
+    public function warmupExercises()
+    {
+        return $this->hasMany(Exercise::class, 'workout_plan_id', 'id')->where('type', 'warmup');
+    }
+
+    public function mainExercises()
+    {
+        return $this->hasMany(Exercise::class, 'workout_plan_id', 'id')->where('type', 'main');
+    }
+
+    public function postWorkoutExercises()
+    {
+        return $this->hasMany(Exercise::class, 'workout_plan_id', 'id')->where('type', 'post_workout');
+    }
+
     protected static function boot()
     {
         parent::boot();

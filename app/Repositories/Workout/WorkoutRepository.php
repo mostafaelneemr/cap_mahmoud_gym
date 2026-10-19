@@ -46,6 +46,10 @@ class WorkoutRepository extends BaseRepository
             );
             unset($exData['weight']);
 
+            if (empty($exData['type'])) {
+                $exData['type'] = 'main';
+            }
+
             if (!empty($exData['exercise_id'])) {
                 // Update
                 $exercise = Exercise::find($exData['exercise_id']);
@@ -128,6 +132,6 @@ class WorkoutRepository extends BaseRepository
 
     public function getExcercisesByTrainee($traineeId)
     {
-        return $this->modeler->where('trainee_id', $traineeId)->active()->with('exercises')->get();
+        return $this->modeler->where('trainee_id', $traineeId)->active()->with(['exercises', 'warmupExercises', 'mainExercises', 'postWorkoutExercises'])->get();
     }
 }

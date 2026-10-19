@@ -38,7 +38,7 @@ return [
         'permissions' => [
             'view-all-workouts' => ['system.workout.index'],
             'create-workout' => ['system.workout.create', 'system.workout.store'],
-            'update-workout' => ['system.workout.edit', 'system.workout.update', 'system.workout.updateDay'],
+            'update-workout' => ['system.workout.edit', 'system.workout.update', 'system.workout.updateDay','system.workout.storeInlineDay'],
             'delete-workout' => ['system.workout.destroy'],
             'activate-or-deactivate-workout' => ['system.workout.toggleDayStatus'],
         ]

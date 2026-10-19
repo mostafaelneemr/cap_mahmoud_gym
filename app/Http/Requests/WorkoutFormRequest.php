@@ -11,11 +11,34 @@ class WorkoutFormRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $programs = $this->input('program');
+        if (is_array($programs)) {
+            foreach ($programs as $dayKey => $dayData) {
+                if (!isset($dayData['exercises']) || !is_array($dayData['exercises'])) {
+                    continue;
+                }
+                foreach ($dayData['exercises'] as $exKey => $exData) {
+                    if (!is_array($exData)) {
+                        continue;
+                    }
+                    if (empty($exData['type'])) {
+                        $programs[$dayKey]['exercises'][$exKey]['type'] = 'main';
+                    }
+                }
+            }
+            $this->merge(['program' => $programs]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'trainee_id' => 'required|integer|exists:trainees,id',
             'program' => 'required|array|min:1',
+            'program.*.exercises.*.type' => 'required|in:warmup,main,post_workout',
+            'program.*.exercises.*.machine_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ];
     }
 

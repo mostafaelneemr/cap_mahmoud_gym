@@ -26,6 +26,10 @@ class StoreExercisFormRequest extends FormRequest
                 $exercises[$key]['internal_weight'] = Exercise::normalizeWeights($raw);
                 unset($exercises[$key]['weight']);
 
+                if (empty($exData['type'])) {
+                    $exercises[$key]['type'] = 'main';
+                }
+
                 if (isset($exData['link']) && is_string($exData['link'])) {
                     $link = trim($exData['link']);
                     if ($link !== '' && !preg_match('~^https?://~i', $link)) {
@@ -83,6 +87,7 @@ class StoreExercisFormRequest extends FormRequest
                     'post_workout' => 'nullable|string',
                     'exercises' => 'nullable|array',
                     'exercises.*.exercise_id' => 'nullable|integer',
+                    'exercises.*.type' => 'required|in:warmup,main,post_workout',
                     'exercises.*.name' => 'nullable|string|max:150',
                     'exercises.*.sets' => 'nullable|string|max:50',
                     'exercises.*.reps' => 'nullable|string|max:50',
@@ -91,6 +96,8 @@ class StoreExercisFormRequest extends FormRequest
                     'exercises.*.internal_weight.*' => 'nullable|string|max:20',
                     'exercises.*.tempo' => 'nullable|string|max:50',
                     'exercises.*.link' => 'nullable|url|max:255',
+                    'exercises.*.machine_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+                    'exercises.*.remove_machine_image' => 'nullable',
                     'exercises.*.notes_en' => 'nullable|string',
                 ];
 

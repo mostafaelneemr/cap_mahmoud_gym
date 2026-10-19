@@ -140,6 +140,7 @@ class WorkoutService extends BaseService
 
                             $this->exerciseRepository->store([
                                 'workout_plan_id' => $workoutPlan->id,
+                                'type' => $exData['type'] ?? 'main',
                                 'name' => $exName,
                                 'sets' => $exData['sets'] ?? null,
                                 'reps' => $exData['reps'] ?? null,

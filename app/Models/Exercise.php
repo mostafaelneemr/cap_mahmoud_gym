@@ -21,6 +21,7 @@ class Exercise extends GlobalModel
 
     protected $fillable = [
         'workout_plan_id',
+        'type',
         'name',
         'sets',
         'reps',
@@ -32,6 +33,21 @@ class Exercise extends GlobalModel
         'machine_image',
         'status'
     ];
+
+    public function scopeWarmup($query)
+    {
+        return $query->where('type', 'warmup');
+    }
+
+    public function scopeMain($query)
+    {
+        return $query->where('type', 'main');
+    }
+
+    public function scopePostWorkout($query)
+    {
+        return $query->where('type', 'post_workout');
+    }
 
     /** Public URL of the machine / equipment photo (or null). */
     public function getMachineImageUrlAttribute(): ?string

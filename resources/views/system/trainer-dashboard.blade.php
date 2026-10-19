@@ -130,32 +130,206 @@
             background: transparent;
         }
 
+        /* ==============================================================
+           Warmup & Post-Workout Routines — Unified Lavender/Violet Theme
+           Palette: #A78BFA (Tailwind violet-400)
+           Default: subtle lavender gradient with soft violet border
+           Hover: smooth transition to neutral muted gray/slate
+           Main Program is NOT affected.
+           ============================================================== */
         .warmup-section,
         .post-workout-section {
-            border-radius: 12px;
-            padding: 16px 20px;
+            --rt-accent: #A78BFA;
+            --rt-accent-rgb: 167, 139, 250;
+            --rt-base: rgba(15, 23, 42, 0.8);
+            --rt-hover: rgba(30, 41, 59, 0.8);
+            --rt-border: rgba(167, 139, 250, 0.3);
+            --rt-hover-border: rgba(71, 85, 105, 0.5);
+            position: relative;
+            isolation: isolate;
+            border-radius: 0.75rem !important; /* rounded-xl */
+            padding: 20px 22px !important;
+            background: var(--rt-base) !important;
+            border: 1px solid var(--rt-border) !important;
+            border-inline-start: 1px solid var(--rt-border) !important;
+            box-shadow: 0 10px 28px -12px rgba(0, 0, 0, 0.55) !important;
+            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out !important;
         }
 
-        .warmup-section {
-            border-inline-start: 4px solid #ffc107;
-            background: rgba(255, 193, 7, 0.08);
+        .warmup-section::before,
+        .post-workout-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            pointer-events: none;
+            background: linear-gradient(135deg,
+                rgba(167, 139, 250, 0.10) 0%,
+                rgba(15, 23, 42, 0.60) 50%,
+                rgba(15, 23, 42, 0.80) 100%);
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out;
         }
 
-        .post-workout-section {
-            border-inline-start: 4px solid #7239ea;
-            background: rgba(114, 57, 234, 0.08);
+        .warmup-section:hover,
+        .post-workout-section:hover {
+            background: var(--rt-hover) !important;
+            border-color: var(--rt-hover-border) !important;
+            box-shadow: 0 14px 32px -10px rgba(0, 0, 0, 0.65) !important;
         }
 
-        [data-bs-theme="light"] .warmup-section {
-            background: #fffdf5;
-            border: 1px solid #ffe082;
-            border-inline-start: 4px solid #ffc107;
+        .warmup-section:hover::before,
+        .post-workout-section:hover::before {
+            opacity: 0;
         }
 
+        /* Light Theme Dashboard Equivalent */
+        [data-bs-theme="light"] .warmup-section,
         [data-bs-theme="light"] .post-workout-section {
-            background: #fbf9ff;
-            border: 1px solid #d1c4e9;
-            border-inline-start: 4px solid #7239ea;
+            --rt-base: rgba(241, 245, 249, 0.85);
+            --rt-hover: rgba(226, 232, 240, 0.75);
+            --rt-border: rgba(167, 139, 250, 0.25);
+            --rt-hover-border: rgba(203, 213, 225, 1);
+            background: var(--rt-base) !important;
+            border: 1px solid var(--rt-border) !important;
+            border-inline-start: 1px solid var(--rt-border) !important;
+            box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.12) !important;
+        }
+
+        [data-bs-theme="light"] .warmup-section::before,
+        [data-bs-theme="light"] .post-workout-section::before {
+            background: linear-gradient(135deg,
+                rgba(167, 139, 250, 0.15) 0%,
+                rgba(241, 245, 249, 0.70) 50%,
+                rgba(241, 245, 249, 0.90) 100%);
+        }
+
+        [data-bs-theme="light"] .warmup-section:hover,
+        [data-bs-theme="light"] .post-workout-section:hover {
+            background: var(--rt-hover) !important;
+            border-color: var(--rt-hover-border) !important;
+        }
+
+        /* Header / Section Badges: Soft violet pill tag */
+        .warmup-section .section-label,
+        .post-workout-section .section-label {
+            color: #A78BFA !important;
+        }
+
+        .warmup-section .section-label .badge,
+        .post-workout-section .section-label .badge {
+            background: rgba(167, 139, 250, 0.15) !important;
+            color: #A78BFA !important;
+            border: 1px solid rgba(167, 139, 250, 0.25) !important;
+            border-radius: 9999px !important;
+            padding: 4px 10px !important;
+            font-size: 0.75rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.03em !important;
+        }
+
+        /* Warmup & Post-Workout Inner Table Card */
+        .warmup-section .exercise-table-wrapper,
+        .post-workout-section .exercise-table-wrapper {
+            background: rgba(15, 23, 42, 0.55) !important;
+            border: 1px solid rgba(167, 139, 250, 0.22) !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            box-shadow: 0 4px 16px -6px rgba(0, 0, 0, 0.4) !important;
+            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out !important;
+        }
+
+        .warmup-section:hover .exercise-table-wrapper,
+        .post-workout-section:hover .exercise-table-wrapper {
+            background: rgba(15, 23, 42, 0.75) !important;
+            border-color: rgba(71, 85, 105, 0.45) !important;
+        }
+
+        [data-bs-theme="light"] .warmup-section .exercise-table-wrapper,
+        [data-bs-theme="light"] .post-workout-section .exercise-table-wrapper {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border-color: rgba(167, 139, 250, 0.22) !important;
+            box-shadow: 0 4px 12px -4px rgba(15, 23, 42, 0.08) !important;
+        }
+
+        [data-bs-theme="light"] .warmup-section:hover .exercise-table-wrapper,
+        [data-bs-theme="light"] .post-workout-section:hover .exercise-table-wrapper {
+            background: rgba(255, 255, 255, 0.98) !important;
+            border-color: rgba(203, 213, 225, 0.8) !important;
+        }
+
+        /* Table Header Row: subtle violet-tinted borders and text accents */
+        .warmup-section .exercise-table thead th,
+        .post-workout-section .exercise-table thead th {
+            background: rgba(15, 23, 42, 0.7) !important;
+            color: #C4B5FD !important;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.22) !important;
+            font-size: 0.78rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.05em !important;
+        }
+
+        [data-bs-theme="light"] .warmup-section .exercise-table thead th,
+        [data-bs-theme="light"] .post-workout-section .exercise-table thead th {
+            background: rgba(243, 232, 255, 0.45) !important;
+            color: #6D28D9 !important;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.28) !important;
+        }
+
+        /* Table Body Rows */
+        .warmup-section .exercise-table tbody td,
+        .post-workout-section .exercise-table tbody td {
+            border-bottom: 1px solid rgba(167, 139, 250, 0.12) !important;
+        }
+
+        [data-bs-theme="light"] .warmup-section .exercise-table tbody td,
+        [data-bs-theme="light"] .post-workout-section .exercise-table tbody td {
+            border-bottom: 1px solid rgba(167, 139, 250, 0.15) !important;
+        }
+
+        .warmup-section .exercise-table tbody tr:hover,
+        .post-workout-section .exercise-table tbody tr:hover {
+            background: rgba(167, 139, 250, 0.06) !important;
+        }
+
+        /* Exercise Number Index Badge: Soft Lavender */
+        .warmup-section .exercise-index,
+        .post-workout-section .exercise-index {
+            background: rgba(167, 139, 250, 0.18) !important;
+            color: #A78BFA !important;
+            border: 1px solid rgba(167, 139, 250, 0.35) !important;
+            font-weight: 800 !important;
+        }
+
+        [data-bs-theme="light"] .warmup-section .exercise-index,
+        [data-bs-theme="light"] .post-workout-section .exercise-index {
+            background: rgba(167, 139, 250, 0.15) !important;
+            color: #7C3AED !important;
+            border-color: rgba(167, 139, 250, 0.35) !important;
+        }
+
+        /* Exercise Name in Warmup & Post-Workout */
+        .warmup-section .exercise-name,
+        .post-workout-section .exercise-name {
+            color: #F1F5F9 !important;
+            font-weight: 600 !important;
+        }
+
+        [data-bs-theme="light"] .warmup-section .exercise-name,
+        [data-bs-theme="light"] .post-workout-section .exercise-name {
+            color: #1E293B !important;
+        }
+
+        /* Rich Content & Text notes inside Warmup & Post-Workout */
+        .warmup-section .warmup-rich-content,
+        .post-workout-section .warmup-rich-content {
+            color: #E2E8F0 !important;
+        }
+
+        [data-bs-theme="light"] .warmup-section .warmup-rich-content,
+        [data-bs-theme="light"] .post-workout-section .warmup-rich-content {
+            color: #334155 !important;
         }
 
         .section-label {
@@ -501,40 +675,167 @@
                     <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="day-content-{{ $plan->id }}"
                          role="tabpanel">
 
-                        {{-- Warmup --}}
-                        @if($plan->warmup || !empty($plan->warmup_links_list))
-                            <div class="warmup-section mb-5">
-                                <div class="section-label text-warning d-flex align-items-center gap-1 mb-2">
-                                    <i class="fas fa-fire"></i> <span>{{ __('Warm Up') }}</span>
+                        @php
+                            $warmupExercises = $plan->warmupExercises;
+                            $mainExercises = $plan->mainExercises;
+                            $postWorkoutExercises = $plan->postWorkoutExercises;
+
+                            // Fallback for legacy data where type was not set
+                            if ($mainExercises->isEmpty() && $warmupExercises->isEmpty() && $postWorkoutExercises->isEmpty()) {
+                                $mainExercises = $plan->exercises;
+                            }
+                        @endphp
+
+                        {{-- 1. Warmup Routine --}}
+                        @if($plan->warmup || !empty($plan->warmup_links_list) || $warmupExercises->count() > 0)
+                            <div class="warmup-section mb-6">
+                                <div class="section-label d-flex align-items-center gap-2 mb-3" style="color: #A78BFA;">
+                                    <i class="fas fa-fire fs-4"></i>
+                                    <span class="fs-5 fw-bold">{{ __('Warmup Routine') }}</span>
+                                    @if($warmupExercises->count() > 0)
+                                        <span class="badge fs-8 ms-1" style="background: rgba(167, 139, 250, 0.15); color: #A78BFA; border: 1px solid rgba(167, 139, 250, 0.25); border-radius: 9999px; padding: 4px 10px;">{{ $warmupExercises->count() }} {{ __('exercises') }}</span>
+                                    @endif
                                 </div>
                                 @if($plan->warmup)
-                                    <div class="warmup-rich-content text-gray-800 fw-semibold mb-2">{!! $plan->display_warmup !!}</div>
+                                    <div class="warmup-rich-content text-gray-800 fw-semibold mb-3">{!! $plan->display_warmup !!}</div>
                                 @endif
                                 @if(!empty($plan->warmup_links_list))
-                                    @include('system.workout.partials.warmup-link-badges', ['links' => $plan->warmup_links_list, 'modal' => true, 'title' => $plan->day_name])
+                                    <div class="mb-3">
+                                        @include('system.workout.partials.warmup-link-badges', ['links' => $plan->warmup_links_list, 'modal' => true, 'title' => $plan->day_name])
+                                    </div>
+                                @endif
+
+                                @if($warmupExercises->count() > 0)
+                                    <div class="exercise-table-wrapper mb-4">
+                                        <table class="table exercise-table">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 50px;">#</th>
+                                                <th>{{ __('Exercise') }}</th>
+                                                <th>{{ __('Sets') }}</th>
+                                                <th>{{ __('Reps') }}</th>
+                                                <th>{{ __('Rest') }}</th>
+                                                <th>{{ __('Weight') }}</th>
+                                                <th>{{ __('Tempo') }}</th>
+                                                <th>{{ __('Note') }}</th>
+                                                <th>{{ __('Media') }}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($warmupExercises as $wIdx => $exercise)
+                                                <tr>
+                                                    <td>
+                                                        <span class="exercise-index">{{ $wIdx + 1 }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="exercise-name">{{ $exercise->name }}</span>
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->sets)
+                                                            <span class="badge-metric badge-sets">
+                                                                <i class="fas fa-layer-group"></i> {{ $exercise->sets }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->reps)
+                                                            <span class="badge-metric badge-reps">
+                                                                <i class="fas fa-redo"></i> {{ $exercise->reps }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->rest)
+                                                            <span class="badge-metric badge-rest">
+                                                                <i class="fas fa-clock"></i> {{ $exercise->rest }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->internal_weight)
+                                                            <span class="badge-metric badge-weight">
+                                                                <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->tempo)
+                                                            <span class="badge-metric badge-tempo">
+                                                                <i class="fas fa-tachometer-alt"></i> {{ $exercise->tempo }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->notes_en)
+                                                            <span class="badge-metric badge-notes" title="{{ $exercise->notes_en }}">
+                                                                <i class="fas fa-comment-dots"></i>
+                                                                <span>{{ $exercise->notes_en }}</span>
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            @if($exercise->link)
+                                                                <button type="button" class="video-link open-video-btn"
+                                                                        data-video-url="{{ $exercise->link }}"
+                                                                        data-exercise-name="{{ $exercise->name }}">
+                                                                    <i class="fab fa-youtube"></i>
+                                                                    {{ __('Watch') }}
+                                                                </button>
+                                                            @else
+                                                                <span class="text-muted">—</span>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 @endif
                             </div>
                         @endif
 
-                        {{-- Exercises Table --}}
-                        @if($plan->exercises && count($plan->exercises) > 0)
-                            <div class="exercise-table-wrapper mb-5">
-                                <table class="table exercise-table">
-                                    <thead>
-                                    <tr>
-                                        <th style="width: 50px;">#</th>
-                                        <th>{{ __('Exercise') }}</th>
-                                        <th>{{ __('Sets') }}</th>
-                                        <th>{{ __('Reps') }}</th>
-                                        <th>{{ __('Rest') }}</th>
-                                        <th>{{ __('Weight') }}</th>
-                                        <th>{{ __('Tempo') }}</th>
-                                        <th>{{ __('Note') }}</th>
-                                        <th>{{ __('Media') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($plan->exercises as $exIndex => $exercise)
+                        {{-- 2. Main Program --}}
+                        <div class="main-program-section mb-6">
+                            <div class="section-label text-warning d-flex align-items-center gap-2 mb-3">
+                                <i class="fas fa-dumbbell fs-4"></i>
+                                <span class="fs-5 fw-bold">{{ __('Main Program') }}</span>
+                                @if($mainExercises->count() > 0)
+                                    <span class="badge badge-light-primary fs-8 ms-1">{{ $mainExercises->count() }} {{ __('exercises') }}</span>
+                                @endif
+                            </div>
+
+                            @if($mainExercises && count($mainExercises) > 0)
+                                <div class="exercise-table-wrapper mb-5">
+                                    <table class="table exercise-table">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 50px;">#</th>
+                                            <th>{{ __('Exercise') }}</th>
+                                            <th>{{ __('Sets') }}</th>
+                                            <th>{{ __('Reps') }}</th>
+                                            <th>{{ __('Rest') }}</th>
+                                            <th>{{ __('Weight') }}</th>
+                                            <th>{{ __('Tempo') }}</th>
+                                            <th>{{ __('Note') }}</th>
+                                            <th>{{ __('Media') }}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($mainExercises as $exIndex => $exercise)
                                         <tr>
                                             <td>
                                                 <span class="exercise-index">{{ $exIndex + 1 }}</span>
@@ -630,17 +931,126 @@
                         @else
                             <div class="text-center py-8 text-muted">
                                 <i class="fas fa-dumbbell fs-2 mb-3 d-block"></i>
-                                {{ __('No exercises added for this day yet') }}
+                                {{ __('No main exercises added for this day yet') }}
                             </div>
                         @endif
+                        </div>
 
-                        {{-- Post Workout --}}
-                        @if($plan->post_workout)
-                            <div class="post-workout-section">
-                                <div class="section-label text-primary">
-                                    <i class="fas fa-flag-checkered me-1"></i> {{ __('Post Workout') }}
+                        {{-- 3. Post-Workout Routine --}}
+                        @if($plan->post_workout || $postWorkoutExercises->count() > 0)
+                            <div class="post-workout-section mb-6">
+                                <div class="section-label d-flex align-items-center gap-2 mb-3" style="color: #A78BFA;">
+                                    <i class="fas fa-spa fs-4"></i>
+                                    <span class="fs-5 fw-bold">{{ __('Post-Workout Routine') }}</span>
+                                    @if($postWorkoutExercises->count() > 0)
+                                        <span class="badge fs-8 ms-1" style="background: rgba(167, 139, 250, 0.15); color: #A78BFA; border: 1px solid rgba(167, 139, 250, 0.25); border-radius: 9999px; padding: 4px 10px;">{{ $postWorkoutExercises->count() }} {{ __('exercises') }}</span>
+                                    @endif
                                 </div>
-                                <div class="warmup-rich-content text-gray-800 fw-semibold">{!! $plan->display_post_workout !!}</div>
+
+                                @if($postWorkoutExercises->count() > 0)
+                                    <div class="exercise-table-wrapper mb-4">
+                                        <table class="table exercise-table">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 50px;">#</th>
+                                                <th>{{ __('Exercise') }}</th>
+                                                <th>{{ __('Sets') }}</th>
+                                                <th>{{ __('Reps') }}</th>
+                                                <th>{{ __('Rest') }}</th>
+                                                <th>{{ __('Weight') }}</th>
+                                                <th>{{ __('Tempo') }}</th>
+                                                <th>{{ __('Note') }}</th>
+                                                <th>{{ __('Media') }}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($postWorkoutExercises as $pIdx => $exercise)
+                                                <tr>
+                                                    <td>
+                                                        <span class="exercise-index">{{ $pIdx + 1 }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="exercise-name">{{ $exercise->name }}</span>
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->sets)
+                                                            <span class="badge-metric badge-sets">
+                                                                <i class="fas fa-layer-group"></i> {{ $exercise->sets }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->reps)
+                                                            <span class="badge-metric badge-reps">
+                                                                <i class="fas fa-redo"></i> {{ $exercise->reps }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->rest)
+                                                            <span class="badge-metric badge-rest">
+                                                                <i class="fas fa-clock"></i> {{ $exercise->rest }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->internal_weight)
+                                                            <span class="badge-metric badge-weight">
+                                                                <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->tempo)
+                                                            <span class="badge-metric badge-tempo">
+                                                                <i class="fas fa-tachometer-alt"></i> {{ $exercise->tempo }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($exercise->notes_en)
+                                                            <span class="badge-metric badge-notes" title="{{ $exercise->notes_en }}">
+                                                                <i class="fas fa-comment-dots"></i>
+                                                                <span>{{ $exercise->notes_en }}</span>
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            @if($exercise->link)
+                                                                <button type="button" class="video-link open-video-btn"
+                                                                        data-video-url="{{ $exercise->link }}"
+                                                                        data-exercise-name="{{ $exercise->name }}">
+                                                                    <i class="fab fa-youtube"></i>
+                                                                    {{ __('Watch') }}
+                                                                </button>
+                                                            @else
+                                                                <span class="text-muted">—</span>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
+
+                                @if($plan->post_workout)
+                                    <div class="warmup-rich-content text-gray-800 fw-semibold">{!! $plan->display_post_workout !!}</div>
+                                @endif
                             </div>
                         @endif
 
