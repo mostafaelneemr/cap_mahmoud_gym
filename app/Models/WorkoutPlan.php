@@ -215,6 +215,11 @@ class WorkoutPlan extends GlobalModel
         return $this->hasMany(Exercise::class, 'workout_plan_id', 'id')->where('type', 'post_workout');
     }
 
+    public function loadAdjustments()
+    {
+        return $this->hasMany(TraineeLoadAdjustment::class, 'workout_plan_id', 'id')->orderBy('created_at', 'desc');
+    }
+
     protected static function boot()
     {
         parent::boot();

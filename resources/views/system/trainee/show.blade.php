@@ -519,6 +519,19 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#kt_staff_load_adjustments_tab">
+                    <span>⚖️</span>
+                    <span>{{ __('Load Adjustments') }}</span>
+                    @php
+                        $hasLoadAdjustments = $result->relationLoaded('loadAdjustments');
+                        $pendingLoadReports = $hasLoadAdjustments && $result->loadAdjustments ? $result->loadAdjustments->where('status', 'pending')->count() : 0;
+                    @endphp
+                    @if($pendingLoadReports > 0)
+                        <span class="badge badge-circle badge-danger ms-1" style="width: 20px; height: 20px; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center;">{{ $pendingLoadReports }}</span>
+                    @endif
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#kt_staff_logs_tab">
                     <span>📊</span>
                     <span>{{ __('History (Audit Log)') }}</span>
@@ -1808,6 +1821,160 @@
             </div>
         </div>
 
+        {{-- ===== LOAD ADJUSTMENTS TAB ===== --}}
+        <div class="tab-pane fade" id="kt_staff_load_adjustments_tab" role="tabpanel">
+            <div class="card mb-8 rounded-4 shadow-sm border" style="background: var(--wb-surface-solid); border-color: var(--wb-row-border) !important;">
+                <div class="card-header border-bottom pt-6 pb-5" style="border-color: var(--wb-row-border) !important; background: var(--wb-head-bg);">
+                    <div class="card-title">
+                        <h2 class="fw-bold m-0 d-flex align-items-center gap-2" style="color: var(--wb-text);">
+                            <i class="fas fa-weight-hanging" style="color: #009ef7;"></i>
+                            <span>{{ __('Trainee Load Adjustment Reports') }}</span>
+                            @if($result->relationLoaded('loadAdjustments') && $result->loadAdjustments && $result->loadAdjustments->count() > 0)
+                                <span class="badge badge-light-primary fs-8 ms-2">{{ $result->loadAdjustments->count() }} {{ __('reports') }}</span>
+                            @endif
+                        </h2>
+                    </div>
+                </div>
+                <div class="card-body p-6">
+                    @php
+                        $reports = $result->relationLoaded('loadAdjustments') ? ($result->loadAdjustments ?? collect()) : collect();
+                        $pendingCount = $reports->where('status', 'pending')->count();
+                        $reviewedCount = $reports->where('status', 'reviewed')->count();
+                        $dismissedCount = $reports->where('status', 'dismissed')->count();
+                    @endphp
+
+                    {{-- Stats Summary Row --}}
+                    <div class="row g-4 mb-6">
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="trainee-stat-box text-center">
+                                <div class="stat-box-value text-primary">{{ $reports->count() }}</div>
+                                <div class="stat-box-label">{{ __('Total Submissions') }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="trainee-stat-box text-center">
+                                <div class="stat-box-value text-warning">{{ $pendingCount }}</div>
+                                <div class="stat-box-label">{{ __('Pending Review') }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="trainee-stat-box text-center">
+                                <div class="stat-box-value text-success">{{ $reviewedCount }}</div>
+                                <div class="stat-box-label">{{ __('Reviewed') }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="trainee-stat-box text-center">
+                                <div class="stat-box-value text-muted">{{ $dismissedCount }}</div>
+                                <div class="stat-box-label">{{ __('Dismissed') }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if($reports->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-row-bordered table-row-dashed align-middle gy-4">
+                                <thead class="fs-7 text-uppercase fw-bold text-gray-500 border-bottom">
+                                    <tr>
+                                        <th style="width: 40px;">#</th>
+                                        <th>{{ __('Submitted At') }}</th>
+                                        <th>{{ __('Routine & Exercise') }}</th>
+                                        <th>{{ __('Prescribed Load (Ref)') }}</th>
+                                        <th>{{ __('Reported Load (Actual)') }}</th>
+                                        <th>{{ __('Trainee Note') }}</th>
+                                        <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Coach Review') }}</th>
+                                        <th class="text-end">{{ __('Action') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="fs-6">
+                                    @foreach($reports as $rIndex => $report)
+                                        <tr>
+                                            <td class="text-muted">{{ $rIndex + 1 }}</td>
+                                            <td>
+                                                <div class="fw-bold">{{ $report->created_at ? $report->created_at->format('M d, Y') : '—' }}</div>
+                                                <div class="text-muted fs-8">{{ $report->created_at ? $report->created_at->format('h:i A') : '' }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-gray-900">{{ $report->exercise_name }}</div>
+                                                <div class="text-muted fs-8"><i class="fas fa-calendar-day me-1"></i>{{ $report->workout_day_name }}</div>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-light-warning fw-bold fs-7">
+                                                    <i class="fas fa-bookmark me-1 text-warning"></i>
+                                                    {{ $report->prescribed_load ?: __('None') }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-light-primary fw-bolder fs-7 px-3 py-2">
+                                                    <i class="fas fa-dumbbell me-1 text-primary"></i>
+                                                    {{ $report->reported_load }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if($report->notes)
+                                                    <div class="text-gray-800 fs-7" title="{{ $report->notes }}">
+                                                        <i class="fas fa-comment-dots text-info me-1"></i>
+                                                        {{ \Illuminate\Support\Str::limit($report->notes, 60) }}
+                                                    </div>
+                                                @else
+                                                    <span class="text-muted fs-8">—</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($report->status === 'pending')
+                                                    <span class="badge badge-light-warning fw-bold fs-8">{{ __('Pending') }}</span>
+                                                @elseif($report->status === 'reviewed')
+                                                    <span class="badge badge-light-success fw-bold fs-8">{{ __('Reviewed') }}</span>
+                                                @elseif($report->status === 'dismissed')
+                                                    <span class="badge badge-light-secondary fw-bold fs-8">{{ __('Dismissed') }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($report->coach_notes)
+                                                    <div class="text-gray-700 fs-8">{{ $report->coach_notes }}</div>
+                                                @endif
+                                                @if($report->reviewed_at)
+                                                    <div class="text-muted fs-8">
+                                                        {{ $report->reviewer ? $report->reviewer->name : __('Coach') }} • {{ $report->reviewed_at->format('M d') }}
+                                                    </div>
+                                                @elseif(!$report->coach_notes)
+                                                    <span class="text-muted fs-8">—</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-end">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-icon btn-light-primary btn-review-report"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#coachReviewLoadModal"
+                                                        data-report-id="{{ $report->id }}"
+                                                        data-exercise-name="{{ $report->exercise_name }}"
+                                                        data-reported-load="{{ $report->reported_load }}"
+                                                        data-prescribed-load="{{ $report->prescribed_load }}"
+                                                        data-status="{{ $report->status }}"
+                                                        data-coach-notes="{{ $report->coach_notes }}"
+                                                        title="{{ __('Review Report') }}">
+                                                    <i class="fas fa-edit fs-7"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-12">
+                            <div class="symbol symbol-60px rounded-circle bg-light-primary mb-4 d-inline-flex flex-center">
+                                <i class="fas fa-sliders-h fs-2 text-primary"></i>
+                            </div>
+                            <h4 class="fw-bold text-gray-800 mb-2">{{ __('No load adjustment reports yet') }}</h4>
+                            <p class="text-muted fs-7 mb-0">{{ __('When the trainee reports their actual workout loads, they will appear here for review.') }}</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
     </div>
 
     {{-- ===== INLINE ADD WORKOUT DAY MODAL ===== --}}
@@ -2102,6 +2269,58 @@
                         <span class="text-dark">@lang('Save & Add Day')</span>
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== COACH REVIEW LOAD ADJUSTMENT MODAL ===== --}}
+    <div class="modal fade" id="coachReviewLoadModal" tabindex="-1" aria-labelledby="coachReviewLoadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border shadow-lg" style="background: var(--wb-surface-solid); border-color: var(--wb-row-border) !important; color: var(--wb-text);">
+                <div class="modal-header border-bottom py-4 px-6" style="border-color: var(--wb-row-border) !important; background: var(--wb-head-bg);">
+                    <h4 class="modal-title fw-bold" id="coachReviewLoadModalLabel">
+                        <i class="fas fa-sliders-h text-primary me-2"></i>{{ __('Review Load Adjustment Report') }}
+                    </h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="coach-review-load-form" method="POST" action="">
+                    @csrf
+                    <input type="hidden" id="review_report_id" name="report_id" value="">
+                    <div class="modal-body p-6">
+                        <div class="mb-4 p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid var(--wb-row-border);">
+                            <div class="fs-6 fw-bold text-gray-900 mb-1" id="reviewExerciseName"></div>
+                            <div class="d-flex align-items-center gap-3 fs-7">
+                                <div><span class="text-muted">{{ __('Prescribed Load:') }}</span> <span class="badge badge-light-warning" id="reviewPrescribedLoad"></span></div>
+                                <div><span class="text-muted">{{ __('Reported Load:') }}</span> <span class="badge badge-light-primary fw-bold" id="reviewReportedLoad"></span></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label required fw-bold">{{ __('Review Status') }}</label>
+                            <select class="form-select" id="reviewStatusSelect" name="status" required>
+                                <option value="pending">{{ __('Pending Review') }}</option>
+                                <option value="reviewed">{{ __('Reviewed / Acknowledged') }}</option>
+                                <option value="dismissed">{{ __('Dismissed') }}</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ __('Coach Feedback / Notes (Optional)') }}</label>
+                            <textarea class="form-control" id="reviewCoachNotes" name="coach_notes" rows="3" placeholder="{{ __('e.g. Great progress, will increase in the next training block.') }}"></textarea>
+                        </div>
+
+                        <div class="alert alert-info py-2 px-3 fs-8 mb-0 d-flex align-items-center gap-2">
+                            <i class="fas fa-info-circle text-info"></i>
+                            <span>{{ __('Note: To update the prescribed load in the approved workout plan, edit the routine day.') }}</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top py-3 px-6 d-flex justify-content-between" style="border-color: var(--wb-row-border) !important; background: var(--wb-head-bg);">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        <button type="submit" id="submitReviewBtn" class="btn btn-primary fw-bold">
+                            <i class="fas fa-check me-1"></i>{{ __('Save Review') }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -2765,6 +2984,67 @@
                         }
                     });
                 }
+            });
+            // Coach Review Modal open
+            $(document).on('click', '.btn-review-report', function() {
+                var btn = $(this);
+                var reportId = btn.data('report-id');
+                var exName = btn.data('exercise-name');
+                var prescribed = btn.data('prescribed-load') || "{{ __('None') }}";
+                var reported = btn.data('reported-load');
+                var status = btn.data('status') || 'pending';
+                var coachNotes = btn.data('coach-notes') || '';
+
+                $('#review_report_id').val(reportId);
+                $('#reviewExerciseName').text(exName);
+                $('#reviewPrescribedLoad').text(prescribed);
+                $('#reviewReportedLoad').text(reported);
+                $('#reviewStatusSelect').val(status);
+                $('#reviewCoachNotes').val(coachNotes);
+                $('#coach-review-load-form').attr('action', "{{ url('system/load-adjustment') }}/" + reportId + "/review");
+            });
+
+            // Submit review form via AJAX
+            $('#coach-review-load-form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var actionUrl = form.attr('action');
+                var submitBtn = $('#submitReviewBtn');
+                submitBtn.prop('disabled', true);
+
+                $.ajax({
+                    url: actionUrl,
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function(resp) {
+                        submitBtn.prop('disabled', false);
+                        $('#coachReviewLoadModal').modal('hide');
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: "{{ __('Success') }}",
+                                text: resp.message || "{{ __('Review saved successfully!') }}"
+                            }).then(function() {
+                                location.reload();
+                            });
+                        } else {
+                            alert(resp.message || "{{ __('Review saved successfully!') }}");
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr) {
+                        submitBtn.prop('disabled', false);
+                        var errMsg = "{{ __('Failed to save review') }}";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        }
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ icon: 'error', title: "{{ __('Error') }}", text: errMsg });
+                        } else {
+                            alert(errMsg);
+                        }
+                    }
+                });
             });
         });
     </script>

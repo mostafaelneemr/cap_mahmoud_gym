@@ -151,6 +151,11 @@ class Exercise extends GlobalModel
         return $this->belongsTo(WorkoutPlan::class, 'workout_plan_id', 'id');
     }
 
+    public function loadAdjustments()
+    {
+        return $this->hasMany(TraineeLoadAdjustment::class, 'exercise_id', 'id')->orderBy('created_at', 'desc');
+    }
+
     public function getFormattedLinkAttribute()
     {
         $url = $this->link;

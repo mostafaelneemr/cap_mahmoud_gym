@@ -130,6 +130,9 @@ function ignoredRoutes()
         'system.trainee-progress.destroy-photo',
         'system.trainee-progress.compare',
         'system.trainee-progress.photo',
+        'system.load-adjustment.store',
+        'system.load-adjustment.trainee-history',
+        'system.load-adjustment.review',
     ];
 }
 

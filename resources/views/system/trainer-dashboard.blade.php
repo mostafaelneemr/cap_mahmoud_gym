@@ -637,13 +637,18 @@
                     </div>
 
                     <div class="stat-badge">
-                <span class="badge rounded-pill fs-8 px-3 py-2
+                        <span class="badge rounded-pill fs-8 px-3 py-2
                             @if($trainee->status == 'active') status-active
                             @elseif($trainee->status == 'expired') status-expired
                             @else status-inactive @endif">
-                    {{ ucfirst($trainee->status) }}
-                </span>
+                            {{ ucfirst($trainee->status) }}
+                        </span>
                     </div>
+
+                    <button type="button" class="stat-badge btn btn-sm border-0 text-info fw-bold" data-bs-toggle="modal" data-bs-target="#traineeHistoryModal">
+                        <i class="fas fa-history me-1"></i>
+                        <span>{{ __('My Load Reports') }}</span>
+                    </button>
                 </div>
             @endif
         </div>
@@ -758,13 +763,27 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if($exercise->internal_weight)
-                                                            <span class="badge-metric badge-weight">
-                                                                <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
-                                                            </span>
-                                                        @else
-                                                            <span class="text-muted">—</span>
-                                                        @endif
+                                                        <div class="d-flex align-items-center justify-content-between gap-1">
+                                                            @if($exercise->internal_weight)
+                                                                <span class="badge-metric badge-weight">
+                                                                    <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted">—</span>
+                                                            @endif
+                                                            <button type="button" 
+                                                                    class="btn btn-sm btn-icon btn-light-primary btn-report-load p-0" 
+                                                                    style="width: 26px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;"
+                                                                    data-bs-toggle="modal" 
+                                                                    data-bs-target="#loadAdjustmentModal"
+                                                                    data-exercise-id="{{ $exercise->id }}"
+                                                                    data-exercise-name="{{ $exercise->name }}"
+                                                                    data-day-name="{{ $plan->day_name }}"
+                                                                    data-prescribed-weight="{{ $exercise->internal_weight_display ?: __('No prescribed load') }}"
+                                                                    title="{{ __('Report Load Adjustment') }}">
+                                                                <i class="fas fa-sliders-h fs-8"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         @if($exercise->tempo)
@@ -874,14 +893,28 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($exercise->internal_weight)
-                                                    <span class="badge-metric badge-weight">
-                                    <i class="fas fa-weight-hanging"></i>
-                                    {{ $exercise->internal_weight_display }}
-                                </span>
-                                                @else
-                                                    <span class="text-muted">—</span>
-                                                @endif
+                                                <div class="d-flex align-items-center justify-content-between gap-1">
+                                                    @if($exercise->internal_weight)
+                                                        <span class="badge-metric badge-weight">
+                                                            <i class="fas fa-weight-hanging"></i>
+                                                            {{ $exercise->internal_weight_display }}
+                                                        </span>
+                                                    @else
+                                                        <span class="text-muted">—</span>
+                                                    @endif
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-icon btn-light-primary btn-report-load p-0" 
+                                                            style="width: 26px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;"
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#loadAdjustmentModal"
+                                                            data-exercise-id="{{ $exercise->id }}"
+                                                            data-exercise-name="{{ $exercise->name }}"
+                                                            data-day-name="{{ $plan->day_name }}"
+                                                            data-prescribed-weight="{{ $exercise->internal_weight_display ?: __('No prescribed load') }}"
+                                                            title="{{ __('Report Load Adjustment') }}">
+                                                        <i class="fas fa-sliders-h fs-8"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                             <td>
                                                 @if($exercise->tempo)
@@ -1000,13 +1033,27 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if($exercise->internal_weight)
-                                                            <span class="badge-metric badge-weight">
-                                                                <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
-                                                            </span>
-                                                        @else
-                                                            <span class="text-muted">—</span>
-                                                        @endif
+                                                        <div class="d-flex align-items-center justify-content-between gap-1">
+                                                            @if($exercise->internal_weight)
+                                                                <span class="badge-metric badge-weight">
+                                                                    <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted">—</span>
+                                                            @endif
+                                                            <button type="button" 
+                                                                    class="btn btn-sm btn-icon btn-light-primary btn-report-load p-0" 
+                                                                    style="width: 26px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;"
+                                                                    data-bs-toggle="modal" 
+                                                                    data-bs-target="#loadAdjustmentModal"
+                                                                    data-exercise-id="{{ $exercise->id }}"
+                                                                    data-exercise-name="{{ $exercise->name }}"
+                                                                    data-day-name="{{ $plan->day_name }}"
+                                                                    data-prescribed-weight="{{ $exercise->internal_weight_display ?: __('No prescribed load') }}"
+                                                                    title="{{ __('Report Load Adjustment') }}">
+                                                                <i class="fas fa-sliders-h fs-8"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         @if($exercise->tempo)
@@ -1110,6 +1157,120 @@
         </div>
     </div>
 
+    {{-- ===== TRAINEE LOAD ADJUSTMENT REPORT MODAL ===== --}}
+    <div class="modal fade" id="loadAdjustmentModal" tabindex="-1" aria-labelledby="loadAdjustmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border shadow-lg" style="background: #1e1e2d; border-color: rgba(255,255,255,0.1) !important; color: #fff;">
+                <div class="modal-header border-bottom py-4 px-6" style="border-color: rgba(255,255,255,0.08) !important; background: rgba(0,0,0,0.2);">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-sliders-h text-primary fs-3"></i>
+                        <h4 class="modal-title fw-bold text-white mb-0" id="loadAdjustmentModalLabel">
+                            {{ __('Report Load Adjustment') }}
+                        </h4>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="trainee-load-adjustment-form" method="POST" action="{{ route('system.load-adjustment.store') }}">
+                    @csrf
+                    <input type="hidden" name="exercise_id" id="adj_exercise_id" value="">
+
+                    <div class="modal-body p-6">
+                        {{-- Exercise & Day Context Banner --}}
+                        <div class="p-3 rounded-3 mb-4" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                            <div class="fs-5 fw-bold text-white mb-1" id="adjExerciseName"></div>
+                            <div class="fs-7 text-muted mb-2">
+                                <i class="fas fa-calendar-day me-1"></i><span id="adjDayName"></span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 fs-7 pt-2 border-top border-secondary">
+                                <span class="text-gray-400">{{ __('Coach Prescribed Load (Reference):') }}</span>
+                                <span class="badge badge-light-warning fw-bold fs-7" id="adjPrescribedLoad"></span>
+                            </div>
+                        </div>
+
+                        {{-- Input: Actual Load Used --}}
+                        <div class="mb-4">
+                            <label class="form-label required fw-bold text-white">
+                                {{ __('Actual Load Used (Reported Load)') }}
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-solid bg-dark text-white border-secondary" 
+                                   name="reported_load" 
+                                   id="adjReportedLoad" 
+                                   placeholder="{{ __('e.g. 25kg or 25kg / 30kg') }}" 
+                                   required 
+                                   maxlength="100">
+                            <div class="form-text text-muted fs-8 mt-1">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ __('Enter the actual weights you lifted. This report informs your coach and does NOT overwrite your workout plan.') }}
+                            </div>
+                        </div>
+
+                        {{-- Input: Optional Notes --}}
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-white">
+                                {{ __('Notes / Feedback for Coach (Optional)') }}
+                            </label>
+                            <textarea class="form-control form-control-solid bg-dark text-white border-secondary" 
+                                      name="notes" 
+                                      id="adjNotes" 
+                                      rows="2" 
+                                      maxlength="1000" 
+                                      placeholder="{{ __('e.g. Completed all reps easily, ready to progress next week.') }}"></textarea>
+                        </div>
+
+                        {{-- Toggle Previous Exercise History --}}
+                        <div class="pt-2 border-top border-secondary">
+                            <button type="button" class="btn btn-sm btn-link text-info p-0 text-decoration-none d-flex align-items-center justify-content-between w-100" id="btnToggleExerciseHistory">
+                                <span><i class="fas fa-history me-1"></i>{{ __('View your previous reports for this exercise') }}</span>
+                                <i class="fas fa-chevron-down fs-9" id="historyChevron"></i>
+                            </button>
+                            <div id="exerciseHistoryWrapper" class="mt-3" style="display: none;">
+                                <div id="exerciseHistoryLoading" class="text-center py-3 text-muted fs-8" style="display: none;">
+                                    <span class="spinner-border spinner-border-sm me-1"></span> {{ __('Loading history...') }}
+                                </div>
+                                <div id="exerciseHistoryList"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-top py-3 px-6 d-flex justify-content-between" style="border-color: rgba(255,255,255,0.08) !important; background: rgba(0,0,0,0.2);">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        <button type="submit" id="submitAdjustmentBtn" class="btn btn-primary fw-bold px-5">
+                            <i class="fas fa-paper-plane me-1"></i>{{ __('Send to Coach') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== ALL MY LOAD REPORTS MODAL ===== --}}
+    <div class="modal fade" id="traineeHistoryModal" tabindex="-1" aria-labelledby="traineeHistoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content rounded-4 border shadow-lg" style="background: #1e1e2d; border-color: rgba(255,255,255,0.1) !important; color: #fff;">
+                <div class="modal-header border-bottom py-4 px-6" style="border-color: rgba(255,255,255,0.08) !important; background: rgba(0,0,0,0.2);">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-history text-info fs-3"></i>
+                        <h4 class="modal-title fw-bold text-white mb-0" id="traineeHistoryModalLabel">
+                            {{ __('My Load Adjustment Reports History') }}
+                        </h4>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-6">
+                    <div id="allHistoryLoading" class="text-center py-8 text-muted">
+                        <span class="spinner-border text-primary mb-2"></span>
+                        <div>{{ __('Loading your reports history...') }}</div>
+                    </div>
+                    <div id="allHistoryContainer" style="display: none;"></div>
+                </div>
+                <div class="modal-footer border-top py-3 px-6" style="border-color: rgba(255,255,255,0.08) !important; background: rgba(0,0,0,0.2);">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('footer')
@@ -1183,6 +1344,180 @@
             $('#videoModal').on('hidden.bs.modal', function () {
                 $('#videoIframe').attr('src', '');
                 $('#directVideoLink').attr('href', '#');
+            });
+
+            // ===== LOAD ADJUSTMENT TRAINEE HANDLERS =====
+            $(document).on('click', '.btn-report-load', function () {
+                var btn = $(this);
+                var exerciseId = btn.data('exercise-id');
+                var exName = btn.data('exercise-name');
+                var dayName = btn.data('day-name');
+                var prescribedWeight = btn.data('prescribed-weight') || "{{ __('No prescribed load') }}";
+
+                $('#adj_exercise_id').val(exerciseId);
+                $('#adjExerciseName').text(exName);
+                $('#adjDayName').text(dayName);
+                $('#adjPrescribedLoad').text(prescribedWeight);
+                $('#adjReportedLoad').val('');
+                $('#adjNotes').val('');
+
+                // Reset exercise history toggle
+                $('#exerciseHistoryWrapper').hide();
+                $('#historyChevron').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                $('#exerciseHistoryList').empty();
+            });
+
+            // Toggle history for specific exercise inside modal
+            $('#btnToggleExerciseHistory').on('click', function () {
+                var wrapper = $('#exerciseHistoryWrapper');
+                var chevron = $('#historyChevron');
+                var exerciseId = $('#adj_exercise_id').val();
+
+                if (wrapper.is(':visible')) {
+                    wrapper.slideUp();
+                    chevron.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    wrapper.slideDown();
+                    chevron.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+
+                    if ($('#exerciseHistoryList').is(':empty')) {
+                        $('#exerciseHistoryLoading').show();
+                        $.ajax({
+                            url: "{{ route('system.load-adjustment.trainee-history') }}",
+                            method: 'GET',
+                            data: { exercise_id: exerciseId },
+                            success: function (resp) {
+                                $('#exerciseHistoryLoading').hide();
+                                var reports = (resp.data && resp.data.reports) ? resp.data.reports : [];
+                                if (reports.length === 0) {
+                                    $('#exerciseHistoryList').html('<div class="text-muted fs-8 py-2 text-center">{{ __("No previous reports for this exercise.") }}</div>');
+                                    return;
+                                }
+
+                                var html = '<div class="list-group list-group-flush border-0">';
+                                reports.forEach(function (r) {
+                                    var badgeClass = r.status === 'reviewed' ? 'badge-light-success' : (r.status === 'dismissed' ? 'badge-light-secondary' : 'badge-light-warning');
+                                    var statusText = r.status.charAt(0).toUpperCase() + r.status.slice(1);
+                                    var dateStr = r.created_at ? r.created_at.substring(0, 10) : '';
+
+                                    html += '<div class="list-group-item bg-transparent text-white px-0 py-2 border-secondary d-flex justify-content-between align-items-center">';
+                                    html += '<div>';
+                                    html += '<span class="fw-bold text-primary">' + (r.reported_load || '') + '</span>';
+                                    if (r.prescribed_load) {
+                                        html += ' <span class="text-muted fs-9">({{ __("Ref:") }} ' + r.prescribed_load + ')</span>';
+                                    }
+                                    if (r.notes) {
+                                        html += '<div class="text-muted fs-9 mt-1"><i class="fas fa-comment-dots me-1"></i>' + r.notes + '</div>';
+                                    }
+                                    html += '</div>';
+                                    html += '<div class="text-end">';
+                                    html += '<span class="badge ' + badgeClass + ' fs-9">' + statusText + '</span>';
+                                    html += '<div class="text-muted fs-9 mt-1">' + dateStr + '</div>';
+                                    html += '</div>';
+                                    html += '</div>';
+                                });
+                                html += '</div>';
+                                $('#exerciseHistoryList').html(html);
+                            },
+                            error: function () {
+                                $('#exerciseHistoryLoading').hide();
+                                $('#exerciseHistoryList').html('<div class="text-danger fs-8 py-2">{{ __("Could not load history.") }}</div>');
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Submit Trainee Load Adjustment Form via AJAX
+            $('#trainee-load-adjustment-form').on('submit', function (e) {
+                e.preventDefault();
+                var form = $(this);
+                var btn = $('#submitAdjustmentBtn');
+                btn.prop('disabled', true);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function (resp) {
+                        btn.prop('disabled', false);
+                        $('#loadAdjustmentModal').modal('hide');
+                        var msg = resp.message || "{{ __('Load adjustment report submitted successfully to your coach!') }}";
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: "{{ __('Report Sent') }}",
+                                text: msg
+                            });
+                        } else {
+                            alert(msg);
+                        }
+                    },
+                    error: function (xhr) {
+                        btn.prop('disabled', false);
+                        var errMsg = "{{ __('Failed to submit report. Please check your input.') }}";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        }
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ icon: 'error', title: "{{ __('Error') }}", text: errMsg });
+                        } else {
+                            alert(errMsg);
+                        }
+                    }
+                });
+            });
+
+            // Modal: All Trainee Reports History
+            $('#traineeHistoryModal').on('show.bs.modal', function () {
+                $('#allHistoryLoading').show();
+                $('#allHistoryContainer').hide().empty();
+
+                $.ajax({
+                    url: "{{ route('system.load-adjustment.trainee-history') }}",
+                    method: 'GET',
+                    success: function (resp) {
+                        $('#allHistoryLoading').hide();
+                        var reports = (resp.data && resp.data.reports) ? resp.data.reports : [];
+                        if (reports.length === 0) {
+                            $('#allHistoryContainer').html('<div class="text-center py-8 text-muted">{{ __("You have not submitted any load adjustment reports yet.") }}</div>').show();
+                            return;
+                        }
+
+                        var html = '<div class="table-responsive">';
+                        html += '<table class="table table-row-bordered align-middle text-white">';
+                        html += '<thead class="text-gray-500 fs-7 text-uppercase fw-bold border-secondary"><tr>';
+                        html += '<th>{{ __("Date") }}</th>';
+                        html += '<th>{{ __("Exercise") }}</th>';
+                        html += '<th>{{ __("Prescribed (Ref)") }}</th>';
+                        html += '<th>{{ __("Your Load") }}</th>';
+                        html += '<th>{{ __("Note") }}</th>';
+                        html += '<th>{{ __("Status") }}</th>';
+                        html += '</tr></thead><tbody class="fs-7">';
+
+                        reports.forEach(function (r) {
+                            var badgeClass = r.status === 'reviewed' ? 'badge-light-success' : (r.status === 'dismissed' ? 'badge-light-secondary' : 'badge-light-warning');
+                            var statusText = r.status.charAt(0).toUpperCase() + r.status.slice(1);
+                            var dateStr = r.created_at ? r.created_at.substring(0, 10) : '';
+
+                            html += '<tr>';
+                            html += '<td class="text-muted">' + dateStr + '</td>';
+                            html += '<td class="fw-bold text-white">' + (r.exercise_name || '') + '<div class="text-muted fs-8">' + (r.workout_day_name || '') + '</div></td>';
+                            html += '<td><span class="badge badge-light-warning fs-8">' + (r.prescribed_load || '—') + '</span></td>';
+                            html += '<td><span class="badge badge-light-primary fw-bold fs-7">' + (r.reported_load || '') + '</span></td>';
+                            html += '<td>' + (r.notes ? '<span title="' + r.notes + '"><i class="fas fa-comment-dots text-info me-1"></i>' + r.notes.substring(0, 30) + '...</span>' : '—') + '</td>';
+                            html += '<td><span class="badge ' + badgeClass + '">' + statusText + '</span></td>';
+                            html += '</tr>';
+                        });
+
+                        html += '</tbody></table></div>';
+                        $('#allHistoryContainer').html(html).show();
+                    },
+                    error: function () {
+                        $('#allHistoryLoading').hide();
+                        $('#allHistoryContainer').html('<div class="text-danger py-4 text-center">{{ __("Could not load reports history.") }}</div>').show();
+                    }
+                });
             });
         });
     </script>

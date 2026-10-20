@@ -88,7 +88,7 @@ class TraineeService extends BaseService
             abort(404, __('Trainee not found.'));
         }
 
-        $trainee->load([
+        $relations = [
             'user',
             'currentWorkoutPlans.exercises',
             'currentWorkoutPlans.warmupExercises',
@@ -100,7 +100,15 @@ class TraineeService extends BaseService
             'archivedWorkoutPlans.mainExercises',
             'archivedWorkoutPlans.postWorkoutExercises',
             'activeNutritionPlans',
-        ]);
+        ];
+
+        if (\Illuminate\Support\Facades\Schema::hasTable('trainee_load_adjustments')) {
+            $relations[] = 'loadAdjustments.exercise';
+            $relations[] = 'loadAdjustments.workoutPlan';
+            $relations[] = 'loadAdjustments.reviewer';
+        }
+
+        $trainee->load($relations);
         $user_id = $trainee->user_id ?? 0;
 
         $activityLogData = $this->activity_log_service->loadViewData();

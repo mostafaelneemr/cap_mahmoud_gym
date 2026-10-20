@@ -41,7 +41,9 @@ class Permission
                     'logout',
                     'auth.google',
                     'auth.google.callback',
-                    'system.impersonate.leave'
+                    'system.impersonate.leave',
+                    'system.load-adjustment.store',
+                    'system.load-adjustment.trainee-history'
                 ];
                 if (in_array(Route::currentRouteName(), $whitelist)) {
                     return $next($request);

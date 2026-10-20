@@ -69,6 +69,12 @@ Route::post('/workout/day/{dayId}/toggle-status', 'WorkoutController@toggleDaySt
 Route::post('/workout/inline-day', 'WorkoutController@storeInlineDay')->name('system.workout.storeInlineDay');
 Route::resource('/workout', 'WorkoutController', ['as' => 'system']); //
 
+Route::controller('LoadAdjustmentController')->prefix('load-adjustment')->group(function () {
+    Route::post('/', 'store')->name('system.load-adjustment.store');
+    Route::get('/history', 'traineeHistory')->name('system.load-adjustment.trainee-history');
+    Route::post('/{id}/review', 'review')->name('system.load-adjustment.review');
+});
+
 Route::get('/nutrition/my-plan', 'NutritionController@myPlan')->name('system.nutrition.my-plan');
 Route::resource('/nutrition', 'NutritionController', ['as' => 'system']);
 
