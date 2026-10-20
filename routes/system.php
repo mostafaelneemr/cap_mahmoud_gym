@@ -60,6 +60,7 @@ Route::controller('TraineeProgressController')->prefix('trainee-progress')->grou
     Route::post('/{id}/notes', 'updateCoachNotes')->name('system.trainee-progress.update-notes');
     Route::delete('/{id}', 'destroy')->name('system.trainee-progress.destroy');
     Route::delete('/photo/{photoId}', 'destroyPhoto')->name('system.trainee-progress.destroy-photo');
+    Route::get('/photo/{photoId}', 'showPhoto')->name('system.trainee-progress.photo');
     Route::get('/compare', 'compare')->name('system.trainee-progress.compare');
 });
 

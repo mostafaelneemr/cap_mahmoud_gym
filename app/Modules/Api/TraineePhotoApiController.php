@@ -9,6 +9,7 @@ use App\Models\TraineeProgressPhoto;
 use App\Services\TraineeProgressService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class TraineePhotoApiController extends Controller
 {
@@ -25,6 +26,14 @@ class TraineePhotoApiController extends Controller
      */
     public function upload(Request $request)
     {
+        $user = Auth::guard('sanctum')->user() ?? Auth::user();
+        if (!$user) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
         $request->validate([
             'trainee_id'   => 'nullable|exists:trainees,id',
             'checkin_id'   => 'nullable|exists:trainee_progress_checkins,id',
@@ -36,17 +45,26 @@ class TraineePhotoApiController extends Controller
         ]);
 
         try {
-            $user = Auth::guard('sanctum')->user() ?? Auth::user();
             $trainee = null;
+            $isTrainee = in_array((int) $user->user_type, [2, 3], true);
 
-            if ($user && $user->user_type == 2) {
+            if ($isTrainee) {
                 $trainee = Trainee::where('user_id', $user->id)->first();
+                if (!$trainee) {
+                    return response()->json([
+                        'status'  => false,
+                        'message' => 'Trainee profile not found.'
+                    ], 404);
+                }
+
+                if ($request->filled('trainee_id') && (int) $request->trainee_id !== (int) $trainee->id) {
+                    return response()->json([
+                        'status'  => false,
+                        'message' => 'Unauthorized access to trainee.'
+                    ], 403);
+                }
             } elseif ($request->filled('trainee_id')) {
                 $trainee = Trainee::find($request->trainee_id);
-            }
-
-            if (!$trainee) {
-                $trainee = Trainee::first();
             }
 
             if (!$trainee) {
@@ -62,12 +80,18 @@ class TraineePhotoApiController extends Controller
 
             if ($request->filled('checkin_id')) {
                 $checkin = TraineeProgressCheckin::find($request->checkin_id);
+                if (!$checkin || (int) $checkin->trainee_id !== (int) $trainee->id) {
+                    return response()->json([
+                        'status'  => false,
+                        'message' => 'Unauthorized check-in record.'
+                    ], 403);
+                }
             }
 
             if (!$checkin) {
                 $checkin = TraineeProgressCheckin::create([
                     'trainee_id'   => $trainee->id,
-                    'coach_id'     => ($user && $user->user_type != 2) ? $user->id : null,
+                    'coach_id'     => (!$isTrainee) ? $user->id : null,
                     'checkin_date' => $checkinDate,
                     'weight'       => $request->input('weight'),
                     'notes'        => $request->input('notes'),
@@ -123,5 +147,94 @@ class TraineePhotoApiController extends Controller
                 'message' => 'Failed to process photo: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * تخديم الصورة بشكل آمن عبر الـ API بعد التحقق من الهوية والصلاحيات
+     * Securely serve a trainee progress photo via API ensuring authorization and path safety.
+     * Endpoint: GET /api/v1/trainee/photos/{photoId}
+     */
+    public function serve(Request $request, $photoId)
+    {
+        $user = Auth::guard('sanctum')->user() ?? Auth::user();
+        if (!$user) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
+        if (!is_numeric($photoId)) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Invalid photo identifier.'
+            ], 404);
+        }
+
+        $photo = TraineeProgressPhoto::with('checkin.trainee')->find((int) $photoId);
+        if (!$photo) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Photo not found.'
+            ], 404);
+        }
+
+        $isTrainee = in_array((int) $user->user_type, [2, 3], true);
+        if ($isTrainee) {
+            $trainee = Trainee::where('user_id', $user->id)->first();
+            if (!$trainee || !$photo->checkin || (int) $photo->checkin->trainee_id !== (int) $trainee->id) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Unauthorized access to photo.'
+                ], 403);
+            }
+        }
+
+        $photoPath = $photo->photo_path;
+        if (empty($photoPath) || !is_string($photoPath) || str_contains($photoPath, '..') || str_contains($photoPath, "\0") || str_contains($photoPath, '://')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Invalid file path.'
+            ], 400);
+        }
+
+        $disk = Storage::disk('public');
+        if (!$disk->exists($photoPath)) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'File not found on disk.'
+            ], 404);
+        }
+
+        $fullPath = $disk->path($photoPath);
+        $realDiskRoot = realpath($disk->path(''));
+        $realFilePath = realpath($fullPath);
+
+        if ($realFilePath === false || !str_starts_with($realFilePath, $realDiskRoot)) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Unauthorized path traversal access.'
+            ], 403);
+        }
+
+        $mime = mime_content_type($realFilePath);
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!in_array($mime, $allowedMimes, true)) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Invalid image format.'
+            ], 403);
+        }
+
+        $response = response()->file($realFilePath, [
+            'Content-Type'           => $mime,
+            'Pragma'                 => 'no-cache',
+            'Expires'                => '0',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
+        $response->setPrivate();
+        $response->headers->set('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+
+        return $response;
     }
 }

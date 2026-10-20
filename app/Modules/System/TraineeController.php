@@ -79,6 +79,16 @@ class TraineeController extends SystemController
 
     public function update(TraineeFormRequest $request, $id)
     {
+        $authUser = Auth::guard('user')->user();
+
+        // التحقق من الصلاحيات: إذا كان المستخدم متدرباً، يمنع من تعديل أي حساب آخر
+        if ($authUser && in_array((int) $authUser->user_type, [2, 3], true)) {
+            [$trainee, $user] = $this->traineeService->resolveTraineeAndUser($id);
+            if (!$user || (int) $user->id !== (int) $authUser->id) {
+                abort(403, __('Unauthorized to update this trainee.'));
+            }
+        }
+
         $update = $this->traineeService->update($request, $id);
 
         if ($update) {
@@ -89,6 +99,51 @@ class TraineeController extends SystemController
             );
         } else {
             return $this->fail(__('Sorry, we could not Update the data'));
+        }
+    }
+
+    /**
+     * حذف المتدرب وسجلاته المرتبطة بشكل آمن بعد التحقق من الصلاحيات.
+     *
+     * @param int|string $id
+     * @param Request $request
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Request $request, $id)
+    {
+        $authUser = Auth::guard('user')->user();
+
+        // منع المتدربين من حذف أي حسابات
+        if ($authUser && in_array((int) $authUser->user_type, [2, 3], true)) {
+            abort(403, __('Unauthorized to delete trainees.'));
+        }
+
+        [$trainee, $user] = $this->traineeService->resolveTraineeAndUser($id);
+        if (!$trainee && !$user) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return $this->fail(__('Trainee not found.'), 404);
+            }
+            flash_msg('error', __('Trainee not found.'));
+            return redirect()->back();
+        }
+
+        $deleted = $this->traineeService->destroy($id);
+
+        if ($deleted) {
+            flash_msg('success', __('Trainee deleted successfully.'));
+            if ($request->ajax() || $request->wantsJson()) {
+                return $this->success(
+                    __('Trainee deleted successfully.'),
+                    ['url' => route('system.trainee.index')]
+                );
+            }
+            return redirect()->route('system.trainee.index');
+        } else {
+            if ($request->ajax() || $request->wantsJson()) {
+                return $this->fail(__('Sorry, could not delete trainee.'));
+            }
+            flash_msg('error', __('Sorry, could not delete trainee.'));
+            return redirect()->back();
         }
     }
 

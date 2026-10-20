@@ -56,7 +56,7 @@ class Dashboard extends SystemController
         $pendingTrainees = $this->traineeRepository->getModelar()->with('user')
             ->whereDoesntHave('activeWorkoutPlans')->latest()->take(5)->get();
 
-        $websiteUrl = env('APP_URL');
+        $websiteUrl = config('app.url');
 
         $this->viewData['totalTrainees'] = $totalTrainees;
         $this->viewData['pendingWorkouts'] = $pendingWorkouts;

@@ -122,7 +122,6 @@ function ignoredRoutes()
         'system.user.show-profile',
         'system.user.update-profile',
         'system.reset-password',
-        'system.workout.create',
         'system.nutrition.my-plan',
         'system.trainee-progress.index',
         'system.trainee-progress.store',
@@ -130,6 +129,7 @@ function ignoredRoutes()
         'system.trainee-progress.destroy',
         'system.trainee-progress.destroy-photo',
         'system.trainee-progress.compare',
+        'system.trainee-progress.photo',
     ];
 }
 
@@ -141,7 +141,7 @@ function userCan($routename, $userId = null)
 
     $userObj = $userId ? User::where('id', $userId)->first() : auth('user')->user();
 
-    if ($userObj && $userObj->user_type == 2) {
+    if ($userObj && in_array((int) $userObj->user_type, [2, 3], true)) {
         $traineeRoutes = [
             'system.dashboard.trainer',
             'system.nutrition.my-plan',
@@ -151,6 +151,8 @@ function userCan($routename, $userId = null)
             'system.trainee-progress.destroy',
             'system.trainee-progress.destroy-photo',
             'system.trainee-progress.compare',
+            'system.trainee-progress.photo',
+            'system.impersonate.leave',
             'logout',
             'auth.google',
             'auth.google.callback'
@@ -163,16 +165,22 @@ function userCan($routename, $userId = null)
         }
     }
 
-    static $permissions;
-    if (is_null($permissions)) {
-        $permissions = $userObj ? User::UserPerms($userObj->id)->toArray() : [];
+    if (app()->runningUnitTests()) {
+        $userPerms = $userObj ? User::UserPerms($userObj->id)->toArray() : [];
+    } else {
+        static $permissions = [];
+        $userIdKey = $userObj ? (int) $userObj->id : 0;
+        if (!isset($permissions[$userIdKey])) {
+            $permissions[$userIdKey] = $userObj ? User::UserPerms($userObj->id)->toArray() : [];
+        }
+        $userPerms = $permissions[$userIdKey];
     }
-    $permissions = array_merge($permissions, ignoredRoutes());
+    $effectivePermissions = array_merge($userPerms, ignoredRoutes());
     if (is_array($routename)) {
-        $arr = array_diff($routename, $permissions);
+        $arr = array_diff($routename, $effectivePermissions);
         return (!$arr) ? true : ((count($arr) == count($routename)) ? false : true);
     } else {
-        return (in_array($routename, $permissions)) ? true : false;
+        return (in_array($routename, $effectivePermissions)) ? true : false;
     }
 }
 
@@ -619,7 +627,8 @@ if (!function_exists('notify')) {
 
 function active_section($name)
 {
-    return Active_section::where('name', $name)->first()->value == DefaultStatus::Active->value;
+    $section = Active_section::where('name', $name)->first();
+    return $section ? ($section->value === DefaultStatus::Active->value) : false;
 }
 
 function training_level($key = null, $withLang = false, $replacePendingValue = false)

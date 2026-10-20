@@ -25,52 +25,54 @@ class WorkoutRepository extends BaseRepository
             return null;
         }
 
-        if (!empty($dayData)) {
-            unset($dayData['day_name_ar'], $dayData['warmup_ar'], $dayData['post_workout_ar']);
-            $day->update($dayData);
-        }
-
-        $imageService = app(ExerciseMachineImageService::class);
-
-        $keptExerciseIds = [];
-        foreach ($exercisesData as $exData) {
-            if (empty($exData['name'])) {
-                continue;
+        return DB::transaction(function () use ($day, $dayId, $exercisesData, $dayData) {
+            if (!empty($dayData)) {
+                unset($dayData['day_name_ar'], $dayData['warmup_ar'], $dayData['post_workout_ar']);
+                $day->update($dayData);
             }
 
-            unset($exData['name_ar'], $exData['notes_ar']);
+            $imageService = app(ExerciseMachineImageService::class);
 
-            // Multi-weight support: accept `internal_weight[]` (or legacy `weight`), max 4 values.
-            $exData['internal_weight'] = Exercise::normalizeWeights(
-                $exData['internal_weight'] ?? ($exData['weight'] ?? null)
-            );
-            unset($exData['weight']);
-
-            if (empty($exData['type'])) {
-                $exData['type'] = 'main';
-            }
-
-            if (!empty($exData['exercise_id'])) {
-                // Update
-                $exercise = Exercise::find($exData['exercise_id']);
-                if ($exercise && $exercise->workout_plan_id == $dayId) {
-                    [$exData, $oldImage] = $imageService->resolve($exData, $exercise);
-                    $exercise->update($exData);
-                    $imageService->delete($oldImage);
-                    $keptExerciseIds[] = $exercise->id;
+            $keptExerciseIds = [];
+            foreach ($exercisesData as $exData) {
+                if (empty($exData['name'])) {
+                    continue;
                 }
-            } else {
-                [$exData] = $imageService->resolve($exData);
-                $exData['workout_plan_id'] = $dayId;
-                $newEx = Exercise::create($exData);
-                $keptExerciseIds[] = $newEx->id;
+
+                unset($exData['name_ar'], $exData['notes_ar']);
+
+                // Multi-weight support: accept `internal_weight[]` (or legacy `weight`), max 4 values.
+                $exData['internal_weight'] = Exercise::normalizeWeights(
+                    $exData['internal_weight'] ?? ($exData['weight'] ?? null)
+                );
+                unset($exData['weight']);
+
+                if (empty($exData['type'])) {
+                    $exData['type'] = 'main';
+                }
+
+                if (!empty($exData['exercise_id'])) {
+                    // Update
+                    $exercise = Exercise::find($exData['exercise_id']);
+                    if ($exercise && $exercise->workout_plan_id == $dayId) {
+                        [$exData, $oldImage] = $imageService->resolve($exData, $exercise);
+                        $exercise->update($exData);
+                        $imageService->delete($oldImage);
+                        $keptExerciseIds[] = $exercise->id;
+                    }
+                } else {
+                    [$exData] = $imageService->resolve($exData);
+                    $exData['workout_plan_id'] = $dayId;
+                    $newEx = Exercise::create($exData);
+                    $keptExerciseIds[] = $newEx->id;
+                }
             }
-        }
 
-        // Delete exercises that were removed from the repeater
-        Exercise::where('workout_plan_id', $dayId)->whereNotIn('id', $keptExerciseIds)->delete();
+            // Delete exercises that were removed from the repeater
+            Exercise::where('workout_plan_id', $dayId)->whereNotIn('id', $keptExerciseIds)->delete();
 
-        return $day;
+            return $day;
+        });
     }
 
     public function updateTraineeWorkout($id)

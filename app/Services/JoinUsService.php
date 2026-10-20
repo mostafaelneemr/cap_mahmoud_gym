@@ -133,12 +133,7 @@ class JoinUsService extends BaseService
      */
     public function statusCounts(): array
     {
-        return [
-            'new' => $this->joinUsRepository->countByStatus('new'),
-            'contacted' => $this->joinUsRepository->countByStatus('contacted'),
-            'converted' => $this->joinUsRepository->countByStatus('converted'),
-            'rejected' => $this->joinUsRepository->countByStatus('rejected'),
-        ];
+        return $this->joinUsRepository->getStatusCounts();
     }
 
     public function destroy($id)

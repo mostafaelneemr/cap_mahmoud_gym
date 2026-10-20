@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Crypt;
 
 class TraineeFormRequest extends FormRequest
 {
@@ -41,14 +42,39 @@ class TraineeFormRequest extends FormRequest
             case 'PUT':
             case 'PATCH':
             {
-                $trainee = $this->route('trainee');
-                $userId = is_object($trainee) ? $trainee->user_id : $this->segment(3);
+                $traineeParam = $this->route('trainee') ?: $this->segment(3);
+                $userId = null;
+
+                if (is_object($traineeParam)) {
+                    $userId = $traineeParam->user_id ?? $traineeParam->id;
+                } elseif (!empty($traineeParam)) {
+                    $resolvedId = $traineeParam;
+                    if (is_string($resolvedId) && !ctype_digit($resolvedId)) {
+                        try {
+                            $resolvedId = Crypt::decrypt($resolvedId);
+                        } catch (\Exception $e) {
+                            // فشل فك التشفير، يبقى كما هو
+                        }
+                    }
+
+                    $traineeRec = \App\Models\Trainee::find($resolvedId);
+                    if ($traineeRec) {
+                        $userId = $traineeRec->user_id;
+                    } else {
+                        $userRec = \App\Models\User::find($resolvedId);
+                        if ($userRec) {
+                            $userId = $userRec->id;
+                        } else {
+                            $userId = $resolvedId;
+                        }
+                    }
+                }
+
                 return [
                     'name' => 'required|string|max:255',
                     'email' => ['required', 'email', Rule::unique('user', 'email')->ignore($userId)],
                     'status' => 'required|in:active,inactive,expired',
-//                    'password' => 'nullable|confirmed',
-//                    'password_confirmation' => 'required_with:password',
+                    'password' => 'nullable|string|min:6',
                     'membership_start' => 'required|date',
                     'membership_end' => 'required|date|after:membership_start',
                     'weight' => 'nullable|numeric|decimal:0,2|min:0|max:999.99',

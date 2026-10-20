@@ -28,6 +28,7 @@ return [
             'show-trainee' => ['system.trainee.show', 'system.trainee.get-activity-log', 'system.trainee.get-auth-session', 'system.trainee.get-workout'],
             'create-trainee' => ['system.trainee.create', 'system.trainee.store'],
             'update-trainee' => ['system.trainee.edit', 'system.trainee.update', 'system.trainee.reset-plan', 'system.trainee.restore-plan'],
+            'delete-trainee' => ['system.trainee.destroy'],
             'show-trainee-dashboard' => ['system.dashboard.trainer'],
             'view-like-trainee-dashboard' => ['system.impersonate.leave','system.trainee.impersonate'],
         ]

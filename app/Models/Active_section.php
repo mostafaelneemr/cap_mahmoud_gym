@@ -9,6 +9,6 @@ class Active_section extends GlobalModel
     public $timestamps = false;
     public $primaryKey = 'id';
 
-    public $fillable = ['name','value','created_at','updated_at'];
+    public $fillable = ['id', 'name', 'value', 'created_at', 'updated_at'];
 
 }

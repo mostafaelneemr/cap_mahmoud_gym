@@ -95,36 +95,60 @@ class NutritionController extends SystemController
      */
     public function myPlan(Request $request)
     {
-        $user = Auth::guard('user')->user();
-        $targetUser = $user;
+        $authUser = Auth::guard('user')->user();
+        $isTrainee = in_array((int) $authUser->user_type, [2, 3], true);
         $trainee = null;
 
-        if ($request->filled('trainee')) {
-            try {
-                $decryptedId = Crypt::decrypt($request->trainee);
-                $trainee = Trainee::find($decryptedId) ?? Trainee::where('user_id', $decryptedId)->first();
-            } catch (\Exception $e) {
-                Log::error('Failed to decrypt trainee ID: ' . $e->getMessage());
-                $trainee = null;
+        if ($isTrainee) {
+            $ownTrainee = Trainee::where('user_id', $authUser->id)->first();
+            if (!$ownTrainee) {
+                flash_msg('error', __('Trainee profile not found.'));
+                return redirect()->back();
             }
-        } elseif ($request->filled('trainee_id')) {
-            $trainee = Trainee::find($request->trainee_id) ?? Trainee::where('user_id', $request->trainee_id)->first();
-        }
 
-        if (!$trainee) {
-            $trainee = $this->traineeService->getTraineeFirst($user->id);
-            if (!$trainee && ($user->user_type == 1 || $user->user_type === null)) {
-
-                $trainee = Trainee::first();
+            // منع محاولات الوصول غير المصرح لخطط المتدربين الآخرين (IDOR)
+            if ($request->filled('trainee')) {
+                try {
+                    $decryptedId = Crypt::decrypt($request->trainee);
+                    $targetTrainee = Trainee::find($decryptedId) ?? Trainee::where('user_id', $decryptedId)->first();
+                    if (!$targetTrainee || (int) $targetTrainee->user_id !== (int) $authUser->id) {
+                        abort(403, __('Unauthorized access to nutrition plan.'));
+                    }
+                } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+                    throw $e;
+                } catch (\Exception $e) {
+                    abort(403, __('Invalid trainee identifier.'));
+                }
+            } elseif ($request->filled('trainee_id')) {
+                if ((int) $request->trainee_id !== (int) $ownTrainee->id && (int) $request->trainee_id !== (int) $ownTrainee->user_id) {
+                    abort(403, __('Unauthorized access to nutrition plan.'));
+                }
             }
-        }
 
-        if ($trainee) {
-            $targetUser = $trainee->user ?? $user;
-            $plan = $this->nutritionService->getActivePlanForTraineeUser($targetUser);
+            $trainee = $ownTrainee;
         } else {
-            $plan = null;
+            if ($request->filled('trainee')) {
+                try {
+                    $decryptedId = Crypt::decrypt($request->trainee);
+                    $trainee = Trainee::find($decryptedId) ?? Trainee::where('user_id', $decryptedId)->first();
+                } catch (\Exception $e) {
+                    Log::error('Failed to decrypt trainee ID: ' . $e->getMessage());
+                    $trainee = null;
+                }
+            } elseif ($request->filled('trainee_id')) {
+                $trainee = Trainee::find($request->trainee_id) ?? Trainee::where('user_id', $request->trainee_id)->first();
+            }
+
+            if (!$trainee) {
+                $trainee = $this->traineeService->getTraineeFirst($authUser->id);
+                if (!$trainee && ($authUser->user_type == 1 || $authUser->user_type === null)) {
+                    $trainee = Trainee::first();
+                }
+            }
         }
+
+        $targetUser = $trainee ? ($trainee->user ?? $authUser) : $authUser;
+        $plan = $trainee ? $this->nutritionService->getActivePlanForTraineeUser($targetUser) : null;
 
         $this->viewData['breadcrumb'] = [
             [

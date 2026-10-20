@@ -8,6 +8,21 @@ class TraineeProgressRequest extends FormRequest
 {
     public function authorize()
     {
+        $authUser = \Illuminate\Support\Facades\Auth::guard('user')->user();
+        if (!$authUser) {
+            return false;
+        }
+
+        if (in_array((int) $authUser->user_type, [2, 3], true)) {
+            $ownTrainee = \App\Models\Trainee::where('user_id', $authUser->id)->first();
+            if (!$ownTrainee) {
+                return false;
+            }
+            if ($this->filled('trainee_id') && (int) $this->input('trainee_id') !== (int) $ownTrainee->id) {
+                return false;
+            }
+        }
+
         return true;
     }
 

@@ -14,8 +14,13 @@ class Permission extends GlobalModel
     // Log Activity
 
 
-    public function permission_group(){
-        return $this->hasOne('App\Models\PermissionGroup');
+    /**
+     * العلاقة العكسية: الصلاحية تنتمي إلى مجموعة صلاحيات محددة.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function permission_group()
+    {
+        return $this->belongsTo(PermissionGroup::class, 'permission_group_id', 'id');
     }
-
 }

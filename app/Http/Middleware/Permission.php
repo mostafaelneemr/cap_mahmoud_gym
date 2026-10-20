@@ -26,7 +26,8 @@ class Permission
                 return redirect('/system/login');
             }
 
-            if ($authUser->user_type == 2) {
+            // توجيه المتدربين (user_type: 2 أو 3) إلى المسارات المسموحة فقط
+            if ($authUser->user_type == 2 || $authUser->user_type == 3) {
                 $whitelist = [
                     'system.dashboard.trainer',
                     'system.nutrition.my-plan',
@@ -36,6 +37,7 @@ class Permission
                     'system.trainee-progress.destroy',
                     'system.trainee-progress.destroy-photo',
                     'system.trainee-progress.compare',
+                    'system.trainee-progress.photo',
                     'logout',
                     'auth.google',
                     'auth.google.callback',

@@ -37,6 +37,10 @@ Route::prefix('v1')->group(function () {
         Route::post('contact',  [WebsiteController::class, 'submitContact']);
     });
 
+    // Trainee Photos Endpoints (Upload & Authenticated Serve)
+    Route::post('trainee/photos/upload', [\App\Modules\Api\TraineePhotoApiController::class, 'upload'])->name('api.trainee.photos.upload');
+    Route::get('trainee/photos/{photoId}', [\App\Modules\Api\TraineePhotoApiController::class, 'serve'])->name('api.trainee.photos.serve');
+
 });
 
 

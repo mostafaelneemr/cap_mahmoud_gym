@@ -24,4 +24,23 @@ class JoinUsRepository extends BaseRepository
     {
         return $this->modeler->where('status', $status)->count();
     }
+
+    /**
+     * Get aggregated status counts in a single query.
+     */
+    public function getStatusCounts(): array
+    {
+        $counts = $this->modeler
+            ->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
+        return [
+            'new' => (int) ($counts['new'] ?? 0),
+            'contacted' => (int) ($counts['contacted'] ?? 0),
+            'converted' => (int) ($counts['converted'] ?? 0),
+            'rejected' => (int) ($counts['rejected'] ?? 0),
+        ];
+    }
 }

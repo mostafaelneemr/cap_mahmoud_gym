@@ -33,7 +33,19 @@ class TraineeProgressPhoto extends Model
             return $this->photo_path;
         }
 
+        if (\Illuminate\Support\Facades\Route::has('system.trainee-progress.photo') && !empty($this->id)) {
+            return route('system.trainee-progress.photo', ['photoId' => $this->id]);
+        }
+
         return asset('storage/' . $this->photo_path);
+    }
+
+    public function getSecureUrlAttribute()
+    {
+        if (!empty($this->id) && \Illuminate\Support\Facades\Route::has('system.trainee-progress.photo')) {
+            return route('system.trainee-progress.photo', ['photoId' => $this->id]);
+        }
+        return $this->photo_url;
     }
 
     protected static function boot()

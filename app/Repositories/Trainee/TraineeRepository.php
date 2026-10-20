@@ -10,7 +10,9 @@ class TraineeRepository extends BaseRepository
     protected $modeler = Trainee::class;
     public function getDataTableQuery()
     {
-        return $this->modeler->select(['id', 'user_id', 'age', 'weight', 'height', 'membership_start', 'membership_end',
+        return $this->modeler
+            ->with(['user', 'activeWorkoutPlans'])
+            ->select(['id', 'user_id', 'age', 'weight', 'height', 'membership_start', 'membership_end',
             'training_level', 'status']);
     }
     public function getTraineeFirst($userId)

@@ -7,6 +7,7 @@ use App\Models\TraineeProgressCheckin;
 use App\Models\TraineeProgressPhoto;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -21,7 +22,7 @@ class TraineeProgressService extends BaseService
      */
     public function resolveTrainee(User $authUser, $traineeId = null): ?Trainee
     {
-        if ($authUser->user_type == 2) {
+        if (in_array((int) $authUser->user_type, [2, 3], true)) {
             // Logged-in user is a trainee
             return Trainee::where('user_id', $authUser->id)->first();
         }
@@ -95,9 +96,18 @@ class TraineeProgressService extends BaseService
     public function storeCheckin(array $data, User $authUser, $photoFiles = [])
     {
         $trainee = null;
+        $isTrainee = in_array((int) $authUser->user_type, [2, 3], true);
 
-        if ($authUser->user_type == 2) {
+        if ($isTrainee) {
             $trainee = Trainee::where('user_id', $authUser->id)->first();
+            if (!$trainee) {
+                throw new \Exception(__('Trainee profile not found.'));
+            }
+            if (!empty($data['trainee_id']) && (int) $data['trainee_id'] !== (int) $trainee->id) {
+                abort(403, __('Unauthorized to submit progress for another trainee.'));
+            }
+            // Strip any coach_notes forged by trainee
+            $data['coach_notes'] = null;
         } elseif (!empty($data['trainee_id'])) {
             $trainee = Trainee::find($data['trainee_id']);
         }
@@ -108,48 +118,65 @@ class TraineeProgressService extends BaseService
 
         // Determine coach ID
         $coachId = null;
-        if ($authUser->user_type != 2) {
+        if (!$isTrainee) {
             $coachId = $authUser->id;
         }
 
-        $checkin = TraineeProgressCheckin::create([
-            'trainee_id'   => $trainee->id,
-            'coach_id'     => $coachId,
-            'checkin_date' => $data['checkin_date'] ?? now()->toDateString(),
-            'weight'       => !empty($data['weight']) ? $data['weight'] : null,
-            'notes'        => !empty($data['notes']) ? $data['notes'] : null,
-            'coach_notes'  => !empty($data['coach_notes']) ? $data['coach_notes'] : null,
-        ]);
+        $createdFiles = [];
 
-        // Process multipart file uploads through WebP 75% scaling compression service
-        if (!empty($photoFiles) && is_array($photoFiles)) {
-            foreach ($photoFiles as $index => $file) {
-                $relativePath = $this->processAndCompressToWebp($file);
-                if ($relativePath) {
-                    TraineeProgressPhoto::create([
-                        'checkin_id' => $checkin->id,
-                        'photo_path' => $relativePath,
-                        'caption'    => !empty($data['captions'][$index]) ? $data['captions'][$index] : null,
-                    ]);
+        DB::beginTransaction();
+        try {
+            $checkin = TraineeProgressCheckin::create([
+                'trainee_id'   => $trainee->id,
+                'coach_id'     => $coachId,
+                'checkin_date' => $data['checkin_date'] ?? now()->toDateString(),
+                'weight'       => !empty($data['weight']) ? $data['weight'] : null,
+                'notes'        => !empty($data['notes']) ? $data['notes'] : null,
+                'coach_notes'  => !empty($data['coach_notes']) ? $data['coach_notes'] : null,
+            ]);
+
+            // Process multipart file uploads through WebP 75% scaling compression service
+            if (!empty($photoFiles) && is_array($photoFiles)) {
+                foreach ($photoFiles as $index => $file) {
+                    $relativePath = $this->processAndCompressToWebp($file);
+                    if ($relativePath) {
+                        $createdFiles[] = $relativePath;
+                        TraineeProgressPhoto::create([
+                            'checkin_id' => $checkin->id,
+                            'photo_path' => $relativePath,
+                            'caption'    => !empty($data['captions'][$index]) ? $data['captions'][$index] : null,
+                        ]);
+                    }
                 }
             }
-        }
 
-        // Process base64 payload array if passed (e.g. camera capture)
-        if (!empty($data['photos_base64']) && is_array($data['photos_base64'])) {
-            foreach ($data['photos_base64'] as $index => $b64String) {
-                $relativePath = $this->processAndCompressToWebp($b64String);
-                if ($relativePath) {
-                    TraineeProgressPhoto::create([
-                        'checkin_id' => $checkin->id,
-                        'photo_path' => $relativePath,
-                        'caption'    => !empty($data['captions_base64'][$index]) ? $data['captions_base64'][$index] : null,
-                    ]);
+            // Process base64 payload array if passed (e.g. camera capture)
+            if (!empty($data['photos_base64']) && is_array($data['photos_base64'])) {
+                foreach ($data['photos_base64'] as $index => $b64String) {
+                    $relativePath = $this->processAndCompressToWebp($b64String);
+                    if ($relativePath) {
+                        $createdFiles[] = $relativePath;
+                        TraineeProgressPhoto::create([
+                            'checkin_id' => $checkin->id,
+                            'photo_path' => $relativePath,
+                            'caption'    => !empty($data['captions_base64'][$index]) ? $data['captions_base64'][$index] : null,
+                        ]);
+                    }
                 }
             }
-        }
 
-        return $checkin->load('photos');
+            DB::commit();
+            return $checkin->load('photos');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            // Cleanup any newly created files on disk if operation failed
+            foreach ($createdFiles as $filePath) {
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
+            }
+            throw $e;
+        }
     }
 
     /**
@@ -160,8 +187,8 @@ class TraineeProgressService extends BaseService
         $checkin = TraineeProgressCheckin::findOrFail($checkinId);
 
         // Security check: only coaches/admins can update coach notes
-        if ($authUser->user_type == 2) {
-            throw new \Exception(__('Unauthorized to update coach feedback.'));
+        if (in_array((int) $authUser->user_type, [2, 3], true)) {
+            abort(403, __('Unauthorized to update coach feedback.'));
         }
 
         $checkin->update([
@@ -180,10 +207,10 @@ class TraineeProgressService extends BaseService
         $checkin = TraineeProgressCheckin::with('photos')->findOrFail($checkinId);
 
         // Security check
-        if ($authUser->user_type == 2) {
+        if (in_array((int) $authUser->user_type, [2, 3], true)) {
             $trainee = Trainee::where('user_id', $authUser->id)->first();
-            if (!$trainee || $checkin->trainee_id != $trainee->id) {
-                throw new \Exception(__('Unauthorized to delete this check-in.'));
+            if (!$trainee || (int) $checkin->trainee_id !== (int) $trainee->id) {
+                abort(403, __('Unauthorized to delete this check-in.'));
             }
         }
 
@@ -198,10 +225,10 @@ class TraineeProgressService extends BaseService
         $photo = TraineeProgressPhoto::with('checkin')->findOrFail($photoId);
 
         // Security check
-        if ($authUser->user_type == 2) {
+        if (in_array((int) $authUser->user_type, [2, 3], true)) {
             $trainee = Trainee::where('user_id', $authUser->id)->first();
-            if (!$trainee || $photo->checkin->trainee_id != $trainee->id) {
-                throw new \Exception(__('Unauthorized to delete this photo.'));
+            if (!$trainee || !$photo->checkin || (int) $photo->checkin->trainee_id !== (int) $trainee->id) {
+                abort(403, __('Unauthorized to delete this photo.'));
             }
         }
 

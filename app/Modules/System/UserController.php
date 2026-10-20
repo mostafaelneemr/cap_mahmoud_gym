@@ -71,7 +71,14 @@ class UserController extends SystemController
 
     public function updateProfile(ProfileFormRequest $request)
     {
-        $update = $this->user_service->update($request,auth()->id());
+        // حماية أمنية لمنع تصعيد الصلاحيات (Privilege Escalation) عبر Mass Assignment
+        $safeData = $request->only(['email', 'default_language', 'password', 'password_confirmation', 'telephone', 'telephone_code']);
+        $safeRequest = new Request($safeData);
+        if ($request->hasFile('image')) {
+            $safeRequest->files->set('image', $request->file('image'));
+        }
+
+        $update = $this->user_service->update($safeRequest, auth()->id());
         if ($update) {
             flash_msg('success',__( 'Profile Updated successfully' ));
             return $this->success( __( 'Profile Updated successfully' ));

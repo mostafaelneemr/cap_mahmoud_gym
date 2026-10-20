@@ -30,10 +30,66 @@ class TraineeService extends BaseService
         $this->workoutService = $workoutService;
     }
 
+    /**
+     * التحقق من المعرف وفك تشفيره إن لزم الأمر واسترجاع سجل المتدرب والمستخدم المرتبط به.
+     *
+     * @param mixed $id
+     * @return array{0: \App\Models\Trainee|null, 1: \App\Models\User|null}
+     */
+    public function resolveTraineeAndUser($id): array
+    {
+        if (empty($id)) {
+            return [null, null];
+        }
+
+        // محاولة فك التشفير إذا كان المعرف مشفراً
+        if (is_string($id) && !ctype_digit($id)) {
+            try {
+                $id = Crypt::decrypt($id);
+            } catch (\Exception $e) {
+                // إذا فشل فك التشفير، يبقى المعرف كما هو
+            }
+        }
+
+        // 1. البحث كـ Trainee ID أولاً
+        $trainee = null;
+        try {
+            $trainee = \App\Models\Trainee::find($id);
+        } catch (\Exception $e) {
+            $trainee = null;
+        }
+
+        if ($trainee) {
+            $user = $trainee->user ?? \App\Models\User::find($trainee->user_id);
+            return [$trainee, $user];
+        }
+
+        // 2. البحث كـ User ID إذا لم يكن Trainee ID
+        $user = null;
+        try {
+            $user = \App\Models\User::find($id);
+        } catch (\Exception $e) {
+            $user = null;
+        }
+
+        if ($user) {
+            $trainee = \App\Models\Trainee::where('user_id', $user->id)->first();
+            return [$trainee, $user];
+        }
+
+        return [null, null];
+    }
+
     public function findById($id)
     {
-        $trainee = $this->traineeRepository->find($id);
+        [$trainee, $user] = $this->resolveTraineeAndUser($id);
+
+        if (!$trainee) {
+            abort(404, __('Trainee not found.'));
+        }
+
         $trainee->load([
+            'user',
             'currentWorkoutPlans.exercises',
             'currentWorkoutPlans.warmupExercises',
             'currentWorkoutPlans.mainExercises',
@@ -56,7 +112,7 @@ class TraineeService extends BaseService
         $authSessionData['datatableID'] = 'auth-session';
 
         $workoutData = $this->workoutService->loadViewData();
-        $workoutData['datatableURL'] = route('system.trainee.get-workout', $id);
+        $workoutData['datatableURL'] = route('system.trainee.get-workout', $trainee->id);
         $workoutData['datatableID'] = 'workout';
 
         $datatablesData = [
@@ -198,6 +254,7 @@ class TraineeService extends BaseService
 
             $traineeData = [
                 'user_id' => $user->id,
+                'name' => $request->name,
                 'email' => $request->email,
                 'training_level' => $request->training_level,
                 'membership_start' => $request->membership_start,
@@ -220,8 +277,13 @@ class TraineeService extends BaseService
 
     public function edit($id): array
     {
-        $user = $this->userRepository->find($id);
-        $trainee = $this->traineeRepository->getTraineeFirst($user->id);
+        [$trainee, $user] = $this->resolveTraineeAndUser($id);
+
+        if (!$user) {
+            abort(404, __('Trainee user not found.'));
+        }
+
+        $this->clearRetunData();
         $this->pageTitle('Update Trainee');
         $this->breadcrumb('Trainee', 'system.trainee.index');
 
@@ -233,7 +295,6 @@ class TraineeService extends BaseService
             'telephone' => $parsedMobile['telephone'],
             'telephone_code' => $parsedMobile['telephone_code'],
             'code' => $parsedMobile['code'],
-
         ]);
 
         return $this->retunData;
@@ -241,21 +302,26 @@ class TraineeService extends BaseService
 
     public function update($request, $id)
     {
+        [$trainee, $user] = $this->resolveTraineeAndUser($id);
+
+        if (!$user) {
+            return false;
+        }
+
         DB::beginTransaction();
         try {
             $userData = $request->only(['name', 'email']);
 
-//            if ($request->filled('password')) {
-//                $userData['password'] = $this->userPassword($request->password);
-//            }
+            // تحديث كلمة المرور بشكل آمن ومشفر عند تقديمها فقط
+            if ($request->filled('password')) {
+                $userData['password'] = $this->userPassword($request->password);
+            }
 
             if ($request->filled('telephone')) {
                 $userData['mobile'] = \formatMobileNumber($request->telephone, $request->telephone_code);
             }
 
-            $this->userRepository->update($userData, $id);
-
-            $trainee = $this->traineeRepository->getTraineeFirst($id);
+            $this->userRepository->update($userData, $user->id);
 
             if ($trainee) {
                 $traineeData = [
@@ -268,11 +334,50 @@ class TraineeService extends BaseService
                     'status' => $request->status,
                 ];
 
+                if ($request->filled('name')) {
+                    $traineeData['name'] = $request->name;
+                }
+
                 if ($request->filled('email')) {
                     $traineeData['email'] = $request->email;
                 }
 
                 $this->traineeRepository->update($traineeData, $trainee->id);
+            }
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollback();
+            errorLog($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * الحذف الآمن (Soft Delete) للمتدرب والمستخدم المرتبط به مع الحفاظ على سلامة البيانات.
+     *
+     * @param mixed $id
+     * @return bool
+     */
+    public function destroy($id): bool
+    {
+        [$trainee, $user] = $this->resolveTraineeAndUser($id);
+
+        if (!$user && !$trainee) {
+            abort(404, __('Trainee not found.'));
+        }
+
+        DB::beginTransaction();
+        try {
+            // حذف سجل المتدرب إن وجد (يقوم نموذج Trainee بـ SoftDelete متسلسل للخطط الغذائية والتدريبية)
+            if ($trainee) {
+                $trainee->delete();
+            }
+
+            // حذف سجل المستخدم إن وجد
+            if ($user) {
+                $user->delete();
             }
 
             DB::commit();
