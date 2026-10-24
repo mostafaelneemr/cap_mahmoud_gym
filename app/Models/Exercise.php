@@ -141,6 +141,78 @@ class Exercise extends GlobalModel
         return !empty($weights) ? implode(' / ', $weights) : null;
     }
 
+    /**
+     * إرجاع الوزن المحدد لمجموعة معينة (1-indexed)
+     */
+    public function getWeightForSet(int $setNumber): ?string
+    {
+        $weights = $this->internal_weight;
+        if (empty($weights) || $setNumber < 1 || $setNumber > self::MAX_WEIGHTS) {
+            return null;
+        }
+
+        $idx = $setNumber - 1;
+        if (isset($weights[$idx]) && $weights[$idx] !== '') {
+            return $weights[$idx];
+        }
+
+        // إذا كان هناك وزن وحيد مسجل، فإنه ينطبق افتراضياً على كافة المجموعات
+        if (count($weights) === 1 && isset($weights[0])) {
+            return $weights[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * تعيين أو تحديث الوزن الخاص بمجموعة معينة مع الحفاظ على أوزان باقي المجموعات
+     */
+    public function setWeightForSet(int $setNumber, ?string $weight): void
+    {
+        if ($setNumber < 1 || $setNumber > self::MAX_WEIGHTS) {
+            return;
+        }
+
+        $weights = $this->internal_weight ?? [];
+        $targetIdx = $setNumber - 1;
+
+        // إذا كان هناك وزن مفرد سابق، وتعديلنا لمجموعة تالية، نقوم بملء المجموعات السابقة بالوزن الأصلي
+        if (count($weights) === 1 && $targetIdx > 0) {
+            $baseSingle = $weights[0];
+            $expanded = [];
+            for ($i = 0; $i < $targetIdx; $i++) {
+                $expanded[$i] = $baseSingle;
+            }
+            $weights = $expanded;
+        }
+
+        // ملء أي فجوات سابقة قبل المجموعة المستهدفة
+        for ($i = 0; $i < $targetIdx; $i++) {
+            if (!isset($weights[$i]) || $weights[$i] === '') {
+                $weights[$i] = !empty($weights) ? reset($weights) : ($weight ?? '');
+            }
+        }
+
+        if (!empty($weight)) {
+            $weights[$targetIdx] = trim($weight);
+        } else {
+            unset($weights[$targetIdx]);
+        }
+
+        ksort($weights);
+        $this->internal_weight = array_slice(array_values($weights), 0, self::MAX_WEIGHTS);
+    }
+
+    /**
+     * إرجاع العدد الفعلي للمجموعات المقررة لهذا التمرين (بحد أقصى 4)
+     */
+    public function getTotalSetsCount(): int
+    {
+        $sets = (int) ($this->sets ?: 1);
+        return max(1, min(self::MAX_WEIGHTS, $sets));
+    }
+
+
     public function getDisplayNameAttribute(): ?string
     {
         return $this->name;

@@ -808,34 +808,7 @@
                                                             @endif
                                                         </div>
                                                     </td>
-                                                </tr>
-                                                <tr id="inline-load-row-{{ $exercise->id }}" class="inline-load-adjustment-row d-none" style="background: rgba(0, 158, 247, 0.04);">
-                                                    <td colspan="9" class="p-3">
-                                                        <form class="inline-load-form d-flex flex-wrap align-items-center gap-3" data-exercise-id="{{ $exercise->id }}">
-                                                            <input type="hidden" name="exercise_id" value="{{ $exercise->id }}">
-                                                            <div class="d-flex align-items-center gap-2">
-                                                                <span class="fs-8 fw-bold text-gray-700">{{ __('New Weight') }}:</span>
-                                                                <input type="text" name="reported_load" class="form-control form-control-sm form-control-solid" 
-                                                                       style="width: 140px;" placeholder="{{ __('e.g. 20kg or 15/25/30') }}">
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 180px;">
-                                                                <span class="fs-8 fw-bold text-gray-700">{{ __('Comment') }}:</span>
-                                                                <input type="text" name="notes" class="form-control form-control-sm form-control-solid" 
-                                                                       placeholder="{{ __('Optional comment...') }}">
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-2">
-                                                                <button type="submit" class="btn btn-sm btn-primary px-3 py-1 d-inline-flex align-items-center gap-1">
-                                                                    <span class="btn-text">{{ __('Submit') }}</span>
-                                                                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                                                                </button>
-                                                                <button type="button" class="btn btn-sm btn-light btn-close-inline-load px-3 py-1" data-target="#inline-load-row-{{ $exercise->id }}">
-                                                                    {{ __('Cancel') }}
-                                                                </button>
-                                                            </div>
-                                                            <div class="inline-feedback-msg w-100 fs-8 d-none mt-1"></div>
-                                                        </form>
-                                                    </td>
-                                                </tr>
+                                                @include('system.workout.partials.trainee-load-adjustment-inline-row', ['exercise' => $exercise])
                                             @endforeach
                                             </tbody>
                                         </table>
@@ -969,33 +942,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr id="inline-load-row-{{ $exercise->id }}" class="inline-load-adjustment-row d-none" style="background: rgba(0, 158, 247, 0.04);">
-                                            <td colspan="9" class="p-3">
-                                                <form class="inline-load-form d-flex flex-wrap align-items-center gap-3" data-exercise-id="{{ $exercise->id }}">
-                                                    <input type="hidden" name="exercise_id" value="{{ $exercise->id }}">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <span class="fs-8 fw-bold text-gray-700">{{ __('New Weight') }}:</span>
-                                                        <input type="text" name="reported_load" class="form-control form-control-sm form-control-solid" 
-                                                               style="width: 140px;" placeholder="{{ __('e.g. 20kg or 15/25/30') }}">
-                                                    </div>
-                                                    <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 180px;">
-                                                        <span class="fs-8 fw-bold text-gray-700">{{ __('Comment') }}:</span>
-                                                        <input type="text" name="notes" class="form-control form-control-sm form-control-solid" 
-                                                               placeholder="{{ __('Optional comment...') }}">
-                                                    </div>
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <button type="submit" class="btn btn-sm btn-primary px-3 py-1 d-inline-flex align-items-center gap-1">
-                                                            <span class="btn-text">{{ __('Submit') }}</span>
-                                                            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-light btn-close-inline-load px-3 py-1" data-target="#inline-load-row-{{ $exercise->id }}">
-                                                            {{ __('Cancel') }}
-                                                        </button>
-                                                    </div>
-                                                    <div class="inline-feedback-msg w-100 fs-8 d-none mt-1"></div>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                        @include('system.workout.partials.trainee-load-adjustment-inline-row', ['exercise' => $exercise])
                                     @endforeach
                                     </tbody>
                                 </table>
@@ -1125,34 +1072,7 @@
                                                             @endif
                                                         </div>
                                                     </td>
-                                                </tr>
-                                                <tr id="inline-load-row-{{ $exercise->id }}" class="inline-load-adjustment-row d-none" style="background: rgba(0, 158, 247, 0.04);">
-                                                    <td colspan="9" class="p-3">
-                                                        <form class="inline-load-form d-flex flex-wrap align-items-center gap-3" data-exercise-id="{{ $exercise->id }}">
-                                                            <input type="hidden" name="exercise_id" value="{{ $exercise->id }}">
-                                                            <div class="d-flex align-items-center gap-2">
-                                                                <span class="fs-8 fw-bold text-gray-700">{{ __('New Weight') }}:</span>
-                                                                <input type="text" name="reported_load" class="form-control form-control-sm form-control-solid" 
-                                                                       style="width: 140px;" placeholder="{{ __('e.g. 20kg or 15/25/30') }}">
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 180px;">
-                                                                <span class="fs-8 fw-bold text-gray-700">{{ __('Comment') }}:</span>
-                                                                <input type="text" name="notes" class="form-control form-control-sm form-control-solid" 
-                                                                       placeholder="{{ __('Optional comment...') }}">
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-2">
-                                                                <button type="submit" class="btn btn-sm btn-primary px-3 py-1 d-inline-flex align-items-center gap-1">
-                                                                    <span class="btn-text">{{ __('Submit') }}</span>
-                                                                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                                                                </button>
-                                                                <button type="button" class="btn btn-sm btn-light btn-close-inline-load px-3 py-1" data-target="#inline-load-row-{{ $exercise->id }}">
-                                                                    {{ __('Cancel') }}
-                                                                </button>
-                                                            </div>
-                                                            <div class="inline-feedback-msg w-100 fs-8 d-none mt-1"></div>
-                                                        </form>
-                                                    </td>
-                                                </tr>
+                                                @include('system.workout.partials.trainee-load-adjustment-inline-row', ['exercise' => $exercise])
                                             @endforeach
                                             </tbody>
                                         </table>
@@ -1164,6 +1084,9 @@
                                 @endif
                             </div>
                         @endif
+
+                        {{-- 4. Day Load Adjustment History & Feedback --}}
+                        @include('system.workout.partials.trainee-load-adjustment-day-history', ['plan' => $plan])
 
                     </div>
                 @endforeach
@@ -1304,7 +1227,10 @@
                 if ($row.hasClass('d-none')) {
                     $('.inline-load-adjustment-row').addClass('d-none');
                     $row.removeClass('d-none');
-                    $row.find('input[name="reported_load"]').focus();
+                    var $firstChk = $row.find('.set-checkbox').first();
+                    if ($firstChk.length && !$row.find('.set-checkbox:checked').length) {
+                        $firstChk.prop('checked', true).trigger('change');
+                    }
                 } else {
                     $row.addClass('d-none');
                 }
@@ -1318,6 +1244,21 @@
                 $row.find('.inline-feedback-msg').addClass('d-none').empty();
             });
 
+            // Toggle set input enable/disable when checkbox is toggled
+            $(document).on('change', '.set-checkbox', function () {
+                var $chk = $(this);
+                var setNum = $chk.data('set');
+                var $card = $chk.closest('.set-selection-card');
+                var $input = $card.find('.set-weight-input');
+                if ($chk.is(':checked')) {
+                    $input.prop('disabled', false).focus();
+                    $card.addClass('border-primary bg-light-primary');
+                } else {
+                    $input.prop('disabled', true).val('');
+                    $card.removeClass('border-primary bg-light-primary');
+                }
+            });
+
             // Handle AJAX submission of inline load adjustment
             $(document).on('submit', '.inline-load-form', function (e) {
                 e.preventDefault();
@@ -1327,13 +1268,35 @@
                 var $spinner = $submitBtn.find('.spinner-border');
                 var $feedback = $form.find('.inline-feedback-msg');
 
-                var reportedLoad = $.trim($form.find('input[name="reported_load"]').val());
-                var notes = $.trim($form.find('input[name="notes"]').val());
+                // Collect selected sets
+                var sets = [];
+                var missingWeight = false;
+                $form.find('.set-checkbox:checked').each(function () {
+                    var setNum = $(this).data('set');
+                    var weight = $.trim($form.find('.set-weight-input[data-set="' + setNum + '"]').val());
+                    if (!weight) {
+                        missingWeight = true;
+                    }
+                    sets.push({
+                        set_number: setNum,
+                        suggested_weight: weight
+                    });
+                });
 
-                if (!reportedLoad && !notes) {
+                if (missingWeight) {
                     $feedback.removeClass('d-none text-success')
                              .addClass('text-danger')
-                             .text("{{ __('يجب إدخال الوزن الجديد أو كتابة ملاحظة على الأقل.') }}");
+                             .text("{{ __('يرجى إدخال الوزن المطلوب لكل مجموعة تم تحديدها.') }}");
+                    return;
+                }
+
+                var notes = $.trim($form.find('input[name="notes"]').val());
+                var reportedLoad = $.trim($form.find('input[name="reported_load"]').val());
+
+                if (sets.length === 0 && !reportedLoad && !notes) {
+                    $feedback.removeClass('d-none text-success')
+                             .addClass('text-danger')
+                             .text("{{ __('يجب اختيار مجموعة وتحديد وزنها أو كتابة ملاحظة على الأقل.') }}");
                     return;
                 }
 
@@ -1342,15 +1305,22 @@
                 $spinner.removeClass('d-none');
                 $feedback.addClass('d-none').empty();
 
+                var postData = {
+                    _token: "{{ csrf_token() }}",
+                    exercise_id: $form.find('input[name="exercise_id"]').val(),
+                    notes: notes
+                };
+
+                if (sets.length > 0) {
+                    postData.sets = sets;
+                } else if (reportedLoad) {
+                    postData.reported_load = reportedLoad;
+                }
+
                 $.ajax({
                     url: "{{ route('system.load-adjustment.store') }}",
                     method: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        exercise_id: $form.find('input[name="exercise_id"]').val(),
-                        reported_load: reportedLoad,
-                        notes: notes
-                    },
+                    data: postData,
                     dataType: "json",
                     success: function (res) {
                         $spinner.addClass('d-none');
@@ -1363,6 +1333,7 @@
                             toastr.success(msg);
                         }
 
+                        $form.find('.set-checkbox').prop('checked', false).trigger('change');
                         $form.find('input[name="reported_load"]').val('');
                         $form.find('input[name="notes"]').val('');
 
@@ -1370,7 +1341,8 @@
                             $row.addClass('d-none');
                             $feedback.addClass('d-none').empty();
                             $submitBtn.prop('disabled', false);
-                        }, 1500);
+                            window.location.reload();
+                        }, 1200);
                     },
                     error: function (xhr) {
                         $spinner.addClass('d-none');

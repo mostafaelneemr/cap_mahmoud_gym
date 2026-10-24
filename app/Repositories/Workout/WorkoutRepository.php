@@ -132,6 +132,18 @@ class WorkoutRepository extends BaseRepository
 
     public function getExcercisesByTrainee($traineeId)
     {
-        return $this->modeler->where('trainee_id', $traineeId)->active()->with(['exercises', 'warmupExercises', 'mainExercises', 'postWorkoutExercises'])->get();
+        $relations = ['exercises', 'warmupExercises', 'mainExercises', 'postWorkoutExercises'];
+        if (\Illuminate\Support\Facades\Schema::hasTable('trainee_load_adjustments')) {
+            $relations[] = 'loadAdjustments';
+            $relations[] = 'loadAdjustments.reviewer';
+            $relations[] = 'loadAdjustments.trainee';
+            $relations[] = 'loadAdjustments.trainee.user';
+            if (\Illuminate\Support\Facades\Schema::hasTable('trainee_load_adjustment_items')) {
+                $relations[] = 'loadAdjustments.items';
+                $relations[] = 'loadAdjustments.items.reviewer';
+            }
+        }
+        return $this->modeler->where('trainee_id', $traineeId)->active()->with($relations)->get();
     }
 }
+

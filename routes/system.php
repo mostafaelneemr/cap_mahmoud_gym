@@ -104,4 +104,6 @@ Route::controller('JoinUsController')->prefix('join-us')->group(function () {
 Route::controller('LoadAdjustmentController')->prefix('load-adjustment')->group(function () {
     Route::post('/store', 'store')->name('system.load-adjustment.store');
     Route::post('/{id}/review', 'review')->name('system.load-adjustment.review');
+    Route::post('/item/{id}/review', 'reviewItem')->name('system.load-adjustment.item.review');
 });
+

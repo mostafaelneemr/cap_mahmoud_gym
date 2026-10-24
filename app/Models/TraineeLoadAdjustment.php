@@ -69,11 +69,71 @@ class TraineeLoadAdjustment extends Model
     }
 
     /**
+     * عناصر المجموعات الفردية المرتبطة بهذا الطلب
+     */
+    public function items()
+    {
+        return $this->hasMany(TraineeLoadAdjustmentItem::class, 'load_adjustment_id')->orderBy('set_number', 'asc');
+    }
+
+    /**
+     * التحقق مما إذا كان الطلب يتضمن عناصر مجموعات فردية مفصلة
+     */
+    public function hasSetItems(): bool
+    {
+        if ($this->relationLoaded('items')) {
+            return $this->items->isNotEmpty();
+        }
+        return $this->items()->exists();
+    }
+
+    /**
+     * إعادة احتساب وتحديث الحالة التراكمية للطلب بناءً على حالات مجموعاته
+     */
+    public function recalculateAggregateStatus(bool $save = true): string
+    {
+        $items = $this->relationLoaded('items') ? $this->items : $this->items()->get();
+
+        if ($items->isEmpty()) {
+            return $this->status;
+        }
+
+        $allApprovedOrRejected = $items->every(fn ($i) => in_array($i->status, [
+            TraineeLoadAdjustmentItem::STATUS_APPROVED,
+            TraineeLoadAdjustmentItem::STATUS_REJECTED
+        ], true));
+
+        $hasConflict = $items->contains(fn ($i) => $i->status === TraineeLoadAdjustmentItem::STATUS_CONFLICT);
+        $hasApprovedOrRejected = $items->contains(fn ($i) => in_array($i->status, [
+            TraineeLoadAdjustmentItem::STATUS_APPROVED,
+            TraineeLoadAdjustmentItem::STATUS_REJECTED
+        ], true));
+        $hasPending = $items->contains(fn ($i) => $i->status === TraineeLoadAdjustmentItem::STATUS_PENDING);
+
+        if ($allApprovedOrRejected) {
+            $newStatus = 'reviewed';
+        } elseif ($hasConflict) {
+            $newStatus = 'conflict';
+        } elseif ($hasApprovedOrRejected && $hasPending) {
+            $newStatus = 'partially_reviewed';
+        } else {
+            $newStatus = 'pending';
+        }
+
+        if ($save && $this->status !== $newStatus) {
+            $this->status = $newStatus;
+            $this->save();
+        }
+
+        return $newStatus;
+    }
+
+    /**
      * نطاق استعلام التقارير المعلقة
      */
     public function scopePending($query)
     {
-        return $query->where('status', 'pending');
+        return $query->whereIn('status', ['pending', 'partially_reviewed', 'conflict']);
     }
 
     /**
@@ -83,4 +143,29 @@ class TraineeLoadAdjustment extends Model
     {
         return $query->where('trainee_id', $traineeId);
     }
+
+    /**
+     * اسم صاحب الملاحظة (المتدرب)
+     */
+    public function getTraineeAuthorNameAttribute(): ?string
+    {
+        return $this->trainee?->name ?? $this->trainee?->user?->name;
+    }
+
+    /**
+     * اسم كاتب ملاحظة المراجعة (المدرب)
+     */
+    public function getCoachAuthorNameAttribute(): ?string
+    {
+        return $this->reviewer?->name;
+    }
+
+    /**
+     * توقيت إضافة ملاحظة المراجعة للمدرب
+     */
+    public function getCoachNotesTimestampAttribute()
+    {
+        return $this->reviewed_at ?? $this->updated_at;
+    }
 }
+

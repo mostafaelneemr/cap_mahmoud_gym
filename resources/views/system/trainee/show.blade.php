@@ -1498,15 +1498,36 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <span class="text-gray-700 fs-8">{{ $adj->notes ?: '—' }}</span>
+                                                @if($adj->notes)
+                                                    <div class="d-flex flex-column">
+                                                        <span class="text-gray-800 fs-8">{{ $adj->notes }}</span>
+                                                        <span class="text-muted fs-9 comment-metadata mt-1">
+                                                            <span class="comment-author">{{ __('Added by') }}: <strong class="text-gray-700">{{ $adj->trainee_author_name ?: $result->name }}</strong></span>
+                                                            @if($adj->created_at)
+                                                                <span class="mx-1">•</span>
+                                                                <span class="comment-time">{{ __('Added at') }}: {{ $adj->created_at->format('Y-m-d H:i') }}</span>
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-700 fs-8">—</span>
+                                                @endif
                                             </td>
                                             <td>
                                                 <span class="text-muted fs-8">{{ $adj->created_at ? $adj->created_at->format('Y-m-d H:i') : '—' }}</span>
                                             </td>
                                             <td>
-                                                <span class="badge status-badge-{{ $adj->id }} {{ $adj->status === 'reviewed' ? 'badge-light-success' : ($adj->status === 'dismissed' ? 'badge-light-secondary' : 'badge-light-warning') }} fs-8">
-                                                    {{ ucfirst($adj->status) }}
-                                                </span>
+                                                @if($adj->status === 'reviewed')
+                                                    <span class="badge status-badge-{{ $adj->id }} badge-light-success fs-8">{{ __('Reviewed') }}</span>
+                                                @elseif($adj->status === 'conflict')
+                                                    <span class="badge status-badge-{{ $adj->id }} badge-light-warning fs-8">{{ __('Conflict') }}</span>
+                                                @elseif($adj->status === 'partially_reviewed')
+                                                    <span class="badge status-badge-{{ $adj->id }} badge-light-info fs-8">{{ __('Partially Reviewed') }}</span>
+                                                @elseif($adj->status === 'dismissed')
+                                                    <span class="badge status-badge-{{ $adj->id }} badge-light-secondary fs-8">{{ __('Dismissed') }}</span>
+                                                @else
+                                                    <span class="badge status-badge-{{ $adj->id }} badge-light-warning fs-8">{{ __('Pending') }}</span>
+                                                @endif
                                             </td>
                                             <td class="text-end pe-4">
                                                 <!-- Inline Review Controls - Strict No Modal -->
@@ -1516,7 +1537,7 @@
                                                                 class="btn btn-sm btn-icon btn-light-success btn-coach-action" 
                                                                 data-id="{{ $adj->id }}" 
                                                                 data-action="reviewed" 
-                                                                title="{{ __('Mark as Reviewed') }}"
+                                                                title="{{ __('Mark all as Reviewed') }}"
                                                                 style="width: 28px; height: 28px;">
                                                             <i class="fas fa-check fs-8"></i>
                                                         </button>
@@ -1537,11 +1558,25 @@
                                                         </button>
                                                     </div>
                                                     <div class="coach-existing-notes-{{ $adj->id }} text-muted fs-9 text-end mt-1 {{ $adj->coach_notes ? '' : 'd-none' }}">
-                                                        <i class="fas fa-reply text-info me-1"></i><span class="coach-notes-text">{{ $adj->coach_notes }}</span>
+                                                        <div class="d-flex flex-column align-items-end">
+                                                            <div class="text-gray-800 fs-8">
+                                                                <i class="fas fa-reply text-info me-1"></i><span class="coach-notes-text">{{ $adj->coach_notes }}</span>
+                                                            </div>
+                                                            <div class="fs-9 text-muted comment-metadata mt-1">
+                                                                <span class="comment-author">{{ __('Added by') }}: <strong class="text-gray-700">{{ $adj->coach_author_name ?: __('المدرب') }}</strong></span>
+                                                                @if($adj->coach_notes_timestamp)
+                                                                    <span class="mx-1">•</span>
+                                                                    <span class="comment-time">{{ __('Added at') }}: {{ $adj->coach_notes_timestamp->format('Y-m-d H:i') }}</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
+                                        @if($adj->hasSetItems())
+                                            @include('system.workout.partials.coach-load-adjustment-sets-card', ['adj' => $adj])
+                                        @endif
                                         <!-- Expandable Inline Review Comment Row -->
                                         <tr id="coach-comment-row-{{ $adj->id }}" class="coach-comment-expandable-row d-none" style="background: rgba(0, 158, 247, 0.02);">
                                             <td colspan="8" class="p-3">
@@ -2478,6 +2513,10 @@
                         } else if (typeof Swal !== 'undefined') {
                             Swal.fire({ icon: 'success', title: msg, timer: 1500, showConfirmButton: false });
                         }
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 900);
                     },
                     error: function (xhr) {
                         $btn.prop('disabled', false);
@@ -2497,6 +2536,69 @@
                     }
                 });
             }
+
+            // ─── Individual Set Item Review Handling ────────────────────────
+            $(document).on('click', '.btn-coach-item-action', function () {
+                var $btn = $(this);
+                var itemId = $btn.data('item-id');
+                var action = $btn.data('action');
+                var force = $btn.data('force') ? 1 : 0;
+                var $card = $btn.closest('.coach-item-review-card');
+                var notes = $card.find('.coach-item-comment-input').val() || '';
+                var altWeight = $card.find('.coach-item-alt-weight').val() || '';
+
+                if (action === 'approve_alternative' && !altWeight) {
+                    var altErr = "{{ __('يرجى إدخال الوزن البديل المراد اعتماده.') }}";
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error(altErr);
+                    } else {
+                        alert(altErr);
+                    }
+                    $card.find('.coach-item-alt-weight').focus();
+                    return;
+                }
+
+                $btn.prop('disabled', true);
+                var url = "{{ url('/system/load-adjustment/item') }}/" + itemId + "/review";
+
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        action: action,
+                        approved_weight: altWeight,
+                        coach_notes: notes,
+                        force: force
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        $btn.prop('disabled', false);
+                        var msg = res.message || "{{ __('تم حفظ قرار المراجعة بنجاح!') }}";
+                        if (typeof toastr !== 'undefined') {
+                            toastr.success(msg);
+                        } else if (typeof Swal !== 'undefined') {
+                            Swal.fire({ icon: 'success', title: msg, timer: 1200, showConfirmButton: false });
+                        }
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 800);
+                    },
+                    error: function (xhr) {
+                        $btn.prop('disabled', false);
+                        var errMsg = "{{ __('حدث خطأ أثناء حفظ المراجعة.') }}";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        }
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error(errMsg);
+                        } else {
+                            alert(errMsg);
+                        }
+                    }
+                });
+            });
         });
     </script>
 @endsection

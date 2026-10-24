@@ -132,6 +132,7 @@ function ignoredRoutes()
         'system.trainee-progress.compare',
         'system.load-adjustment.store',
         'system.load-adjustment.review',
+        'system.load-adjustment.item.review',
     ];
 }
 

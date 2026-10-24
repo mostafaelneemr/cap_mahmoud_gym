@@ -49,6 +49,12 @@ class TraineeService extends BaseService
         if (\Illuminate\Support\Facades\Schema::hasTable('trainee_load_adjustments')) {
             $relations[] = 'loadAdjustments';
             $relations[] = 'loadAdjustments.reviewer';
+            $relations[] = 'loadAdjustments.trainee';
+            $relations[] = 'loadAdjustments.trainee.user';
+            if (\Illuminate\Support\Facades\Schema::hasTable('trainee_load_adjustment_items')) {
+                $relations[] = 'loadAdjustments.items';
+                $relations[] = 'loadAdjustments.items.reviewer';
+            }
         }
 
         $trainee->load($relations);
