@@ -100,6 +100,7 @@
         }
 
         .warmup-quill-wrapper .ql-editor {
+            position: relative;
             min-height: 110px;
             max-height: 320px;
             overflow-y: auto;
@@ -108,11 +109,15 @@
             line-height: 1.6;
         }
 
-        .warmup-quill-wrapper .ql-editor.ql-blank::before {
+        .warmup-quill-wrapper .ql-editor.ql-blank::before,
+        .warmup-quill-wrapper .ql-editor.ql-blank:before {
             color: #64748b;
             font-style: italic;
-            left: 14px;
-            right: 14px;
+            position: absolute !important;
+            left: 14px !important;
+            right: 14px !important;
+            top: 12px !important;
+            pointer-events: none !important;
         }
 
         /* Links inside Quill Editor & Display Content */
@@ -311,7 +316,8 @@
             color: #0f172a;
         }
 
-        [data-bs-theme="light"] .warmup-quill-wrapper .ql-editor.ql-blank::before {
+        [data-bs-theme="light"] .warmup-quill-wrapper .ql-editor.ql-blank::before,
+        [data-bs-theme="light"] .warmup-quill-wrapper .ql-editor.ql-blank:before {
             color: #94a3b8;
         }
 
