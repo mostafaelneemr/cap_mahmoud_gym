@@ -33,7 +33,7 @@ class TraineeService extends BaseService
     public function findById($id)
     {
         $trainee = $this->traineeRepository->find($id);
-        $trainee->load([
+        $relations = [
             'currentWorkoutPlans.exercises',
             'currentWorkoutPlans.warmupExercises',
             'currentWorkoutPlans.mainExercises',
@@ -44,7 +44,14 @@ class TraineeService extends BaseService
             'archivedWorkoutPlans.mainExercises',
             'archivedWorkoutPlans.postWorkoutExercises',
             'activeNutritionPlans',
-        ]);
+        ];
+
+        if (\Illuminate\Support\Facades\Schema::hasTable('trainee_load_adjustments')) {
+            $relations[] = 'loadAdjustments';
+            $relations[] = 'loadAdjustments.reviewer';
+        }
+
+        $trainee->load($relations);
         $user_id = $trainee->user_id ?? 0;
 
         $activityLogData = $this->activity_log_service->loadViewData();

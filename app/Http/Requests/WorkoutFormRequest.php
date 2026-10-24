@@ -16,6 +16,12 @@ class WorkoutFormRequest extends FormRequest
         $programs = $this->all()['program'] ?? $this->input('program');
         if (is_array($programs)) {
             foreach ($programs as $dayKey => $dayData) {
+                if (array_key_exists('warmup', $dayData)) {
+                    $programs[$dayKey]['warmup'] = \App\Models\WorkoutPlan::sanitizeRichText($dayData['warmup']);
+                }
+                if (array_key_exists('post_workout', $dayData)) {
+                    $programs[$dayKey]['post_workout'] = \App\Models\WorkoutPlan::sanitizeRichText($dayData['post_workout']);
+                }
                 if (!isset($dayData['exercises']) || !is_array($dayData['exercises'])) {
                     continue;
                 }
@@ -37,6 +43,8 @@ class WorkoutFormRequest extends FormRequest
         return [
             'trainee_id' => 'required|integer|exists:trainees,id',
             'program' => 'required|array|min:1',
+            'program.*.warmup' => 'nullable|string',
+            'program.*.post_workout' => 'nullable|string',
             'program.*.exercises.*.type' => 'required|in:warmup,main,post_workout',
             'program.*.exercises.*.machine_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ];

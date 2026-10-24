@@ -100,4 +100,14 @@ class User extends Authenticatable
     {
         return $this->trainer()->first();
     }
+
+    /**
+     * علاقة المستخدم بملف المتدرب التابع له
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function trainee()
+    {
+        return $this->hasOne(Trainee::class, 'user_id', 'id');
+    }
 }

@@ -118,8 +118,8 @@ class WorkoutService extends BaseService
         try {
             foreach ($programs as $dayKey => $dayData) {
                 $dayName = !empty($dayData['day_name']) ? $dayData['day_name'] : (!empty($dayData['title']) ? $dayData['title'] : $dayKey);
-                $warmup = $dayData['warmup'] ?? null;
-                $postWorkout = $dayData['post_workout'] ?? null;
+                $warmup = !empty($dayData['warmup']) ? WorkoutPlan::sanitizeRichText($dayData['warmup']) : null;
+                $postWorkout = !empty($dayData['post_workout']) ? WorkoutPlan::sanitizeRichText($dayData['post_workout']) : null;
 
                 $workoutPlan = $this->workoutRepository->store([
                     'trainee_id' => $trainee_id,

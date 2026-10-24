@@ -399,6 +399,22 @@
             overflow-x: auto;
         }
 
+        /* Responsive Table Container inside Display Area */
+        .warmup-rich-content .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0.75rem 0;
+            border-radius: 8px;
+        }
+
+        .warmup-rich-content table td p,
+        .warmup-rich-content table th p,
+        .warmup-quill-wrapper .ql-editor table td p,
+        .warmup-quill-wrapper .ql-editor table th p {
+            margin-bottom: 0 !important;
+        }
+
         .warmup-rich-content p {
             margin-bottom: 0.5rem;
         }
@@ -415,6 +431,63 @@
 
         .warmup-rich-content li {
             margin-bottom: 0.25rem;
+        }
+
+        /* ==========================================================================
+           Theme-Aware Section Headings & Descriptions
+           Light Mode: Black text (#000000)
+           Dark Mode: White text (#ffffff)
+           ========================================================================== */
+        .wb-rich-title,
+        .wb-rich-section h4 {
+            color: #ffffff !important;
+            transition: color 0.15s ease;
+        }
+
+        .wb-rich-desc,
+        .wb-rich-section .wb-rich-desc,
+        .wb-rich-section p.text-muted {
+            color: #ffffff !important;
+            transition: color 0.15s ease;
+        }
+
+        /* Light Mode: black text for headings & descriptions */
+        [data-bs-theme="light"] .wb-rich-title,
+        [data-bs-theme="light"] .wb-rich-section h4,
+        html[data-bs-theme="light"] .wb-rich-title,
+        html[data-bs-theme="light"] .wb-rich-section h4,
+        body[data-bs-theme="light"] .wb-rich-title,
+        body[data-bs-theme="light"] .wb-rich-section h4 {
+            color: #000000 !important;
+        }
+
+        [data-bs-theme="light"] .wb-rich-desc,
+        [data-bs-theme="light"] .wb-rich-section .wb-rich-desc,
+        [data-bs-theme="light"] .wb-rich-section p.text-muted,
+        html[data-bs-theme="light"] .wb-rich-desc,
+        html[data-bs-theme="light"] .wb-rich-section .wb-rich-desc,
+        html[data-bs-theme="light"] .wb-rich-section p.text-muted,
+        body[data-bs-theme="light"] .wb-rich-desc,
+        body[data-bs-theme="light"] .wb-rich-section .wb-rich-desc,
+        body[data-bs-theme="light"] .wb-rich-section p.text-muted {
+            color: #000000 !important;
+        }
+
+        /* Dark Mode: white text for headings & descriptions */
+        [data-bs-theme="dark"] .wb-rich-title,
+        [data-bs-theme="dark"] .wb-rich-section h4,
+        html[data-bs-theme="dark"] .wb-rich-title,
+        html[data-bs-theme="dark"] .wb-rich-section h4 {
+            color: #ffffff !important;
+        }
+
+        [data-bs-theme="dark"] .wb-rich-desc,
+        [data-bs-theme="dark"] .wb-rich-section .wb-rich-desc,
+        [data-bs-theme="dark"] .wb-rich-section p.text-muted,
+        html[data-bs-theme="dark"] .wb-rich-desc,
+        html[data-bs-theme="dark"] .wb-rich-section .wb-rich-desc,
+        html[data-bs-theme="dark"] .wb-rich-section p.text-muted {
+            color: #ffffff !important;
         }
     </style>
 
@@ -483,6 +556,23 @@
             var tableSvgIcon = '<svg viewBox="0 0 18 18"><rect class="ql-stroke" height="12" width="14" x="2" y="3" rx="1.5"></rect><line class="ql-stroke" x1="2" x2="16" y1="8" y2="8"></line><line class="ql-stroke" x1="2" x2="16" y1="12" y2="12"></line><line class="ql-stroke" x1="7" x2="7" y1="3" y2="15"></line><line class="ql-stroke" x1="11" x2="11" y1="3" y2="15"></line></svg>';
 
             /**
+             * Safely populate HTML content into Quill (handles tables via clipboard Delta conversion)
+             */
+            function setEditorContent(quill, html) {
+                if (!quill || typeof html !== 'string' || !html.trim()) return;
+                try {
+                    if (html.indexOf('<table') !== -1 && quill.clipboard) {
+                        var delta = quill.clipboard.convert({ html: html });
+                        quill.setContents(delta, 'silent');
+                    } else {
+                        quill.root.innerHTML = html;
+                    }
+                } catch (e) {
+                    quill.root.innerHTML = html;
+                }
+            }
+
+            /**
              * Initialize a Quill editor instance on an element or selector
              */
             function init(containerSelector, hiddenInputSelector, initialContent) {
@@ -491,18 +581,19 @@
 
                 var containerElem = $container[0];
 
-                // If already initialized on this DOM node, return existing
+                // If already initialized on this DOM node, update content if provided and return existing
                 if (containerElem.__quillInstance) {
                     if (typeof initialContent === 'string' && initialContent.length > 0) {
-                        containerElem.__quillInstance.root.innerHTML = initialContent;
+                        setEditorContent(containerElem.__quillInstance, initialContent);
                     }
                     return containerElem.__quillInstance;
                 }
 
                 var placeholder = $container.data('placeholder') || "{{ __('Warm up instructions, stretch routine, embed video links...') }}";
 
-                // Setup Quill toolbar options with table support
+                // Setup Quill toolbar options with table and heading support
                 var toolbarOptions = [
+                    [{ 'header': [2, 3, 4, false] }],
                     ['bold', 'italic', 'underline', 'strike'],
                     [{ 'list': 'bullet' }, { 'list': 'ordered' }],
                     ['link'],
@@ -531,6 +622,13 @@
                     modulesConfig.table = true;
                 }
 
+                // Capture initial content before Quill clears or reconstructs DOM
+                var initialHtml = (typeof initialContent === 'string' && initialContent.length > 0)
+                    ? initialContent
+                    : ($container.html().trim().length > 0 && $container.find('.ql-editor').length === 0 ? $container.html() : '');
+
+                $container.empty();
+
                 var quill = new Quill(containerElem, {
                     theme: 'snow',
                     modules: modulesConfig,
@@ -550,16 +648,14 @@
                     var $toolbar = $container.closest('.warmup-quill-wrapper').find('.ql-toolbar');
                     var $tableBtn = $toolbar.find('button.ql-table-better');
                     if ($tableBtn.length && !$tableBtn.find('svg').length) {
-                        $tableBtn.html(tableIconSvg + '<span class="visually-hidden">Table</span>');
+                        $tableBtn.html(tableSvgIcon + '<span class="visually-hidden">Table</span>');
                         $tableBtn.attr('title', "{{ __('Insert Table') }}");
                     }
                 }, 50);
 
                 // Populate initial content if provided
-                if (typeof initialContent === 'string' && initialContent.length > 0) {
-                    quill.root.innerHTML = initialContent;
-                } else if ($container.html().trim().length > 0 && $container.find('.ql-editor').length === 0) {
-                    quill.root.innerHTML = $container.html();
+                if (initialHtml) {
+                    setEditorContent(quill, initialHtml);
                 }
 
                 // If hidden input selector provided, keep it in sync

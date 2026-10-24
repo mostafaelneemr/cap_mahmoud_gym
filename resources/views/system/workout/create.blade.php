@@ -215,6 +215,37 @@
             </tbody>`;
         }
 
+        function richTextSectionHtml(dayId, section) {
+            var isWarmup = (section === 'warmup');
+            var editorId = (isWarmup ? 'warmup_editor_step_' : 'post_workout_editor_step_') + dayId;
+            var inputId = (isWarmup ? 'warmup_input_step_' : 'post_workout_input_step_') + dayId;
+            var inputName = `program[day_${dayId}][${isWarmup ? 'warmup' : 'post_workout'}]`;
+            var title = isWarmup ? "@lang('Warmup Routine')" : "@lang('Post-Workout Routine')";
+            var subtitle = isWarmup ? "@lang('Warmup exercises, activation movements and dynamic stretches')" : "@lang('Cooldown exercises, static stretches and recovery')";
+            var icon = isWarmup ? 'fas fa-fire' : 'fas fa-spa';
+            var themeClass = isWarmup ? 'wb-exercises--warmup' : 'wb-exercises--post';
+            var iconColor = isWarmup ? '#A78BFA' : '#38BDF8';
+            var iconBg = isWarmup ? 'rgba(167, 139, 250, 0.15)' : 'rgba(56, 189, 248, 0.15)';
+            var placeholder = isWarmup ? "@lang('Warm up instructions, stretch routine, embed video links...')" : "@lang('Cooldown exercises, static stretches and recovery instructions...')";
+
+            return `
+            <div class="mb-6 wb-rich-section ${themeClass}">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded" style="width: 28px; height: 28px; background: ${iconBg}; color: ${iconColor};">
+                        <i class="${icon} fs-6"></i>
+                    </span>
+                    <div>
+                        <h4 class="mb-0 fs-6 fw-bold wb-rich-title">${title}</h4>
+                        <p class="mb-0 fs-8 wb-rich-desc">${subtitle}</p>
+                    </div>
+                </div>
+                <div class="warmup-quill-wrapper">
+                    <div id="${editorId}" class="warmup-quill-editor" data-placeholder="${placeholder}"></div>
+                    <input type="hidden" name="${inputName}" id="${inputId}" class="warmup-hidden-input" value="">
+                </div>
+            </div>`;
+        }
+
         function dayStepHtml(i) {
             return `
             <div class="card-body dynamic-step" data-kt-stepper-element="content">
@@ -230,72 +261,12 @@
                     <div class="mb-6">
                         <label class="form-label">@lang('Day Name')</label>
                         <input type="text" name="program[day_${i}][day_name]" class="form-control form-control-solid" maxlength="100"
-                               placeholder="e.g. Day ${i}: Chest & Triceps"/>
+                                placeholder="e.g. Day ${i}: Chest & Triceps"/>
                         <div class="invalid-feedback"></div>
                     </div>
 
-{{--                    --}}{{-- 1. Warmup Routine Section --}}
-{{--                    // <div class="mb-4">--}}
-{{--                    //     <label class="form-label wb-field-label"><i class="fas fa-fire text-warning me-1"></i>@lang('Warmup Instructions & Video Links')</label>--}}
-{{--                    //     <div class="warmup-quill-wrapper">--}}
-{{--                    //         <div id="warmup_editor_step_${i}" class="warmup-quill-editor" data-placeholder="@lang('Warm up instructions, stretch routine, embed video links...')"></div>--}}
-{{--                    //         <input type="hidden" name="program[day_${i}][warmup]" id="warmup_input_step_${i}" class="warmup-hidden-input">--}}
-{{--                    //     </div>--}}
-{{--                    // </div>--}}
-
-                    <section class="wb-exercises wb-exercises--warmup mb-6" aria-label="@lang('Warmup')">
-                        <header class="wb-exercises__header">
-                            <div class="wb-exercises__title">
-                                <span class="wb-exercises__icon"><i class="fas fa-fire"></i></span>
-                                <div>
-                                    <h3>@lang('Warmup Routine')</h3>
-                                    <p>@lang('Warmup exercises, activation movements and dynamic stretches')</p>
-                                </div>
-                            </div>
-                            <span class="wb-count"><span class="wb-count__num" id="warmup-count-day-${i}">0</span> @lang('Warmup')</span>
-                        </header>
-
-                        <div class="wb-table-wrap">
-                            <table class="wb-table" id="warmup-exercises-container-day-${i}" data-exercise-index="0">
-                                <colgroup>
-                                    <col class="wb-col-idx">
-                                    <col class="wb-col-name">
-                                    <col class="wb-col-num">
-                                    <col class="wb-col-num">
-                                    <col class="wb-col-num">
-                                    <col class="wb-col-tempo">
-                                    <col class="wb-col-weights">
-                                    <col class="wb-col-action">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">@lang('Exercise')</th>
-                                        <th scope="col" class="text-center">@lang('Sets')</th>
-                                        <th scope="col" class="text-center">@lang('Reps')</th>
-                                        <th scope="col" class="text-center">@lang('Rest')</th>
-                                        <th scope="col" class="text-center">@lang('Tempo')</th>
-                                        <th scope="col">@lang('Weights')<span class="wb-th-hint">max 4</span></th>
-                                        <th scope="col"><span class="visually-hidden">@lang('Actions')</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="wb-empty-placeholder">
-                                    <tr>
-                                        <td colspan="8" class="text-center py-4 text-muted">
-                                            <i class="fas fa-fire fs-3 mb-1 d-block opacity-50 text-warning"></i>
-                                            <span class="fs-7">@lang('No warmup exercises added yet. Click "+ Add Warmup Exercise" below.')</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="wb-exercises__footer">
-                            <button type="button" class="wb-add add-warmup-exercise-btn" data-day-id="${i}">
-                                <i class="fas fa-plus"></i>@lang('+ Add Warmup Exercise')
-                            </button>
-                        </div>
-                    </section>
+                    {{-- 1. Warmup Rich Text Editor --}}
+                    ${richTextSectionHtml(i, 'warmup')}
 
                     {{-- 2. Main Exercises Section --}}
                     <section class="wb-exercises mb-6" aria-label="@lang('Exercises')">
@@ -345,68 +316,8 @@
                         </div>
                     </section>
 
-                    {{-- 3. Post-Workout Routine Section --}}
-                    <section class="wb-exercises wb-exercises--post mb-6" aria-label="@lang('Post-Workout')">
-                        <header class="wb-exercises__header">
-                            <div class="wb-exercises__title">
-                                <span class="wb-exercises__icon"><i class="fas fa-spa"></i></span>
-                                <div>
-                                    <h3>@lang('Post-Workout Routine')</h3>
-                                    <p>@lang('Cooldown exercises, static stretches and recovery')</p>
-                                </div>
-                            </div>
-                            <span class="wb-count"><span class="wb-count__num" id="post-workout-count-day-${i}">0</span> @lang('Post-Workout')</span>
-                        </header>
-
-                        <div class="wb-table-wrap">
-                            <table class="wb-table" id="post-workout-exercises-container-day-${i}" data-exercise-index="0">
-                                <colgroup>
-                                    <col class="wb-col-idx">
-                                    <col class="wb-col-name">
-                                    <col class="wb-col-num">
-                                    <col class="wb-col-num">
-                                    <col class="wb-col-num">
-                                    <col class="wb-col-tempo">
-                                    <col class="wb-col-weights">
-                                    <col class="wb-col-action">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">@lang('Exercise')</th>
-                                        <th scope="col" class="text-center">@lang('Sets')</th>
-                                        <th scope="col" class="text-center">@lang('Reps')</th>
-                                        <th scope="col" class="text-center">@lang('Rest')</th>
-                                        <th scope="col" class="text-center">@lang('Tempo')</th>
-                                        <th scope="col">@lang('Weights')<span class="wb-th-hint">max 4</span></th>
-                                        <th scope="col"><span class="visually-hidden">@lang('Actions')</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="wb-empty-placeholder">
-                                    <tr>
-                                        <td colspan="8" class="text-center py-4 text-muted">
-                                            <i class="fas fa-snowflake fs-3 mb-1 d-block opacity-50 text-info"></i>
-                                            <span class="fs-7">@lang('No post-workout exercises added yet. Click "+ Add Post-Workout Exercise" below.')</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="wb-exercises__footer">
-                            <button type="button" class="wb-add add-post-workout-exercise-btn" data-day-id="${i}">
-                                <i class="fas fa-plus"></i>@lang('+ Add Post-Workout Exercise')
-                            </button>
-                        </div>
-                    </section>
-
-                    {{--<div class="mb-5">--}}
-                    {{--    <label class="form-label wb-field-label"><i class="fas fa-snowflake text-info me-1"></i>@lang('Post-Workout Instructions & Video Links')</label>--}}
-                    {{--    <div class="warmup-quill-wrapper">--}}
-                    {{--        <div id="post_workout_editor_step_${i}" class="warmup-quill-editor" data-placeholder="@lang('Cool down instructions, post-stretch routine, embed video links, table...')"></div>--}}
-                    {{--        <input type="hidden" name="program[day_${i}][post_workout]" id="post_workout_input_step_${i}" class="warmup-hidden-input">--}}
-                    {{--    </div>--}}
-                    {{--</div>--}}
+                    {{-- 3. Post-Workout Rich Text Editor --}}
+                    ${richTextSectionHtml(i, 'post_workout')}
                 </div>
             </div>`;
         }
@@ -610,21 +521,6 @@
                 }
             });
 
-            $(document).on('click', '.add-warmup-exercise-btn', function () {
-                var dayId = $(this).data('day-id');
-                var container = $(`#warmup-exercises-container-day-${dayId}`);
-                container.find('.wb-empty-placeholder').hide();
-
-                var currentExerciseIdx = parseInt(container.attr('data-exercise-index') || 0) + 1;
-                container.attr('data-exercise-index', currentExerciseIdx);
-
-                var $row = $(exerciseRowHtml(dayId, currentExerciseIdx, 'warmup'));
-                container.append($row);
-                reindexExerciseTable(container);
-                updateExerciseCount(container);
-                $row.find('.wb-name').trigger('focus');
-            });
-
             $(document).on('click', '.add-exercise-btn', function () {
                 var dayId = $(this).data('day-id');
                 var container = $(`#exercises-container-day-${dayId}`);
@@ -633,21 +529,6 @@
                 container.attr('data-exercise-index', currentExerciseIdx);
 
                 var $row = $(exerciseRowHtml(dayId, currentExerciseIdx, 'main'));
-                container.append($row);
-                reindexExerciseTable(container);
-                updateExerciseCount(container);
-                $row.find('.wb-name').trigger('focus');
-            });
-
-            $(document).on('click', '.add-post-workout-exercise-btn', function () {
-                var dayId = $(this).data('day-id');
-                var container = $(`#post-workout-exercises-container-day-${dayId}`);
-                container.find('.wb-empty-placeholder').hide();
-
-                var currentExerciseIdx = parseInt(container.attr('data-exercise-index') || 0) + 1;
-                container.attr('data-exercise-index', currentExerciseIdx);
-
-                var $row = $(exerciseRowHtml(dayId, currentExerciseIdx, 'post_workout'));
                 container.append($row);
                 reindexExerciseTable(container);
                 updateExerciseCount(container);

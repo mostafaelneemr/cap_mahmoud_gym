@@ -131,6 +131,14 @@ class Trainee extends GlobalModel
         return $this->hasMany(TraineeProgressCheckin::class, 'trainee_id', 'id')->orderBy('checkin_date', 'desc');
     }
 
+    /**
+     * تقارير تعديل أوزان التمارين المقدمة من المتدرب
+     */
+    public function loadAdjustments()
+    {
+        return $this->hasMany(TraineeLoadAdjustment::class, 'trainee_id', 'id')->orderBy('created_at', 'desc');
+    }
+
     protected static function boot()
     {
         parent::boot();

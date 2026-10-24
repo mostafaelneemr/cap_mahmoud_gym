@@ -99,3 +99,9 @@ Route::controller('JoinUsController')->prefix('join-us')->group(function () {
     Route::post('/{id}/status', 'updateStatus')->name('system.join-us.update-status');
 //    Route::delete('/{id}', 'destroy')->name('system.join-us.destroy');
 });
+
+// ─── Trainee Load Adjustment Routes ──────────────────────────────────────────
+Route::controller('LoadAdjustmentController')->prefix('load-adjustment')->group(function () {
+    Route::post('/store', 'store')->name('system.load-adjustment.store');
+    Route::post('/{id}/review', 'review')->name('system.load-adjustment.review');
+});

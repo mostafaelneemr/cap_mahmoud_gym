@@ -42,6 +42,14 @@ class StoreExercisFormRequest extends FormRequest
             $this->merge(['exercises' => $exercises]);
         }
 
+        if ($this->has('warmup')) {
+            $this->merge(['warmup' => \App\Models\WorkoutPlan::sanitizeRichText($this->input('warmup'))]);
+        }
+
+        if ($this->has('post_workout')) {
+            $this->merge(['post_workout' => \App\Models\WorkoutPlan::sanitizeRichText($this->input('post_workout'))]);
+        }
+
         $rawWarmupLinks = $this->input('warmup_links');
         if (is_array($rawWarmupLinks)) {
             $cleaned = array_values(array_filter(

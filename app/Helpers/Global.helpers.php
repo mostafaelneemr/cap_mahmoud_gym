@@ -130,6 +130,8 @@ function ignoredRoutes()
         'system.trainee-progress.destroy',
         'system.trainee-progress.destroy-photo',
         'system.trainee-progress.compare',
+        'system.load-adjustment.store',
+        'system.load-adjustment.review',
     ];
 }
 
@@ -153,7 +155,8 @@ function userCan($routename, $userId = null)
             'system.trainee-progress.compare',
             'logout',
             'auth.google',
-            'auth.google.callback'
+            'auth.google.callback',
+            'system.load-adjustment.store',
         ];
         if (is_array($routename)) {
             $arr = array_diff($routename, $traineeRoutes);

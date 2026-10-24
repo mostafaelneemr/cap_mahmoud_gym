@@ -687,7 +687,7 @@
                         @endphp
 
                         {{-- 1. Warmup Routine --}}
-                        @if($plan->warmup || !empty($plan->warmup_links_list) || $warmupExercises->count() > 0)
+                        @if($plan->display_warmup || !empty($plan->warmup_links_list) || $warmupExercises->count() > 0)
                             <div class="warmup-section mb-6">
                                 <div class="section-label d-flex align-items-center gap-2 mb-3" style="color: #A78BFA;">
                                     <i class="fas fa-fire fs-4"></i>
@@ -696,7 +696,7 @@
                                         <span class="badge fs-8 ms-1" style="background: rgba(167, 139, 250, 0.15); color: #A78BFA; border: 1px solid rgba(167, 139, 250, 0.25); border-radius: 9999px; padding: 4px 10px;">{{ $warmupExercises->count() }} {{ __('exercises') }}</span>
                                     @endif
                                 </div>
-                                @if($plan->warmup)
+                                @if($plan->display_warmup)
                                     <div class="warmup-rich-content text-gray-800 fw-semibold mb-3">{!! $plan->display_warmup !!}</div>
                                 @endif
                                 @if(!empty($plan->warmup_links_list))
@@ -758,13 +758,22 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if($exercise->internal_weight)
-                                                            <span class="badge-metric badge-weight">
-                                                                <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
-                                                            </span>
-                                                        @else
-                                                            <span class="text-muted">—</span>
-                                                        @endif
+                                                        <div class="d-flex align-items-center gap-1">
+                                                            @if($exercise->internal_weight)
+                                                                <span class="badge-metric badge-weight">
+                                                                    <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted">—</span>
+                                                            @endif
+                                                            <button type="button" 
+                                                                    class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1" 
+                                                                    data-target="#inline-load-row-{{ $exercise->id }}" 
+                                                                    title="{{ __('Update Weight') }}"
+                                                                    style="width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;">
+                                                                <i class="fas fa-plus fs-8"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         @if($exercise->tempo)
@@ -798,6 +807,33 @@
                                                                 <span class="text-muted">—</span>
                                                             @endif
                                                         </div>
+                                                    </td>
+                                                </tr>
+                                                <tr id="inline-load-row-{{ $exercise->id }}" class="inline-load-adjustment-row d-none" style="background: rgba(0, 158, 247, 0.04);">
+                                                    <td colspan="9" class="p-3">
+                                                        <form class="inline-load-form d-flex flex-wrap align-items-center gap-3" data-exercise-id="{{ $exercise->id }}">
+                                                            <input type="hidden" name="exercise_id" value="{{ $exercise->id }}">
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <span class="fs-8 fw-bold text-gray-700">{{ __('New Weight') }}:</span>
+                                                                <input type="text" name="reported_load" class="form-control form-control-sm form-control-solid" 
+                                                                       style="width: 140px;" placeholder="{{ __('e.g. 20kg or 15/25/30') }}">
+                                                            </div>
+                                                            <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 180px;">
+                                                                <span class="fs-8 fw-bold text-gray-700">{{ __('Comment') }}:</span>
+                                                                <input type="text" name="notes" class="form-control form-control-sm form-control-solid" 
+                                                                       placeholder="{{ __('Optional comment...') }}">
+                                                            </div>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <button type="submit" class="btn btn-sm btn-primary px-3 py-1 d-inline-flex align-items-center gap-1">
+                                                                    <span class="btn-text">{{ __('Submit') }}</span>
+                                                                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                                                                </button>
+                                                                <button type="button" class="btn btn-sm btn-light btn-close-inline-load px-3 py-1" data-target="#inline-load-row-{{ $exercise->id }}">
+                                                                    {{ __('Cancel') }}
+                                                                </button>
+                                                            </div>
+                                                            <div class="inline-feedback-msg w-100 fs-8 d-none mt-1"></div>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -874,14 +910,23 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($exercise->internal_weight)
-                                                    <span class="badge-metric badge-weight">
-                                    <i class="fas fa-weight-hanging"></i>
-                                    {{ $exercise->internal_weight_display }}
-                                </span>
-                                                @else
-                                                    <span class="text-muted">—</span>
-                                                @endif
+                                                <div class="d-flex align-items-center gap-1">
+                                                    @if($exercise->internal_weight)
+                                                        <span class="badge-metric badge-weight">
+                                                            <i class="fas fa-weight-hanging"></i>
+                                                            {{ $exercise->internal_weight_display }}
+                                                        </span>
+                                                    @else
+                                                        <span class="text-muted">—</span>
+                                                    @endif
+                                                    <button type="button" 
+                                                            class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1" 
+                                                            data-target="#inline-load-row-{{ $exercise->id }}" 
+                                                            title="{{ __('Update Weight') }}"
+                                                            style="width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;">
+                                                        <i class="fas fa-plus fs-8"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                             <td>
                                                 @if($exercise->tempo)
@@ -924,6 +969,33 @@
                                                 </div>
                                             </td>
                                         </tr>
+                                        <tr id="inline-load-row-{{ $exercise->id }}" class="inline-load-adjustment-row d-none" style="background: rgba(0, 158, 247, 0.04);">
+                                            <td colspan="9" class="p-3">
+                                                <form class="inline-load-form d-flex flex-wrap align-items-center gap-3" data-exercise-id="{{ $exercise->id }}">
+                                                    <input type="hidden" name="exercise_id" value="{{ $exercise->id }}">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="fs-8 fw-bold text-gray-700">{{ __('New Weight') }}:</span>
+                                                        <input type="text" name="reported_load" class="form-control form-control-sm form-control-solid" 
+                                                               style="width: 140px;" placeholder="{{ __('e.g. 20kg or 15/25/30') }}">
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 180px;">
+                                                        <span class="fs-8 fw-bold text-gray-700">{{ __('Comment') }}:</span>
+                                                        <input type="text" name="notes" class="form-control form-control-sm form-control-solid" 
+                                                               placeholder="{{ __('Optional comment...') }}">
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <button type="submit" class="btn btn-sm btn-primary px-3 py-1 d-inline-flex align-items-center gap-1">
+                                                            <span class="btn-text">{{ __('Submit') }}</span>
+                                                            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-light btn-close-inline-load px-3 py-1" data-target="#inline-load-row-{{ $exercise->id }}">
+                                                            {{ __('Cancel') }}
+                                                        </button>
+                                                    </div>
+                                                    <div class="inline-feedback-msg w-100 fs-8 d-none mt-1"></div>
+                                                </form>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
@@ -937,7 +1009,7 @@
                         </div>
 
                         {{-- 3. Post-Workout Routine --}}
-                        @if($plan->post_workout || $postWorkoutExercises->count() > 0)
+                        @if($plan->display_post_workout || $postWorkoutExercises->count() > 0)
                             <div class="post-workout-section mb-6">
                                 <div class="section-label d-flex align-items-center gap-2 mb-3" style="color: #A78BFA;">
                                     <i class="fas fa-spa fs-4"></i>
@@ -946,6 +1018,9 @@
                                         <span class="badge fs-8 ms-1" style="background: rgba(167, 139, 250, 0.15); color: #A78BFA; border: 1px solid rgba(167, 139, 250, 0.25); border-radius: 9999px; padding: 4px 10px;">{{ $postWorkoutExercises->count() }} {{ __('exercises') }}</span>
                                     @endif
                                 </div>
+                                @if($plan->display_post_workout)
+                                    <div class="warmup-rich-content text-gray-800 fw-semibold mb-3">{!! $plan->display_post_workout !!}</div>
+                                @endif
 
                                 @if($postWorkoutExercises->count() > 0)
                                     <div class="exercise-table-wrapper mb-4">
@@ -1000,13 +1075,22 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if($exercise->internal_weight)
-                                                            <span class="badge-metric badge-weight">
-                                                                <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
-                                                            </span>
-                                                        @else
-                                                            <span class="text-muted">—</span>
-                                                        @endif
+                                                        <div class="d-flex align-items-center gap-1">
+                                                            @if($exercise->internal_weight)
+                                                                <span class="badge-metric badge-weight">
+                                                                    <i class="fas fa-weight-hanging"></i> {{ $exercise->internal_weight_display }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted">—</span>
+                                                            @endif
+                                                            <button type="button" 
+                                                                    class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1" 
+                                                                    data-target="#inline-load-row-{{ $exercise->id }}" 
+                                                                    title="{{ __('Update Weight') }}"
+                                                                    style="width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;">
+                                                                <i class="fas fa-plus fs-8"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         @if($exercise->tempo)
@@ -1042,13 +1126,40 @@
                                                         </div>
                                                     </td>
                                                 </tr>
+                                                <tr id="inline-load-row-{{ $exercise->id }}" class="inline-load-adjustment-row d-none" style="background: rgba(0, 158, 247, 0.04);">
+                                                    <td colspan="9" class="p-3">
+                                                        <form class="inline-load-form d-flex flex-wrap align-items-center gap-3" data-exercise-id="{{ $exercise->id }}">
+                                                            <input type="hidden" name="exercise_id" value="{{ $exercise->id }}">
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <span class="fs-8 fw-bold text-gray-700">{{ __('New Weight') }}:</span>
+                                                                <input type="text" name="reported_load" class="form-control form-control-sm form-control-solid" 
+                                                                       style="width: 140px;" placeholder="{{ __('e.g. 20kg or 15/25/30') }}">
+                                                            </div>
+                                                            <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 180px;">
+                                                                <span class="fs-8 fw-bold text-gray-700">{{ __('Comment') }}:</span>
+                                                                <input type="text" name="notes" class="form-control form-control-sm form-control-solid" 
+                                                                       placeholder="{{ __('Optional comment...') }}">
+                                                            </div>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <button type="submit" class="btn btn-sm btn-primary px-3 py-1 d-inline-flex align-items-center gap-1">
+                                                                    <span class="btn-text">{{ __('Submit') }}</span>
+                                                                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                                                                </button>
+                                                                <button type="button" class="btn btn-sm btn-light btn-close-inline-load px-3 py-1" data-target="#inline-load-row-{{ $exercise->id }}">
+                                                                    {{ __('Cancel') }}
+                                                                </button>
+                                                            </div>
+                                                            <div class="inline-feedback-msg w-100 fs-8 d-none mt-1"></div>
+                                                        </form>
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                             </tbody>
                                         </table>
                                     </div>
                                 @endif
 
-                                @if($plan->post_workout)
+                                @if($plan->display_post_workout)
                                     <div class="warmup-rich-content text-gray-800 fw-semibold">{!! $plan->display_post_workout !!}</div>
                                 @endif
                             </div>
@@ -1183,6 +1294,110 @@
             $('#videoModal').on('hidden.bs.modal', function () {
                 $('#videoIframe').attr('src', '');
                 $('#directVideoLink').attr('href', '#');
+            });
+
+            // ─── Inline Exercise Load Updates ───────────────────────────
+            // Toggle inline load adjustment row
+            $(document).on('click', '.btn-toggle-inline-load', function () {
+                var targetSelector = $(this).data('target');
+                var $row = $(targetSelector);
+                if ($row.hasClass('d-none')) {
+                    $('.inline-load-adjustment-row').addClass('d-none');
+                    $row.removeClass('d-none');
+                    $row.find('input[name="reported_load"]').focus();
+                } else {
+                    $row.addClass('d-none');
+                }
+            });
+
+            // Close inline form on cancel
+            $(document).on('click', '.btn-close-inline-load', function () {
+                var targetSelector = $(this).data('target');
+                var $row = $(targetSelector);
+                $row.addClass('d-none');
+                $row.find('.inline-feedback-msg').addClass('d-none').empty();
+            });
+
+            // Handle AJAX submission of inline load adjustment
+            $(document).on('submit', '.inline-load-form', function (e) {
+                e.preventDefault();
+                var $form = $(this);
+                var $row = $form.closest('tr');
+                var $submitBtn = $form.find('button[type="submit"]');
+                var $spinner = $submitBtn.find('.spinner-border');
+                var $feedback = $form.find('.inline-feedback-msg');
+
+                var reportedLoad = $.trim($form.find('input[name="reported_load"]').val());
+                var notes = $.trim($form.find('input[name="notes"]').val());
+
+                if (!reportedLoad && !notes) {
+                    $feedback.removeClass('d-none text-success')
+                             .addClass('text-danger')
+                             .text("{{ __('يجب إدخال الوزن الجديد أو كتابة ملاحظة على الأقل.') }}");
+                    return;
+                }
+
+                // Prevent duplicate submission
+                $submitBtn.prop('disabled', true);
+                $spinner.removeClass('d-none');
+                $feedback.addClass('d-none').empty();
+
+                $.ajax({
+                    url: "{{ route('system.load-adjustment.store') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        exercise_id: $form.find('input[name="exercise_id"]').val(),
+                        reported_load: reportedLoad,
+                        notes: notes
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        $spinner.addClass('d-none');
+                        var msg = res.message || "{{ __('تم إرسال تحديث الوزن بنجاح للمدرب!') }}";
+                        $feedback.removeClass('d-none text-danger')
+                                 .addClass('text-success')
+                                 .html('<i class="fas fa-check-circle me-1"></i> ' + msg);
+
+                        if (typeof toastr !== 'undefined') {
+                            toastr.success(msg);
+                        }
+
+                        $form.find('input[name="reported_load"]').val('');
+                        $form.find('input[name="notes"]').val('');
+
+                        setTimeout(function () {
+                            $row.addClass('d-none');
+                            $feedback.addClass('d-none').empty();
+                            $submitBtn.prop('disabled', false);
+                        }, 1500);
+                    },
+                    error: function (xhr) {
+                        $spinner.addClass('d-none');
+                        $submitBtn.prop('disabled', false);
+
+                        var errMsg = "{{ __('حدث خطأ أثناء إرسال التحديث، يرجى المحاولة مرة أخرى.') }}";
+                        if (xhr.responseJSON) {
+                            if (xhr.responseJSON.message) {
+                                errMsg = xhr.responseJSON.message;
+                            } else if (xhr.responseJSON.errors) {
+                                var errList = [];
+                                $.each(xhr.responseJSON.errors, function (key, val) {
+                                    errList.push(val[0]);
+                                });
+                                errMsg = errList.join(' ');
+                            }
+                        }
+
+                        $feedback.removeClass('d-none text-success')
+                                 .addClass('text-danger')
+                                 .html('<i class="fas fa-exclamation-circle me-1"></i> ' + errMsg);
+
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error(errMsg);
+                        }
+                    }
+                });
             });
         });
     </script>
