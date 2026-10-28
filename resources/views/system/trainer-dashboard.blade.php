@@ -1078,10 +1078,6 @@
                                         </table>
                                     </div>
                                 @endif
-
-                                @if($plan->display_post_workout)
-                                    <div class="warmup-rich-content text-gray-800 fw-semibold">{!! $plan->display_post_workout !!}</div>
-                                @endif
                             </div>
                         @endif
 

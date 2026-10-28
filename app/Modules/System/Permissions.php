@@ -41,6 +41,10 @@ return [
             'update-workout' => ['system.workout.edit', 'system.workout.update', 'system.workout.updateDay','system.workout.storeInlineDay'],
             'delete-workout' => ['system.workout.destroy'],
             'activate-or-deactivate-workout' => ['system.workout.toggleDayStatus'],
+            'view-exercise-library' => ['system.exercise-library.index', 'system.exercise-library.search'],
+            'create-exercise-library' => ['system.exercise-library.create', 'system.exercise-library.store'],
+            'update-exercise-library' => ['system.exercise-library.edit', 'system.exercise-library.update', 'system.exercise-library.toggle-status'],
+            'delete-exercise-library' => ['system.exercise-library.destroy'],
         ]
     ],
 

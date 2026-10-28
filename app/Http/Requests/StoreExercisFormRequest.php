@@ -95,6 +95,7 @@ class StoreExercisFormRequest extends FormRequest
                     'post_workout' => 'nullable|string',
                     'exercises' => 'nullable|array',
                     'exercises.*.exercise_id' => 'nullable|integer',
+                    'exercises.*.exercise_library_id' => 'nullable|integer|exists:exercise_libraries,id',
                     'exercises.*.type' => 'required|in:warmup,main,post_workout',
                     'exercises.*.name' => 'nullable|string|max:150',
                     'exercises.*.sets' => 'nullable|string|max:50',

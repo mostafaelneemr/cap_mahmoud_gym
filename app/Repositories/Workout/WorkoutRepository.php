@@ -50,6 +50,10 @@ class WorkoutRepository extends BaseRepository
                 $exData['type'] = 'main';
             }
 
+            if (array_key_exists('exercise_library_id', $exData)) {
+                $exData['exercise_library_id'] = !empty($exData['exercise_library_id']) ? (int) $exData['exercise_library_id'] : null;
+            }
+
             if (!empty($exData['exercise_id'])) {
                 // Update
                 $exercise = Exercise::find($exData['exercise_id']);
@@ -132,7 +136,16 @@ class WorkoutRepository extends BaseRepository
 
     public function getExcercisesByTrainee($traineeId)
     {
-        $relations = ['exercises', 'warmupExercises', 'mainExercises', 'postWorkoutExercises'];
+        $relations = [
+            'exercises',
+            'exercises.exerciseLibrary',
+            'warmupExercises',
+            'warmupExercises.exerciseLibrary',
+            'mainExercises',
+            'mainExercises.exerciseLibrary',
+            'postWorkoutExercises',
+            'postWorkoutExercises.exerciseLibrary'
+        ];
         if (\Illuminate\Support\Facades\Schema::hasTable('trainee_load_adjustments')) {
             $relations[] = 'loadAdjustments';
             $relations[] = 'loadAdjustments.reviewer';

@@ -644,5 +644,27 @@ class WorkoutContentBuilderTest extends TestCase
         $this->assertStringContainsString('data-row="row-1"', $sanitized);
         $this->assertStringContainsString('Safe Cell', $sanitized);
     }
+
+    /**
+     * 17. التحقق من عدم تكرار عرض بيانات ما بعد التمرين في لوحة تحكم المتدرب (Regression for duplicate display)
+     */
+    public function test_trainee_dashboard_does_not_render_duplicate_post_workout_content(): void
+    {
+        $uniqueContent = 'Unique Post Workout Cooldown Routine ' . uniqid();
+
+        $this->plan->update([
+            'post_workout' => '<p>' . $uniqueContent . '</p>',
+        ]);
+
+        $response = $this->actingAs($this->traineeUser, 'user')
+            ->get(route('system.dashboard.trainer'));
+
+        $response->assertOk();
+        $response->assertSee($uniqueContent);
+
+        // التأكد من أن المحتوى ظهر مرة واحدة فقط في الصفحة كاملة بدون أي تكرار
+        $occurrences = substr_count($response->getContent(), $uniqueContent);
+        $this->assertSame(1, $occurrences, 'Post-workout content should be rendered exactly once on the trainee dashboard.');
+    }
 }
 

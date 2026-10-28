@@ -4,6 +4,7 @@
     @include('system.workout.partials.exercise-table-styles')
     @include('system.workout.partials.warmup-editor-assets')
     @include('system.workout.partials.workout-media-assets')
+    @include('system.workout.partials.exercise-library-modal')
     <style>
         /* ==========================================================================
            GYM TRENDY UI/UX - TRAINEE PROFILE & WORKOUT EDITOR
@@ -720,10 +721,25 @@
                                                                 <input type="hidden"
                                                                        name="exercises[{{ $currentExIdx }}][type]"
                                                                        value="main">
+                                                                <input type="hidden"
+                                                                       name="exercises[{{ $currentExIdx }}][exercise_library_id]"
+                                                                       class="wb-library-id"
+                                                                       value="{{ $exercise->exercise_library_id }}">
                                                                 <span class="wb-idx"
                                                                       aria-hidden="true">{{ $exIndex + 1 }}</span>
                                                             </td>
                                                             <td class="wb-cell-name" data-label="@lang('Exercise')">
+                                                                <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                                                    <button type="button" class="btn btn-icon btn-sm btn-light-primary btn-open-library-picker" title="@lang('Pick from Central Exercise Library')">
+                                                                        <i class="fas fa-book-open fs-7"></i>
+                                                                    </button>
+                                                                    <span class="badge badge-light-primary wb-library-badge {{ $exercise->exercise_library_id ? '' : 'd-none' }} fs-9">
+                                                                        <i class="fas fa-link me-1"></i> @lang('Library')
+                                                                    </span>
+                                                                    <button type="button" class="btn btn-icon btn-sm btn-light-danger btn-unlink-library {{ $exercise->exercise_library_id ? '' : 'd-none' }}" title="@lang('Unlink from Library')">
+                                                                        <i class="fas fa-unlink fs-8"></i>
+                                                                    </button>
+                                                                </div>
                                                                 <input type="text"
                                                                        name="exercises[{{ $currentExIdx }}][name]"
                                                                        value="{{ $exercise->name }}"
@@ -827,10 +843,22 @@
                                                         <tr class="wb-row-main">
                                                             <td class="wb-cell-idx" rowspan="3">
                                                                 <input type="hidden" name="exercises[m_1][type]" value="main">
+                                                                <input type="hidden" name="exercises[m_1][exercise_library_id]" class="wb-library-id" value="">
                                                                 <span class="wb-idx"
                                                                       aria-hidden="true">1</span>
                                                             </td>
                                                             <td class="wb-cell-name" data-label="@lang('Exercise')">
+                                                                <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                                                    <button type="button" class="btn btn-icon btn-sm btn-light-primary btn-open-library-picker" title="@lang('Pick from Central Exercise Library')">
+                                                                        <i class="fas fa-book-open fs-7"></i>
+                                                                    </button>
+                                                                    <span class="badge badge-light-primary wb-library-badge d-none fs-9">
+                                                                        <i class="fas fa-link me-1"></i> @lang('Library')
+                                                                    </span>
+                                                                    <button type="button" class="btn btn-icon btn-sm btn-light-danger btn-unlink-library d-none" title="@lang('Unlink from Library')">
+                                                                        <i class="fas fa-unlink fs-8"></i>
+                                                                    </button>
+                                                                </div>
                                                                 <input type="text" name="exercises[m_1][name]"
                                                                        class="form-control wb-name" maxlength="150"
                                                                        autocomplete="off"
@@ -1735,9 +1763,21 @@
                                             <tr class="wb-row-main">
                                                 <td class="wb-cell-idx" rowspan="3">
                                                     <input type="hidden" name="exercises[m_1][type]" value="main">
+                                                    <input type="hidden" name="exercises[m_1][exercise_library_id]" class="wb-library-id" value="">
                                                     <span class="wb-idx" aria-hidden="true">1</span>
                                                 </td>
                                                 <td class="wb-cell-name" data-label="@lang('Exercise')">
+                                                    <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                                        <button type="button" class="btn btn-icon btn-sm btn-light-primary btn-open-library-picker" title="@lang('Pick from Central Exercise Library')">
+                                                            <i class="fas fa-book-open fs-7"></i>
+                                                        </button>
+                                                        <span class="badge badge-light-primary wb-library-badge d-none fs-9">
+                                                            <i class="fas fa-link me-1"></i> @lang('Library')
+                                                        </span>
+                                                        <button type="button" class="btn btn-icon btn-sm btn-light-danger btn-unlink-library d-none" title="@lang('Unlink from Library')">
+                                                            <i class="fas fa-unlink fs-8"></i>
+                                                        </button>
+                                                    </div>
                                                     <input type="text" name="exercises[m_1][name]" class="form-control wb-name" maxlength="150" autocomplete="off"
                                                            placeholder="@lang('e.g. Incline Bench Press')" aria-label="@lang('Exercise Name')" required>
                                                     <div class="invalid-feedback"></div>
@@ -1910,9 +1950,21 @@
                 <tr class="wb-row-main">
                     <td class="wb-cell-idx" rowspan="3">
                         <input type="hidden" name="${base}[type]" value="${type}">
+                        <input type="hidden" name="${base}[exercise_library_id]" class="wb-library-id" value="">
                         <span class="wb-idx" aria-hidden="true">${exIdx}</span>
                     </td>
                     <td class="wb-cell-name" data-label="@lang('Exercise')">
+                        <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                            <button type="button" class="btn btn-icon btn-sm btn-light-primary btn-open-library-picker" title="@lang('Pick from Central Exercise Library')">
+                                <i class="fas fa-book-open fs-7"></i>
+                            </button>
+                            <span class="badge badge-light-primary wb-library-badge d-none fs-9">
+                                <i class="fas fa-link me-1"></i> @lang('Library')
+                            </span>
+                            <button type="button" class="btn btn-icon btn-sm btn-light-danger btn-unlink-library d-none" title="@lang('Unlink from Library')">
+                                <i class="fas fa-unlink fs-8"></i>
+                            </button>
+                        </div>
                         <input type="text" name="${base}[name]" class="form-control wb-name" maxlength="150" autocomplete="off"
                                placeholder="${isMain ? "@lang('e.g. Incline Bench Press')" : (type === 'warmup' ? "@lang('e.g. Arm Circles / Dynamic Stretch')" : "@lang('e.g. Foam Rolling / Hamstring Stretch')")}" aria-label="@lang('Exercise Name')">
                         <div class="invalid-feedback"></div>

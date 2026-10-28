@@ -80,6 +80,7 @@
 
         $menu['Workout'] = [
             'permission' => ['system.workout.index','system.workout.create',
+            'system.exercise-library.index','system.exercise-library.create',
             'system.nutrition.index','system.nutrition.create','system.nutrition.edit'],
             'icon' => '<i class="fa-solid fa-dumbbell"></i>',
             'text' => __('Plans'),
@@ -89,6 +90,12 @@
                     'url' => route('system.workout.index'),
                     'text' => __('Workout Plans'),
                     'icon' => '<i class="fa-solid fa-clipboard-list"></i>',
+                ],
+                [
+                    'permission' => ['system.exercise-library.index','system.exercise-library.create'],
+                    'url' => route('system.exercise-library.index'),
+                    'text' => __('Exercise Library'),
+                    'icon' => '<i class="fa-solid fa-video"></i>',
                 ],
                 [
                     'permission' => ['system.nutrition.index','system.nutrition.create','system.nutrition.edit'],

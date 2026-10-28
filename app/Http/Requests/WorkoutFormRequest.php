@@ -46,6 +46,7 @@ class WorkoutFormRequest extends FormRequest
             'program.*.warmup' => 'nullable|string',
             'program.*.post_workout' => 'nullable|string',
             'program.*.exercises.*.type' => 'required|in:warmup,main,post_workout',
+            'program.*.exercises.*.exercise_library_id' => 'nullable|integer|exists:exercise_libraries,id',
             'program.*.exercises.*.machine_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ];
     }

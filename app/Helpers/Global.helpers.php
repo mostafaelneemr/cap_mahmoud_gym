@@ -133,6 +133,7 @@ function ignoredRoutes()
         'system.load-adjustment.store',
         'system.load-adjustment.review',
         'system.load-adjustment.item.review',
+        'system.exercise-library.search',
     ];
 }
 

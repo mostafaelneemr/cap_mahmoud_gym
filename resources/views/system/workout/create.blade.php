@@ -4,6 +4,7 @@
     @include('system.workout.partials.exercise-table-styles')
     @include('system.workout.partials.warmup-editor-assets')
     @include('system.workout.partials.workout-media-assets')
+    @include('system.workout.partials.exercise-library-modal')
     <style>
         .is-invalid + .select2-container .select2-selection,
         .select2-container--bootstrap5.is-invalid .select2-selection,
@@ -170,9 +171,21 @@
                 <tr class="wb-row-main">
                     <td class="wb-cell-idx" rowspan="3">
                         <input type="hidden" name="${base}[type]" value="${type}">
+                        <input type="hidden" name="${base}[exercise_library_id]" class="wb-library-id" value="">
                         <span class="wb-idx" aria-hidden="true">${exIdx}</span>
                     </td>
                     <td class="wb-cell-name" data-label="@lang('Exercise')">
+                        <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                            <button type="button" class="btn btn-icon btn-sm btn-light-primary btn-open-library-picker" title="@lang('Pick from Central Exercise Library')">
+                                <i class="fas fa-book-open fs-7"></i>
+                            </button>
+                            <span class="badge badge-light-primary wb-library-badge d-none fs-9">
+                                <i class="fas fa-link me-1"></i> @lang('Library')
+                            </span>
+                            <button type="button" class="btn btn-icon btn-sm btn-light-danger btn-unlink-library d-none" title="@lang('Unlink from Library')">
+                                <i class="fas fa-unlink fs-8"></i>
+                            </button>
+                        </div>
                         <input type="text" name="${base}[name]" class="form-control wb-name" maxlength="150" autocomplete="off"
                                placeholder="${isMain ? '@lang('e.g. Incline Bench Press')' : (type === 'warmup' ? '@lang('e.g. Arm Circles / Shoulder Dislocates')' : '@lang('e.g. Static Quad Stretch / Foam Rolling')')}" aria-label="@lang('Exercise Name')">
                         <div class="invalid-feedback"></div>

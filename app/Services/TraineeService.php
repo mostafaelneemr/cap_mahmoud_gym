@@ -35,14 +35,23 @@ class TraineeService extends BaseService
         $trainee = $this->traineeRepository->find($id);
         $relations = [
             'currentWorkoutPlans.exercises',
+            'currentWorkoutPlans.exercises.exerciseLibrary',
             'currentWorkoutPlans.warmupExercises',
+            'currentWorkoutPlans.warmupExercises.exerciseLibrary',
             'currentWorkoutPlans.mainExercises',
+            'currentWorkoutPlans.mainExercises.exerciseLibrary',
             'currentWorkoutPlans.postWorkoutExercises',
+            'currentWorkoutPlans.postWorkoutExercises.exerciseLibrary',
             'activeWorkoutPlans.exercises',
+            'activeWorkoutPlans.exercises.exerciseLibrary',
             'archivedWorkoutPlans.exercises',
+            'archivedWorkoutPlans.exercises.exerciseLibrary',
             'archivedWorkoutPlans.warmupExercises',
+            'archivedWorkoutPlans.warmupExercises.exerciseLibrary',
             'archivedWorkoutPlans.mainExercises',
+            'archivedWorkoutPlans.mainExercises.exerciseLibrary',
             'archivedWorkoutPlans.postWorkoutExercises',
+            'archivedWorkoutPlans.postWorkoutExercises.exerciseLibrary',
             'activeNutritionPlans',
         ];
 

@@ -21,6 +21,7 @@ class Exercise extends GlobalModel
 
     protected $fillable = [
         'workout_plan_id',
+        'exercise_library_id',
         'type',
         'name',
         'sets',
@@ -221,6 +222,42 @@ class Exercise extends GlobalModel
     public function workoutPlan()
     {
         return $this->belongsTo(WorkoutPlan::class, 'workout_plan_id', 'id');
+    }
+
+    /**
+     * Central exercise library relationship (if linked).
+     */
+    public function exerciseLibrary()
+    {
+        return $this->belongsTo(ExerciseLibrary::class, 'exercise_library_id', 'id');
+    }
+
+    /**
+     * Determine if this exercise is linked to the central library.
+     */
+    public function getIsLinkedToLibraryAttribute(): bool
+    {
+        return !empty($this->exercise_library_id);
+    }
+
+    /**
+     * Resolve current video link:
+     * If linked to an exercise library record with a non-empty video URL,
+     * resolve from the central library; otherwise preserve the legacy local link.
+     */
+    public function getLinkAttribute($value): ?string
+    {
+        if (!empty($this->exercise_library_id)) {
+            $library = $this->relationLoaded('exerciseLibrary')
+                ? $this->getRelation('exerciseLibrary')
+                : $this->exerciseLibrary;
+
+            if ($library && !empty($library->video_url)) {
+                return $library->video_url;
+            }
+        }
+
+        return $value;
     }
 
     /**

@@ -68,6 +68,11 @@ Route::post('/workout/day/{dayId}/toggle-status', 'WorkoutController@toggleDaySt
 Route::post('/workout/inline-day', 'WorkoutController@storeInlineDay')->name('system.workout.storeInlineDay');
 Route::resource('/workout', 'WorkoutController', ['as' => 'system']); //
 
+Route::get('/exercise-library/search', 'ExerciseLibraryController@search')->name('system.exercise-library.search');
+Route::post('/exercise-library/{id}/toggle-status', 'ExerciseLibraryController@toggleStatus')->name('system.exercise-library.toggle-status');
+Route::resource('/exercise-library', 'ExerciseLibraryController', ['as' => 'system']);
+
+
 Route::get('/nutrition/my-plan', 'NutritionController@myPlan')->name('system.nutrition.my-plan');
 Route::resource('/nutrition', 'NutritionController', ['as' => 'system']);
 

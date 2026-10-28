@@ -2,6 +2,20 @@
 > [!IMPORTANT]
 > ANY AI agent must read this document before executing tasks to understand the system's boundaries and design patterns.
 
+## Mandatory AI Agent Pre-Task Protocol
+
+Before analyzing a problem, proposing a solution, or writing code, silently read `project_context.md` in the project root.
+
+If the task involves database operations, SQL queries, schema changes, migrations, models, relationships, repositories, or service-layer database logic, also read `DB-structure.sql` from the project root. Treat `DB-structure.sql` as the absolute source of truth for database tables, columns, keys, and relationships.
+
+Do not make assumptions about database structures, relationships, or application architecture. Verify them against the authoritative schema and the existing implementation before making decisions.
+
+If the schema file and implementation appear inconsistent, report the discrepancy and investigate it before making schema-dependent changes. Do not silently invent missing schema details or modify the authoritative schema file to conceal a discrepancy.
+
+Follow the project's existing repository pattern, modular architecture, service-layer conventions, and established coding style.
+
+These instructions are mandatory for every AI agent working on this project.
+
 # System Overview
 This project is a large-scale **Gym Management System** designed to handle gym administration, content, and daily operations. Primary entities revolve around Gym Administration, including features for:
 - Trainees
