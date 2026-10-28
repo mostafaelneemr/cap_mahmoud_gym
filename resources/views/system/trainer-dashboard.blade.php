@@ -766,9 +766,9 @@
                                                             @else
                                                                 <span class="text-muted">—</span>
                                                             @endif
-                                                            <button type="button" 
-                                                                    class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1" 
-                                                                    data-target="#inline-load-row-{{ $exercise->id }}" 
+                                                            <button type="button"
+                                                                    class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1"
+                                                                    data-target="#inline-load-row-{{ $exercise->id }}"
                                                                     title="{{ __('Update Weight') }}"
                                                                     style="width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;">
                                                                 <i class="fas fa-plus fs-8"></i>
@@ -892,9 +892,9 @@
                                                     @else
                                                         <span class="text-muted">—</span>
                                                     @endif
-                                                    <button type="button" 
-                                                            class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1" 
-                                                            data-target="#inline-load-row-{{ $exercise->id }}" 
+                                                    <button type="button"
+                                                            class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1"
+                                                            data-target="#inline-load-row-{{ $exercise->id }}"
                                                             title="{{ __('Update Weight') }}"
                                                             style="width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;">
                                                         <i class="fas fa-plus fs-8"></i>
@@ -965,9 +965,6 @@
                                         <span class="badge fs-8 ms-1" style="background: rgba(167, 139, 250, 0.15); color: #A78BFA; border: 1px solid rgba(167, 139, 250, 0.25); border-radius: 9999px; padding: 4px 10px;">{{ $postWorkoutExercises->count() }} {{ __('exercises') }}</span>
                                     @endif
                                 </div>
-                                @if($plan->display_post_workout)
-                                    <div class="warmup-rich-content text-gray-800 fw-semibold mb-3">{!! $plan->display_post_workout !!}</div>
-                                @endif
 
                                 @if($postWorkoutExercises->count() > 0)
                                     <div class="exercise-table-wrapper mb-4">
@@ -1030,9 +1027,9 @@
                                                             @else
                                                                 <span class="text-muted">—</span>
                                                             @endif
-                                                            <button type="button" 
-                                                                    class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1" 
-                                                                    data-target="#inline-load-row-{{ $exercise->id }}" 
+                                                            <button type="button"
+                                                                    class="btn btn-icon btn-sm btn-light-primary btn-toggle-inline-load p-0 ms-1"
+                                                                    data-target="#inline-load-row-{{ $exercise->id }}"
                                                                     title="{{ __('Update Weight') }}"
                                                                     style="width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;">
                                                                 <i class="fas fa-plus fs-8"></i>
