@@ -135,6 +135,161 @@
             </div>
 
 
+                        <!--begin::Notifications-->
+            <div class="app-navbar-item ms-1 ms-lg-3" id="kt_header_notification_item">
+                <div class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px position-relative"
+                    data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+                    data-kt-menu-attach="parent"
+                    data-kt-menu-placement="bottom-end"
+                    id="kt_header_notification_toggle">
+                    <i class="ki-outline ki-notification-status fs-2"></i>
+                    <span id="notification-badge" class="position-absolute top-0 start-100 translate-middle badge badge-circle badge-danger fs-8 fw-bold d-none" style="min-width: 18px; height: 18px; padding: 2px 4px;">0</span>
+                </div>
+
+                <!--begin::Menu-->
+                <div class="menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px shadow-sm" data-kt-menu="true" id="kt_menu_notifications">
+                    <!--begin::Heading-->
+                    <div class="d-flex flex-stack bgi-no-repeat bgi-size-cover rounded-top p-4 bg-primary text-white">
+                        <h3 class="text-white fw-semibold mb-0 fs-5 d-flex align-items-center">
+                            <i class="ki-outline ki-notification-status fs-4 me-2 text-white"></i>
+                            {{ __('Notifications') }}
+                            <span id="notification-header-count" class="badge badge-sm badge-light-warning ms-2 fs-8">0</span>
+                        </h3>
+                        <button type="button" id="btn-mark-all-read" class="btn btn-sm btn-link text-white text-hover-white p-0 fs-8 fw-semibold" style="text-decoration: underline;">
+                            {{ __('Mark all as read') }}
+                        </button>
+                    </div>
+                    <!--end::Heading-->
+
+                    <!--begin::Items-->
+                    <div id="notification-dropdown-list" class="scroll-y mh-325px my-2 px-4 py-2">
+                        <div class="text-center py-6 text-muted fs-7" id="notification-loading">
+                            <span class="spinner-border spinner-border-sm text-primary me-2"></span> {{ __('Loading...') }}
+                        </div>
+                    </div>
+                    <!--end::Items-->
+
+                    <!--begin::View more-->
+                    @if(auth()->user() && auth()->user()->user_type != 2)
+                    <div class="py-3 text-center border-top">
+                        <a href="{{ route('system.notifications.index') }}" class="btn btn-color-gray-600 btn-active-color-primary fs-7 fw-semibold">
+                            {{ __('View all notifications') }}
+                            <i class="ki-outline ki-arrow-right fs-6 ms-1"></i>
+                        </a>
+                    </div>
+                    @endif
+                    <!--end::View more-->
+                </div>
+                <!--end::Menu-->
+            </div>
+            <!--end::Notifications-->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownUrl = "{{ route('system.notifications.dropdown') }}";
+    const readAllUrl = "{{ route('system.notifications.read-all') }}";
+    const csrfToken = "{{ csrf_token() }}";
+    const badgeEl = document.getElementById('notification-badge');
+    const headerCountEl = document.getElementById('notification-header-count');
+    const listEl = document.getElementById('notification-dropdown-list');
+    const markAllBtn = document.getElementById('btn-mark-all-read');
+
+    function updateBadge(count) {
+        if (!badgeEl || !headerCountEl) return;
+        headerCountEl.textContent = count;
+        if (count > 0) {
+            badgeEl.textContent = count > 99 ? '99+' : count;
+            badgeEl.classList.remove('d-none');
+        } else {
+            badgeEl.textContent = '0';
+            badgeEl.classList.add('d-none');
+        }
+    }
+
+    function renderNotifications(items, unreadCount) {
+        updateBadge(unreadCount);
+        if (!listEl) return;
+
+        if (!items || items.length === 0) {
+            listEl.innerHTML = `
+                <div class="text-center py-8 text-muted">
+                    <i class="ki-outline ki-notification fs-2x mb-2 text-gray-400 d-block"></i>
+                    <div class="fs-7 fw-semibold">{{ __('No notifications yet') }}</div>
+                </div>`;
+            return;
+        }
+
+        let html = '';
+        items.forEach(item => {
+            const unreadClass = !item.is_read ? 'bg-light-primary border-primary' : 'bg-hover-light';
+            const dot = !item.is_read ? '<span class="badge badge-dot badge-primary me-2"></span>' : '';
+            const actionUrl = item.action_url ? item.action_url : item.read_url;
+
+            html += `
+                <a href="${actionUrl}" class="d-flex align-items-center p-3 mb-2 rounded border border-dashed text-dark text-decoration-none ${unreadClass}">
+                    <div class="symbol symbol-35px me-3">
+                        <span class="symbol-label bg-light-primary text-primary">
+                            <i class="ki-outline ${item.icon || 'ki-notification-status'} fs-3"></i>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-column flex-grow-1 min-w-0">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="fw-bold fs-7 text-truncate">${item.title}</span>
+                            ${dot}
+                        </div>
+                        <div class="text-muted fs-8 text-truncate mb-1">${item.message}</div>
+                        <span class="text-gray-400 fs-9">${item.created_at_human}</span>
+                    </div>
+                </a>
+            `;
+        });
+        listEl.innerHTML = html;
+    }
+
+    function fetchNotifications() {
+        fetch(dropdownUrl, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status) {
+                renderNotifications(data.notifications, data.unread_count);
+            }
+        })
+        .catch(err => console.error('Error fetching notifications:', err));
+    }
+
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch(readAllUrl, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status) {
+                    updateBadge(0);
+                    fetchNotifications();
+                }
+            })
+            .catch(err => console.error('Error marking notifications as read:', err));
+        });
+    }
+
+    fetchNotifications();
+    setInterval(fetchNotifications, 60000);
+});
+</script>
+
             <div class="app-navbar-item ms-2 ms-lg-6" id="kt_header_user_menu_toggle">
                 <!--begin::Menu wrapper-->
                 <div class="cursor-pointer symbol symbol-circle symbol-30px symbol-lg-45px"

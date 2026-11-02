@@ -77,6 +77,7 @@ class TraineeProgressController extends SystemController
             $photoFiles = $request->file('photos', []);
 
             $checkin = $this->progressService->storeCheckin($request->validated(), $authUser, $photoFiles);
+            app(\App\Services\InAppNotificationService::class)->notifyCoachProgressSubmitted($checkin);
 
             if ($request->ajax() || $request->wantsJson()) {
                 return $this->success(__('Progress check-in saved successfully!'), [
@@ -108,6 +109,7 @@ class TraineeProgressController extends SystemController
         try {
             $authUser = Auth::guard('user')->user();
             $checkin = $this->progressService->updateCoachNotes((int) $id, $request->input('coach_notes'), $authUser);
+            app(\App\Services\InAppNotificationService::class)->notifyTraineeCoachNotesUpdated($checkin);
 
             if ($request->ajax() || $request->wantsJson()) {
                 return $this->success(__('Coach notes updated successfully!'), [

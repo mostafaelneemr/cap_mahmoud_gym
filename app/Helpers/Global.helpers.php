@@ -117,6 +117,18 @@ function ignoredRoutes()
         'system.user.change-password-post',
         'system.notifications.url',
         'system.notifications.index',
+        'system.notifications.dropdown',
+        'system.notifications.read',
+        'system.notifications.read-post',
+        'system.notifications.read-all',
+        'system.whatsapp-broadcast.index',
+        'system.whatsapp-broadcast.create',
+        'system.whatsapp-broadcast.store',
+        'system.whatsapp-broadcast.preview-recipients',
+        'system.whatsapp-broadcast.show',
+        'system.whatsapp-broadcast.process',
+        'system.whatsapp-broadcast.action',
+        'system.whatsapp-broadcast.cancel',
         'system.user.user-sessions',
         'system.user.profile',
         'system.user.show-profile',
@@ -131,6 +143,7 @@ function ignoredRoutes()
         'system.trainee-progress.destroy-photo',
         'system.trainee-progress.compare',
         'system.load-adjustment.store',
+        'system.load-adjustment.index',
         'system.load-adjustment.review',
         'system.load-adjustment.item.review',
     ];
@@ -158,6 +171,7 @@ function userCan($routename, $userId = null)
             'auth.google',
             'auth.google.callback',
             'system.load-adjustment.store',
+        'system.load-adjustment.index',
         ];
         if (is_array($routename)) {
             $arr = array_diff($routename, $traineeRoutes);

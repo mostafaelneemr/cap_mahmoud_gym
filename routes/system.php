@@ -102,8 +102,30 @@ Route::controller('JoinUsController')->prefix('join-us')->group(function () {
 
 // ─── Trainee Load Adjustment Routes ──────────────────────────────────────────
 Route::controller('LoadAdjustmentController')->prefix('load-adjustment')->group(function () {
+    Route::get('/', 'index')->name('system.load-adjustment.index');
     Route::post('/store', 'store')->name('system.load-adjustment.store');
     Route::post('/{id}/review', 'review')->name('system.load-adjustment.review');
     Route::post('/item/{id}/review', 'reviewItem')->name('system.load-adjustment.item.review');
 });
 
+
+// ─── In-App Notifications ──────────────────────────────────────────────────
+Route::controller('NotificationController')->prefix('notifications')->group(function () {
+    Route::get('/', 'index')->name('system.notifications.index');
+    Route::get('/dropdown', 'dropdown')->name('system.notifications.dropdown');
+    Route::post('/read-all', 'readAll')->name('system.notifications.read-all');
+    Route::get('/{id}/read', 'read')->name('system.notifications.read');
+    Route::post('/{id}/read', 'read')->name('system.notifications.read-post');
+});
+
+// ─── WhatsApp Broadcast ──────────────────────────────────────────────────
+Route::controller('WhatsAppBroadcastController')->prefix('whatsapp-broadcast')->group(function () {
+    Route::get('/', 'index')->name('system.whatsapp-broadcast.index');
+    Route::get('/create', 'create')->name('system.whatsapp-broadcast.create');
+    Route::post('/', 'store')->name('system.whatsapp-broadcast.store');
+    Route::post('/preview-recipients', 'previewRecipients')->name('system.whatsapp-broadcast.preview-recipients');
+    Route::get('/{id}', 'show')->name('system.whatsapp-broadcast.show');
+    Route::get('/{id}/process', 'process')->name('system.whatsapp-broadcast.process');
+    Route::post('/{id}/action', 'action')->name('system.whatsapp-broadcast.action');
+    Route::post('/{id}/cancel', 'cancel')->name('system.whatsapp-broadcast.cancel');
+});

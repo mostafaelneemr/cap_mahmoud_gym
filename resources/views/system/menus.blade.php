@@ -96,6 +96,12 @@
                     'text' => __('Nutrition Plans'),
                     'icon' => '<i class="fa-solid fa-apple-whole"></i>',
                 ],
+                [
+                    'permission' => ['system.load-adjustment.index'],
+                    'url' => route('system.load-adjustment.index'),
+                    'text' => __('Load Adjustment Center'),
+                    'icon' => '<i class="fa-solid fa-weight-scale"></i>',
+                ],
             ],
         ];
 
@@ -129,6 +135,30 @@
                     'url' => route('system.join-us.index'),
                     'text' => __('Join Us Applications'),
                     'icon' => '<i class="fa-solid fa-person-running"></i>',
+                ],
+            ],
+        ];
+
+        $menu['Communications'] = [
+            'permission' => [
+                'system.whatsapp-broadcast.index',
+                'system.whatsapp-broadcast.create',
+                'system.notifications.index',
+            ],
+            'icon' => '<i class="fa fa-paper-plane"></i>',
+            'text' => __('Communications'),
+            'sub' => [
+//                [
+//                    'permission' => ['system.whatsapp-broadcast.index', 'system.whatsapp-broadcast.create'],
+//                    'url' => route('system.whatsapp-broadcast.index'),
+//                    'text' => __('WhatsApp Broadcast'),
+//                    'icon' => '<i class="fab fa-whatsapp"></i>',
+//                ],
+                [
+                    'permission' => ['system.notifications.index'],
+                    'url' => route('system.notifications.index'),
+                    'text' => __('In-App Notifications'),
+                    'icon' => '<i class="fa fa-bell"></i>',
                 ],
             ],
         ];
