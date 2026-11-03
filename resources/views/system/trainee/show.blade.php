@@ -2599,6 +2599,15 @@
                     }
                 });
             });
+            // Auto-activate load updates tab if requested via hash or query param
+            var hash = window.location.hash;
+            var urlParams = new URLSearchParams(window.location.search);
+            if (hash === '#kt_trainee_load_updates_tab' || urlParams.get('tab') === 'load_updates') {
+                var tabTrigger = document.querySelector('a[href="#kt_trainee_load_updates_tab"]');
+                if (tabTrigger && typeof bootstrap !== 'undefined') {
+                    new bootstrap.Tab(tabTrigger).show();
+                }
+            }
         });
     </script>
 @endsection

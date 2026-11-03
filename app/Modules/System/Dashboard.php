@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Repositories\Workout\WorkoutRepository;
 use App\Repositories\Trainee\TraineeRepository;
 use App\Services\TraineeService;
+use App\Services\DashboardService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -17,16 +18,18 @@ use Spatie\Activitylog\Models\Activity;
 class Dashboard extends SystemController
 {
 
-    protected $traineeService, $workoutRepository, $traineeRepository;
+    protected $traineeService, $workoutRepository, $traineeRepository, $dashboardService;
     public function __construct(
         TraineeService $traineeService,
         WorkoutRepository $workoutRepository,
         TraineeRepository $traineeRepository,
+        DashboardService $dashboardService
     ) {
         parent::__construct();
         $this->traineeService = $traineeService;
         $this->workoutRepository = $workoutRepository;
         $this->traineeRepository = $traineeRepository;
+        $this->dashboardService = $dashboardService;
     }
 
     public function index(Request $request)
@@ -47,8 +50,10 @@ class Dashboard extends SystemController
         $pendingWorkouts = $this->traineeRepository->getModelar()->whereDoesntHave('activeWorkoutPlans')->count();
         $activeMemberships = $this->traineeRepository->count(['status' => TraineesStatusEnum::Active->value]);
 
-        $clicksCount = Activity::where('log_name', 'linktree_click')->count();
-        if ($clicksCount == 0) {
+        // DashboardService data
+        $dashboardData = $this->dashboardService->getAllDashboardData();
+        $this->viewData = array_merge($this->viewData, $dashboardData);
+        if (false) {
 //            $linksCount = $this->socialLinkRepository->count(['is_active' => '1']);
 //            $clicksCount = $linksCount > 0 ? $linksCount * 28 + 42 : 185;
         }

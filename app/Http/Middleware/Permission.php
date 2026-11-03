@@ -27,6 +27,11 @@ class Permission
             }
 
             if ($authUser->user_type == 2) {
+                // Strictly deny trainees from accessing full notifications page and coach review center
+                if (in_array(Route::currentRouteName(), ['system.notifications.index', 'system.load-adjustment.index'], true)) {
+                    abort(403, 'Unauthorized.');
+                }
+
                 $whitelist = [
                     'system.dashboard.trainer',
                     'system.nutrition.my-plan',
@@ -40,7 +45,11 @@ class Permission
                     'auth.google',
                     'auth.google.callback',
                     'system.impersonate.leave',
-                    'system.load-adjustment.store'
+                    'system.load-adjustment.store',
+                    'system.notifications.dropdown',
+                    'system.notifications.read',
+                    'system.notifications.read-post',
+                    'system.notifications.read-all'
                 ];
                 if (in_array(Route::currentRouteName(), $whitelist)) {
                     return $next($request);

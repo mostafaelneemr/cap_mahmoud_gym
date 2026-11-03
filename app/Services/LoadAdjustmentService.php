@@ -6,6 +6,7 @@ use App\Models\Exercise;
 use App\Models\TraineeLoadAdjustment;
 use App\Models\TraineeLoadAdjustmentItem;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -231,5 +232,75 @@ class LoadAdjustmentService
 
             return $report->fresh(['items', 'reviewer']);
         });
+    }
+
+    /**
+     * إحصائيات سريعة للوحة مراجعة أحمال التمارين للمدرب
+     */
+    public function getSummaryStats(): array
+    {
+        return [
+            'pending_sets_count'     => TraineeLoadAdjustmentItem::where('status', TraineeLoadAdjustmentItem::STATUS_PENDING)->count(),
+            'pending_requests_count' => TraineeLoadAdjustment::whereIn('status', ['pending', 'partially_reviewed'])->count(),
+            'conflict_sets_count'    => TraineeLoadAdjustmentItem::where('status', TraineeLoadAdjustmentItem::STATUS_CONFLICT)->count(),
+        ];
+    }
+
+    /**
+     * جلب طلبات تعديل الأحمال مع التصفية والتقسيم المصفح للمدرب
+     *
+     * @param array $filters
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function getPaginatedRequests(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    {
+        $query = TraineeLoadAdjustment::with([
+            'trainee.user',
+            'items' => function ($q) {
+                $q->orderBy('set_number', 'asc');
+            },
+            'items.reviewer',
+            'exercise',
+            'workoutPlan',
+            'reviewer',
+        ]);
+
+        // تصفية حسب اسم أو بريد المتدرب
+        if (!empty($filters['trainee'])) {
+            $searchTerm = trim($filters['trainee']);
+            $query->whereHas('trainee', function ($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('email', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // تصفية حسب الحالة
+        if (!empty($filters['status']) && $filters['status'] !== 'all') {
+            if ($filters['status'] === 'pending') {
+                $query->whereIn('status', ['pending', 'partially_reviewed']);
+            } elseif ($filters['status'] === 'conflict') {
+                $query->where('status', 'conflict');
+            } elseif ($filters['status'] === 'reviewed') {
+                $query->where('status', 'reviewed');
+            } elseif ($filters['status'] === 'dismissed') {
+                $query->where('status', 'dismissed');
+            }
+        }
+
+        // تصفية حسب التاريخ
+        if (!empty($filters['date'])) {
+            $query->whereDate('created_at', $filters['date']);
+        }
+
+        // الترتيب: الطلبات المعلقة والمتعارضة أولاً، ثم حسب الأحدث
+        $query->orderByRaw("CASE 
+            WHEN status = 'pending' THEN 1 
+            WHEN status = 'conflict' THEN 2 
+            WHEN status = 'partially_reviewed' THEN 3 
+            ELSE 4 END ASC")
+            ->orderBy('created_at', 'desc');
+
+        return $query->paginate($perPage);
     }
 }
