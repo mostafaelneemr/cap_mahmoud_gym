@@ -1,7 +1,5 @@
 @extends('web.layout')
 
-@section('style)
-
 <style>
     /* Prevent horizontal overflow */
 .performance-section {
@@ -132,7 +130,6 @@
     }
 }
 </style>
-@endsection
 
 @section('content')
 
