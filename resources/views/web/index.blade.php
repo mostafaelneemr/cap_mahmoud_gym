@@ -1,5 +1,139 @@
 @extends('web.layout')
 
+@section('style)
+
+<style>
+    /* Prevent horizontal overflow */
+.performance-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 100%;
+    min-height: 500px;
+    overflow: hidden;
+    background: #000;
+}
+
+/* Image */
+.perf-card-img {
+    width: 100%;
+    min-width: 0;
+    min-height: 500px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Text section */
+.perf-card-text {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px;
+    overflow: hidden;
+}
+
+.perf-card-text h2,
+.perf-card-text p {
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.perf-card-text h2 {
+    margin: 0 0 24px;
+    font-size: clamp(2rem, 3vw, 3.5rem);
+    line-height: 1.15;
+}
+
+.perf-card-text p {
+    margin: 0 0 30px;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+/* Button */
+.perf-card-text .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+    .performance-section {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .perf-card-img {
+        width: 100%;
+        min-height: 330px;
+        height: 330px;
+        background-position: center;
+    }
+
+    .perf-card-text {
+        width: 100%;
+        min-width: 0;
+        padding: 40px 24px;
+        box-sizing: border-box;
+    }
+
+    .perf-card-text h2 {
+        font-size: 2rem;
+        line-height: 1.2;
+        margin-bottom: 18px;
+    }
+
+    .perf-card-text p {
+        width: 100%;
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .perf-card-text > div {
+        width: 100%;
+    }
+
+    .perf-card-text .btn-primary {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+
+    .perf-card-img {
+        height: 300px;
+        min-height: 300px;
+    }
+
+    .perf-card-text {
+        padding: 32px 20px;
+    }
+
+    .perf-card-text h2 {
+        font-size: 1.7rem;
+    }
+}
+</style>
+@endsection
+
 @section('content')
 
     <section class="hero-section" @if(!empty($hero['image'])) style="background-image: linear-gradient(90deg, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.15) 100%), url('{{ $hero['image'] }}');" @endif>
